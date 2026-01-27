@@ -19,6 +19,18 @@ import DestekPage from './pages/DestekPage';
 import TotalCarsPage from './pages/TotalCarsPage';
 import TotalTiresPage from './pages/TotalTiresPage';
 import AlertPage from './pages/AlertPage';
+import CarEditPage from './pages/CarEditPage';
+import AkuEditPage from './pages/AkuEditPage';
+import AracGecmisiPage from './pages/AracGecmisiPage';
+import AracBolgePage from './pages/AracBolgePage';
+import DepodanAkuGetirPage from './pages/DepodanAkuGetirPage';
+import DepodanLastikGetirPage from './pages/DepodanLastikGetirPage';
+import DetaySayfaPage from './pages/DetaySayfaPage';
+import DisDerinligiPage from './pages/DisDerinligiPage';
+import KmBilgiPage from './pages/KmBilgiPage';
+import YeniAkuPage from './pages/YeniAkuPage';
+import LastikGecmisiPage from './pages/LastikGecmisiPage';
+import LastikHavuzPage from './pages/LastikHavuzPage';
 import { supabase } from './lib/supabaseClient';
 import { useAuthStore } from './store/auth';
 
@@ -168,6 +180,102 @@ const App = () => {
           element={
             <ProtectedRoute>
               <AlertPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/arac-duzenle/:carId"
+          element={
+            <ProtectedRoute>
+              <CarEditPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/aku-duzenle/:carId"
+          element={
+            <ProtectedRoute>
+              <AkuEditPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/arac-gecmisi/:carId"
+          element={
+            <ProtectedRoute>
+              <AracGecmisiPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/arac-bolge/:carId"
+          element={
+            <ProtectedRoute>
+              <AracBolgePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/depodan-aku-getir/:carId"
+          element={
+            <ProtectedRoute>
+              <DepodanAkuGetirPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/depodan-lastik-getir/:carId"
+          element={
+            <ProtectedRoute>
+              <DepodanLastikGetirPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/detay-sayfa/:tireId"
+          element={
+            <ProtectedRoute>
+              <DetaySayfaPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dis-derinligi/:tireId"
+          element={
+            <ProtectedRoute>
+              <DisDerinligiPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/km-bilgi/:tireId"
+          element={
+            <ProtectedRoute>
+              <KmBilgiPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/yeni-aku"
+          element={
+            <ProtectedRoute>
+              <YeniAkuPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lastik-gecmisi/:tireId"
+          element={
+            <ProtectedRoute>
+              <LastikGecmisiPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lastik-havuz"
+          element={
+            <ProtectedRoute>
+              <LastikHavuzPage />
             </ProtectedRoute>
           }
         />

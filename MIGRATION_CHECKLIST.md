@@ -1,0 +1,127 @@
+# PHP -> React Migrasyon Kontrol Listesi
+
+Bu dosya, `lastikco-second` (PHP) projesindeki dosyaların `lastikco-react` (React/TypeScript) projesine taşınma durumunu takip eder.
+
+## Durum Sembolleri
+- [x] = Tamamlandı (React karşılığı mevcut)
+- [ ] = Henüz yapılmadı / Backend entegrasyonu bekleniyor
+- N/A = Taşınması gerekmiyor (backend-only script, Mail kütüphanesi vb.)
+
+---
+
+## UI Sayfaları (PHP -> React)
+
+### Daha Önce Mevcut Olan Sayfalar
+| PHP Dosyası | React Karşılığı | Route | Durum |
+|---|---|---|---|
+| `index.php` | `HomePage.tsx` | `/` | [x] Tamamlandı |
+| `addcar.php` / `newcar.php` | `AracEklePage.tsx` | `/arac-ekle` | [x] Tamamlandı |
+| `toplam_arac.php` | `TotalCarsPage.tsx` | `/toplam-arac` | [x] Tamamlandı |
+| `toplam_lastik.php` | `TotalTiresPage.tsx` | `/toplam-lastik` | [x] Tamamlandı |
+| `pasifcar.php` | `AracPasifPage.tsx` | `/arac-pasif` | [x] Tamamlandı |
+| `depodaki_lastikler.php` | `LastikDepoPage.tsx` | `/lastik-depo` | [x] Tamamlandı |
+| `hurda_lastikler.php` | `LastikHurdaPage.tsx` | `/lastik-hurda` | [x] Tamamlandı |
+| `servis_lastik.php` | `LastikServisPage.tsx` | `/lastik-servis` | [x] Tamamlandı |
+| `depoaku.php` | `AkuDepoPage.tsx` | `/aku-depo` | [x] Tamamlandı |
+| `newregion.php` | `BolgeEklePage.tsx` | `/bolge-ekle` | [x] Tamamlandı |
+| `lastikbilgi.php` | `LastikBilgiPage.tsx` | `/lastik-bilgi` | [x] Tamamlandı |
+| `newtire.php` | `LastikSifirPage.tsx` | `/lastik-sifir` | [x] Tamamlandı |
+| `alert.php` | `AlertPage.tsx` | `/alert` | [x] Tamamlandı |
+| `login/login.php` | `LoginPage.tsx` | `/giris` | [x] Tamamlandı |
+
+### Yeni Eklenen Sayfalar (Bu Sprint)
+| PHP Dosyası | React Karşılığı | Route | Durum |
+|---|---|---|---|
+| `caredit.php` | `CarEditPage.tsx` | `/arac-duzenle/:carId` | [x] Sayfa oluşturuldu |
+| `caredit2.php` | `CarEditPage.tsx` (dinamik aks) | `/arac-duzenle/:carId` | [x] Birleştirildi |
+| `caredit3.php` | `CarEditPage.tsx` (dinamik aks) | `/arac-duzenle/:carId` | [x] Birleştirildi |
+| `akuedit.php` | `AkuEditPage.tsx` | `/aku-duzenle/:carId` | [x] Sayfa oluşturuldu |
+| `arac_gecmisi.php` | `AracGecmisiPage.tsx` | `/arac-gecmisi/:carId` | [x] Sayfa oluşturuldu |
+| `aracbolge.php` | `AracBolgePage.tsx` | `/arac-bolge/:carId` | [x] Sayfa oluşturuldu |
+| `depodan_aku_getir.php` | `DepodanAkuGetirPage.tsx` | `/depodan-aku-getir/:carId` | [x] Sayfa oluşturuldu |
+| `depodan_lastik_getir.php` | `DepodanLastikGetirPage.tsx` | `/depodan-lastik-getir/:carId` | [x] Sayfa oluşturuldu |
+| `detay_sayfa.php` | `DetaySayfaPage.tsx` | `/detay-sayfa/:tireId` | [x] Sayfa oluşturuldu |
+| `dis_derinligi.php` | `DisDerinligiPage.tsx` | `/dis-derinligi/:tireId` | [x] Sayfa oluşturuldu |
+| `km_bilgi.php` | `KmBilgiPage.tsx` | `/km-bilgi/:tireId` | [x] Sayfa oluşturuldu |
+| `newaku.php` | `YeniAkuPage.tsx` | `/yeni-aku` | [x] Sayfa oluşturuldu |
+| `tire_gecmis.php` | `LastikGecmisiPage.tsx` | `/lastik-gecmisi/:tireId` | [x] Sayfa oluşturuldu |
+| `yeni_sayfa.php` | `LastikHavuzPage.tsx` | `/lastik-havuz` | [x] Sayfa oluşturuldu |
+
+---
+
+## Backend İşlem Dosyaları (PHP -> Supabase Service)
+Bu dosyalar doğrudan UI sayfası değil, AJAX/form işlemcileridir. React sayfalarındaki TODO yorumları ile Supabase entegrasyonuna hazırdır.
+
+| PHP Dosyası | Açıklama | Karşılık Gelen React Sayfa | Durum |
+|---|---|---|---|
+| `deletecar.php` | Araç silme | `CarEditPage.tsx` (sil butonu) | [ ] Supabase entegrasyonu bekleniyor |
+| `update_aku_to_car.php` | Akü araca atama | `DepodanAkuGetirPage.tsx` | [ ] Supabase entegrasyonu bekleniyor |
+| `update_tire_to_car.php` | Lastik araca atama | `DepodanLastikGetirPage.tsx` | [ ] Supabase entegrasyonu bekleniyor |
+| `update_tire_details.php` | Lastik detay güncelleme | `CarEditPage.tsx` (düzenle) | [ ] Supabase entegrasyonu bekleniyor |
+| `get_tire_details.php` | Lastik detay API | `CarEditPage.tsx` | [ ] Supabase entegrasyonu bekleniyor |
+| `ekle.php` | Diş derinliği ekleme | `DisDerinligiPage.tsx` | [ ] Supabase entegrasyonu bekleniyor |
+| `add_depth.php` | Diş derinliği ekleme | `DisDerinligiPage.tsx` | [ ] Supabase entegrasyonu bekleniyor |
+| `all_process.php` | Genel CRUD işlemleri | `vehicleService.ts` | [ ] Supabase entegrasyonu bekleniyor |
+| `lastik_çıkart.php` | Lastik çıkarma | `CarEditPage.tsx` (çıkart butonu) | [ ] Dosya bulunamadı, UI hazır |
+
+---
+
+## Taşınması Gerekmeyen Dosyalar
+| PHP Dosyası | Sebep |
+|---|---|
+| `Taslak.php` | Boş taslak sayfa, içerik yok |
+| `başınc_bilgi.php` | Dosya bulunamadı (referans var ama dosya eksik) |
+| `database/db_conn.php` | Supabase client ile değiştirildi (`supabaseClient.ts`) |
+| `menu/navbar.php` | React `SidebarMenu.tsx` + `TopNavbar.tsx` ile değiştirildi |
+| `login/login_process.php` | Supabase Auth ile değiştirildi (`authService.ts`) |
+| `login/logout.php` | Supabase Auth ile değiştirildi |
+| `login/userlogin.php` | Supabase Auth ile değiştirildi |
+| `Mail/*.php` (7 dosya) | PHPMailer kütüphanesi, React'ta gerekli değil |
+
+---
+
+## Entegrasyon Durumu
+
+### Routing (App.tsx)
+- [x] Tüm yeni sayfalar için route tanımları eklendi
+- [x] ProtectedRoute ile sarmalandı
+- [x] Dinamik parametreler (`:carId`, `:tireId`) doğru tanımlandı
+
+### Sidebar Menü (SidebarMenu.tsx)
+- [x] Lastik Havuzu menü linki eklendi
+- [x] Yeni Akü Ekle menü linki eklendi
+- [x] Diğer sayfalar (araç düzenle, akü düzenle, geçmiş vb.) sayfalar arası navigasyon ile erişiliyor
+
+### Sayfa İçi Navigasyon
+- [x] `CarEditPage` -> Araç Geçmişi, Bölge Değiştir, Diş Derinliği, KM Bilgi, Depodan Lastik Getir
+- [x] `AkuEditPage` -> Depodan Akü Getir
+- [x] `DisDerinligiPage` -> Detay Sayfa
+- [x] `AracAktifPage` / `AracPasifPage` -> Araç Düzenle (link eklenecek)
+
+---
+
+## Sonraki Adımlar (TODO)
+1. [ ] Tüm sayfalarda mock data yerine Supabase sorguları bağlanacak
+2. [ ] Supabase'de gerekli tablolar oluşturulacak (`dis_derinligi`, `km_bilgi`, `logs`, `bolge`, `lastik_havuz`)
+3. [ ] `AracAktifPage` ve `AracPasifPage`'den araç düzenleme sayfalarına link eklenecek
+4. [ ] Lastik çıkarma (lastik_çıkart) işlemi için Supabase service fonksiyonu yazılacak
+5. [ ] Form validasyonları güçlendirilecek
+6. [ ] Hata yönetimi (error handling) eklenecek
+7. [ ] DataTables benzeri tablo sıralama/filtreleme özelliği eklenecek
+8. [ ] Chart.js veya benzeri kütüphane ile grafik görselleştirme iyileştirilecek
+9. [ ] Export (Excel/PDF) özelliği eklenecek
+10. [ ] Lastik resim yükleme (base64) desteği eklenecek
+
+---
+
+## Özet
+
+| Kategori | Toplam | Tamamlanan | Kalan |
+|---|---|---|---|
+| UI Sayfaları (önceki) | 14 | 14 | 0 |
+| UI Sayfaları (yeni) | 12 | 12 | 0 |
+| Backend Entegrasyon | 9 | 0 | 9 |
+| Taşınmayacak | 12 | N/A | N/A |
+| **Toplam PHP Dosya** | **52** | **26 (UI)** | **9 (backend)** |
+
+**Not:** caredit.php, caredit2.php ve caredit3.php tek bir dinamik `CarEditPage.tsx` bileşeninde birleştirildi. Aks sayısına göre otomatik olarak doğru layout gösteriliyor.
