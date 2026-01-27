@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useAuthStore } from '../store/auth';
 
 const SidebarMenu = () => {
-  const [openMenus, setOpenMenus] = useState<string[]>(['dashboard', 'element', 'apps', 'additional_page']);
+  const [openMenus, setOpenMenus] = useState<string[]>(['dashboard', 'element', 'element2', 'apps', 'additional_page']);
   const { session } = useAuthStore();
 
   const toggleMenu = (menuId: string) => {
@@ -103,6 +103,9 @@ const SidebarMenu = () => {
               <li>
                 <NavLink to="/lastik-hurda">&gt; <span>Hurda Lastikler</span></NavLink>
               </li>
+              <li>
+                <NavLink to="/lastik-havuz">&gt; <span>Lastik Havuzu</span></NavLink>
+              </li>
             </ul>
           </li>
 
@@ -122,6 +125,9 @@ const SidebarMenu = () => {
             <ul className={`collapse list-unstyled ${openMenus.includes('apps') ? 'show' : ''}`} id="apps">
               <li>
                 <NavLink to="/aku-depo">&gt; <span>Akü Ekleme / Depo</span></NavLink>
+              </li>
+              <li>
+                <NavLink to="/yeni-aku">&gt; <span>Yeni Akü Ekle</span></NavLink>
               </li>
             </ul>
           </li>
