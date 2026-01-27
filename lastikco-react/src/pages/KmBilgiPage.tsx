@@ -1,5 +1,6 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface KmRecord {
   id: number;
@@ -35,7 +36,7 @@ const KmBilgiPage = () => {
     if (records.length > 0) {
       const lastKm = records[records.length - 1].km_value;
       if (kmNum <= lastKm) {
-        alert('Yeni KM değeri önceki değerden büyük olmalıdır!');
+        toast.error('Yeni KM değeri önceki değerden büyük olmalıdır!');
         return;
       }
     }
@@ -47,12 +48,14 @@ const KmBilgiPage = () => {
     };
     setRecords([...records, newRecord]);
     setNewKm('');
+    toast.success('KM kaydı eklendi.');
   };
 
   const handleDelete = async (id: number) => {
     if (!window.confirm('Bu kaydı silmek istediğinize emin misiniz?')) return;
     // TODO: Supabase'den sil
     setRecords(prev => prev.filter(r => r.id !== id));
+    toast.success('KM kaydı silindi.');
   };
 
   const handleEditSave = async (id: number) => {
@@ -60,6 +63,7 @@ const KmBilgiPage = () => {
     setRecords(prev => prev.map(r => r.id === id ? { ...r, km_value: Number(editValue) } : r));
     setEditingId(null);
     setEditValue('');
+    toast.success('KM kaydı güncellendi.');
   };
 
   const maxKm = Math.max(...records.map(r => r.km_value), 1);

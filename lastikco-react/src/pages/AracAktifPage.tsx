@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface Car {
   id: number;
@@ -31,12 +32,14 @@ const AracAktifPage = () => {
     if (!window.confirm('Bu aracı silmek istediğinize emin misiniz? Tüm lastik ve akü verileri de silinecektir.')) return;
     // TODO: Supabase'den aracı ve ilişkili verileri sil
     setCars(prev => prev.filter(c => c.id !== carId));
+    toast.success('Araç başarıyla silindi.');
   };
 
   const handlePassive = async (carId: number) => {
     if (!window.confirm('Bu aracı pasif yapmak istediğinize emin misiniz?')) return;
     // TODO: Supabase'de cars.status = 'pasif' yap
     setCars(prev => prev.filter(c => c.id !== carId));
+    toast.success('Araç pasif duruma alındı.');
   };
 
   return (

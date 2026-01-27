@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { signIn } from '../services/authService';
 import { useAuthStore } from '../store/auth';
 
@@ -29,7 +30,9 @@ const LoginPage = () => {
       setSession(signedSession ?? null);
       navigate('/');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Giriş başarısız oldu.');
+      const message = err instanceof Error ? err.message : 'Giriş başarısız oldu.';
+      setError(message);
+      toast.error(message);
     } finally {
       setSubmitting(false);
       setLoading(false);

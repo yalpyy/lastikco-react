@@ -60,9 +60,12 @@ const App = () => {
 
   return (
     <Routes>
-      <Route element={<MainLayout />}>
-        <Route path="/giris" element={<LoginPage />} />
+      {/* Login sayfası layout dışında - sidebar/navbar görünmez */}
+      <Route path="/giris" element={<LoginPage />} />
+      <Route path="/cikis" element={<Navigate to="/giris" />} />
 
+      {/* Authenticated layout - sidebar + navbar ile */}
+      <Route element={<MainLayout />}>
         <Route
           index
           element={
@@ -281,7 +284,6 @@ const App = () => {
         />
 
         <Route path="*" element={<NotFoundPage />} />
-        <Route path="/cikis" element={<Navigate to="/giris" />} />
       </Route>
     </Routes>
   );

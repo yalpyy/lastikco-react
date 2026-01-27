@@ -1,5 +1,6 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface TireRow {
   id: number;
@@ -90,7 +91,7 @@ const CarEditPage = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     // TODO: Supabase'e lastik ekle/güncelle
-    console.log('Form data:', formData);
+    toast.success(editingTire ? 'Lastik başarıyla güncellendi.' : 'Lastik başarıyla eklendi.');
     setShowForm(false);
     setEditingTire(null);
     resetForm();
@@ -132,12 +133,14 @@ const CarEditPage = () => {
     if (!window.confirm('Bu lastiği silmek istediğinize emin misiniz?')) return;
     // TODO: Supabase'den lastik sil
     setTires(prev => prev.filter(t => t.tire_id !== tireId));
+    toast.success('Lastik başarıyla silindi.');
   };
 
   const handleRemoveTire = async (tireId: number) => {
     if (!window.confirm('Bu lastiği araçtan çıkarmak istediğinize emin misiniz?')) return;
     // TODO: Supabase'de lastik car_id = null yap (depoya gönder)
     setTires(prev => prev.filter(t => t.tire_id !== tireId));
+    toast.success('Lastik araçtan çıkarıldı ve depoya gönderildi.');
   };
 
   const getPositionsForAxle = (axleNum: number, totalAxles: number): string[] => {
@@ -181,6 +184,7 @@ const CarEditPage = () => {
                 <button className="btn btn-danger btn-sm" onClick={() => {
                   if (window.confirm('Bu aracı silmek istediğinize emin misiniz? Tüm lastik ve akü verileri de silinecektir.')) {
                     // TODO: Supabase'den aracı ve ilişkili verileri sil
+                    toast.success('Araç başarıyla silindi.');
                     navigate('/arac-aktif');
                   }
                 }}>

@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const YeniAkuPage = () => {
   const navigate = useNavigate();
@@ -19,8 +20,7 @@ const YeniAkuPage = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     // TODO: Supabase'e yeni akü ekle (car_id null - depoya)
-    console.log('Yeni akü ekleniyor:', formData);
-    alert('Akü başarıyla depoya eklendi!');
+    toast.success('Akü başarıyla depoya eklendi!');
     navigate('/aku-depo');
   };
 
