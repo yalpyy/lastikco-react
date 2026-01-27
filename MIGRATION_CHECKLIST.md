@@ -100,9 +100,44 @@ Bu dosyalar doğrudan UI sayfası değil, AJAX/form işlemcileridir. React sayfa
 
 ---
 
+## Supabase Migration Durumu
+
+### Mevcut Tablolar (0001_init.sql)
+- [x] `cars` - Araç ana tablosu
+- [x] `axles` - Aks bilgisi
+- [x] `tires` - Lastik kayıtları
+- [x] `tire_details` - Lastik detay bilgileri
+- [x] `app_users` - Uygulama kullanıcıları
+- [x] `car_axle_summary` VIEW
+
+### Yeni Eklenen Tablolar (0003_add_missing_tables.sql)
+- [x] `bolge` - Bölge/lokasyon tanımları (aracbolge.php, newregion.php)
+- [x] `aku` - Akü envanter tablosu (akuedit.php, newaku.php, depodan_aku_getir.php)
+- [x] `dis_derinligi` - Diş derinliği ölçüm geçmişi (dis_derinligi.php, detay_sayfa.php)
+- [x] `km_bilgi` - Kilometre ölçüm geçmişi (km_bilgi.php)
+- [x] `logs` - İşlem geçmişi / audit log (arac_gecmisi.php, tire_gecmis.php)
+- [x] `lastik_havuz` - Lastik havuzu/bekleme deposu (yeni_sayfa.php)
+- [x] `lastik_info` - Lastik marka/desen/ölçü referans kataloğu (lastikbilgi.php)
+
+### Mevcut Tablo Güncellemeleri (0003_add_missing_tables.sql)
+- [x] `cars` tablosuna `bolge_id` ve `status` alanları eklendi
+- [x] `tires.car_id` nullable yapıldı (depodaki lastikler için)
+- [x] `tires` FK cascade -> set null olarak değiştirildi
+- [x] `tire_details` tablosuna `tire_firma` ve `tire_resim` alanları eklendi
+- [x] `car_axle_summary` VIEW güncellendi (status, bolge_id, bolge_adi dahil)
+
+### RLS & Policy
+- [x] Tüm yeni tablolara RLS aktif edildi
+- [x] Authenticated kullanıcılar için CRUD policy'leri oluşturuldu
+
+### Seed Data
+- [x] 7 bölge kaydı eklendi (Marmara, Ege, Akdeniz, vb.)
+
+---
+
 ## Sonraki Adımlar (TODO)
 1. [ ] Tüm sayfalarda mock data yerine Supabase sorguları bağlanacak
-2. [ ] Supabase'de gerekli tablolar oluşturulacak (`dis_derinligi`, `km_bilgi`, `logs`, `bolge`, `lastik_havuz`)
+2. [x] ~~Supabase'de gerekli tablolar oluşturulacak~~ (`0003_add_missing_tables.sql` ile tamamlandı)
 3. [ ] `AracAktifPage` ve `AracPasifPage`'den araç düzenleme sayfalarına link eklenecek
 4. [ ] Lastik çıkarma (lastik_çıkart) işlemi için Supabase service fonksiyonu yazılacak
 5. [ ] Form validasyonları güçlendirilecek
