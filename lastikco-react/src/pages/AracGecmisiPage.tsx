@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 interface LogEntry {
   id: number;
@@ -10,6 +10,7 @@ interface LogEntry {
 
 const AracGecmisiPage = () => {
   const { carId } = useParams<{ carId: string }>();
+  const navigate = useNavigate();
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,10 +47,13 @@ const AracGecmisiPage = () => {
       <div className="row">
         <div className="col-md-12">
           <div className="white_shd full margin_bottom_30">
-            <div className="full graph_head">
+            <div className="full graph_head d-flex justify-content-between align-items-center">
               <div className="heading1 margin_0">
                 <h2>İşlem Geçmişi</h2>
               </div>
+              <button className="btn btn-secondary btn-sm" onClick={() => navigate(-1)}>
+                Geri Dön
+              </button>
             </div>
             <div className="table_section padding_infor_info">
               <div className="table-responsive-sm">

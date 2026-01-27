@@ -93,10 +93,25 @@ Bu dosyalar doğrudan UI sayfası değil, AJAX/form işlemcileridir. React sayfa
 - [x] Diğer sayfalar (araç düzenle, akü düzenle, geçmiş vb.) sayfalar arası navigasyon ile erişiliyor
 
 ### Sayfa İçi Navigasyon
-- [x] `CarEditPage` -> Araç Geçmişi, Bölge Değiştir, Diş Derinliği, KM Bilgi, Depodan Lastik Getir
+- [x] `CarEditPage` -> Akü Yönetimi, Araç Geçmişi, Bölge Değiştir, Diş Derinliği, KM Bilgi, Depodan Lastik Getir
 - [x] `AkuEditPage` -> Depodan Akü Getir
 - [x] `DisDerinligiPage` -> Detay Sayfa
-- [x] `AracAktifPage` / `AracPasifPage` -> Araç Düzenle (link eklenecek)
+- [x] `AracAktifPage` -> Lastik, Akü, Bölge, Pasif Yap, Sil butonları
+- [x] `AracPasifPage` -> Aktifleştir, Düzenle, Sil butonları
+- [x] `AkuDepoPage` -> Araçta Görüntüle, Depoya Gönder, Sil butonları
+- [x] `AracGecmisiPage` -> Geri Dön butonu
+- [x] `LastikGecmisiPage` -> Geri Dön butonu
+- [x] `YeniAkuPage` -> Fatura tarihi alanı eklendi
+
+### Yapılan Düzeltmeler (Son Güncelleme)
+- [x] `AracAktifPage`: Lastik/Akü/Bölge/Pasif Yap/Sil butonları çalışır hale getirildi
+- [x] `AracPasifPage`: Aktifleştir/Düzenle/Sil butonları eklendi ve bağlandı
+- [x] `AkuDepoPage`: Araçta Görüntüle/Depoya Gönder/Sil butonları eklendi
+- [x] `CarEditPage`: Akü Yönetimi butonu eklendi
+- [x] `AracGecmisiPage`: Geri Dön butonu eklendi
+- [x] `LastikGecmisiPage`: Geri Dön butonu eklendi
+- [x] `YeniAkuPage`: Fatura tarihi form alanı eklendi
+- [x] Tüm tablolara boş veri durumu (empty state) mesajları eklendi
 
 ---
 
@@ -138,12 +153,12 @@ Bu dosyalar doğrudan UI sayfası değil, AJAX/form işlemcileridir. React sayfa
 ## Sonraki Adımlar (TODO)
 1. [ ] Tüm sayfalarda mock data yerine Supabase sorguları bağlanacak
 2. [x] ~~Supabase'de gerekli tablolar oluşturulacak~~ (`0003_add_missing_tables.sql` ile tamamlandı)
-3. [ ] `AracAktifPage` ve `AracPasifPage`'den araç düzenleme sayfalarına link eklenecek
+3. [x] ~~`AracAktifPage` ve `AracPasifPage`'den araç düzenleme sayfalarına link eklenecek~~
 4. [ ] Lastik çıkarma (lastik_çıkart) işlemi için Supabase service fonksiyonu yazılacak
 5. [ ] Form validasyonları güçlendirilecek
 6. [ ] Hata yönetimi (error handling) eklenecek
 7. [ ] DataTables benzeri tablo sıralama/filtreleme özelliği eklenecek
-8. [ ] Chart.js veya benzeri kütüphane ile grafik görselleştirme iyileştirilecek
+8. [ ] Chart.js veya benzeri kütüphane ile grafik görselleştirme iyileştirilecek (DisDerinligiPage, KmBilgiPage, DetaySayfaPage'de CSS bar chart mevcut)
 9. [ ] Export (Excel/PDF) özelliği eklenecek
 10. [ ] Lastik resim yükleme (base64) desteği eklenecek
 

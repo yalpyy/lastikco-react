@@ -169,6 +169,9 @@ const CarEditPage = () => {
                 <h2>Araç Bilgileri</h2>
               </div>
               <div>
+                <button className="btn btn-primary btn-sm" onClick={() => navigate(`/aku-duzenle/${car.id}`)}>
+                  Akü Yönetimi
+                </button>{' '}
                 <button className="btn btn-info btn-sm" onClick={() => navigate(`/arac-gecmisi/${car.id}`)}>
                   Araç Geçmişi
                 </button>{' '}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface Car {
   id: number;
@@ -12,16 +13,29 @@ interface Car {
 const AracPasifPage = () => {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // TODO: Supabase'den pasif araçları çek
+    // TODO: Supabase'den pasif araçları çek (status = 'pasif')
     setTimeout(() => {
       setCars([
-        { id: 3, car_name: '35 DEF 456', car_model: 'Scania R450', axle_count: 3, arac_bolgesi: 'Bölge 3', passiveDate: '2023-12-01' },
+        { id: 3, car_name: '35 DEF 456', car_model: 'Scania R450', axle_count: 3, arac_bolgesi: 'Akdeniz', passiveDate: '2023-12-01' },
       ]);
       setLoading(false);
     }, 500);
   }, []);
+
+  const handleActivate = async (carId: number) => {
+    if (!window.confirm('Bu aracı aktif yapmak istediğinize emin misiniz?')) return;
+    // TODO: Supabase'de cars.status = 'aktif' yap
+    setCars(prev => prev.filter(c => c.id !== carId));
+  };
+
+  const handleDelete = async (carId: number) => {
+    if (!window.confirm('Bu aracı kalıcı olarak silmek istediğinize emin misiniz?')) return;
+    // TODO: Supabase'den aracı sil
+    setCars(prev => prev.filter(c => c.id !== carId));
+  };
 
   return (
     <>
@@ -59,19 +73,31 @@ const AracPasifPage = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {cars.map((car) => (
-                        <tr key={car.id}>
-                          <td>{car.id}</td>
-                          <td>{car.car_name}</td>
-                          <td>{car.car_model}</td>
-                          <td>{car.axle_count}</td>
-                          <td>{car.arac_bolgesi}</td>
-                          <td>{car.passiveDate}</td>
-                          <td>
-                            <button className="btn btn-success btn-sm">Aktifleştir</button>
-                          </td>
-                        </tr>
-                      ))}
+                      {cars.length === 0 ? (
+                        <tr><td colSpan={7} className="text-center">Pasif araç bulunamadı</td></tr>
+                      ) : (
+                        cars.map((car) => (
+                          <tr key={car.id}>
+                            <td>{car.id}</td>
+                            <td>{car.car_name}</td>
+                            <td>{car.car_model}</td>
+                            <td>{car.axle_count}</td>
+                            <td>{car.arac_bolgesi}</td>
+                            <td>{car.passiveDate}</td>
+                            <td>
+                              <button className="btn btn-success btn-sm" onClick={() => handleActivate(car.id)}>
+                                Aktifleştir
+                              </button>{' '}
+                              <button className="btn btn-primary btn-sm" onClick={() => navigate(`/arac-duzenle/${car.id}`)}>
+                                Düzenle
+                              </button>{' '}
+                              <button className="btn btn-danger btn-sm" onClick={() => handleDelete(car.id)}>
+                                Sil
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 )}
