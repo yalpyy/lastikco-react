@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { toast } from 'react-toastify';
 
 const LastikBilgiPage = () => {
   const [formData, setFormData] = useState({
@@ -31,6 +32,7 @@ const LastikBilgiPage = () => {
       });
     } catch (error) {
       console.error('Lastik bilgisi alınamadı:', error);
+      toast.error('Lastik bilgisi alınamadı!');
     } finally {
       setLoading(false);
     }

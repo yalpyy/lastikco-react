@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const BolgeEklePage = () => {
   const navigate = useNavigate();
@@ -18,13 +19,12 @@ const BolgeEklePage = () => {
     try {
       // TODO: Supabase'e bölge eklenecek
       await new Promise(resolve => setTimeout(resolve, 1000));
-      setMessage({ type: 'success', text: 'Bölge başarıyla eklendi.' });
-      setTimeout(() => {
-        setFormData({ region_name: '', region_description: '' });
-        setMessage(null);
-      }, 1500);
+      toast.success('Bölge başarıyla eklendi!');
+      setFormData({ region_name: '', region_description: '' });
+      setMessage(null);
     } catch (error) {
-      setMessage({ type: 'error', text: 'Bölge eklenirken hata oluştu.' });
+      console.error('Bölge eklenemedi:', error);
+      toast.error('Bölge eklenirken hata oluştu!');
     } finally {
       setLoading(false);
     }

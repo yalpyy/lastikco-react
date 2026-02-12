@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 interface ServiceTire {
   id: number;
@@ -14,6 +15,29 @@ interface ServiceTire {
 const LastikServisPage = () => {
   const [tires, setTires] = useState<ServiceTire[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const handleRepair = async (id: number) => {
+    try {
+      // TODO: Supabase'de lastiği depo durumuna çevir
+      setTires(tires.filter(t => t.id !== id));
+      toast.success('Lastik onarıldı ve depoya gönderildi!');
+    } catch (error) {
+      console.error('Onarma hatası:', error);
+      toast.error('Lastik onarılırken hata oluştu!');
+    }
+  };
+
+  const handleScrap = async (id: number) => {
+    if (!window.confirm('Bu lastiği hurdaya çıkarmak istediğinizden emin misiniz?')) return;
+    try {
+      // TODO: Supabase'de lastiği hurda durumuna çevir
+      setTires(tires.filter(t => t.id !== id));
+      toast.success('Lastik hurdaya çıkarıldı!');
+    } catch (error) {
+      console.error('Hurda hatası:', error);
+      toast.error('Lastik hurdaya çıkarılırken hata oluştu!');
+    }
+  };
 
   useEffect(() => {
     // TODO: Supabase'den servisteki lastikleri çek
@@ -66,6 +90,8 @@ const LastikServisPage = () => {
               <div className="table-responsive-sm">
                 {loading ? (
                   <p>Yükleniyor...</p>
+                ) : tires.length === 0 ? (
+                  <p className="text-center">Serviste lastik bulunmamaktadır.</p>
                 ) : (
                   <table className="table table-hover">
                     <thead>
@@ -93,9 +119,9 @@ const LastikServisPage = () => {
                           <td>{tire.service_date}</td>
                           <td>{tire.service_reason}</td>
                           <td>
-                            <button className="btn btn-success btn-sm">Onar</button>
+                            <button className="btn btn-success btn-sm" onClick={() => handleRepair(tire.id)}>Onar</button>
                             {' '}
-                            <button className="btn btn-danger btn-sm">Hurdaya Çıkar</button>
+                            <button className="btn btn-danger btn-sm" onClick={() => handleScrap(tire.id)}>Hurdaya Çıkar</button>
                           </td>
                         </tr>
                       ))}

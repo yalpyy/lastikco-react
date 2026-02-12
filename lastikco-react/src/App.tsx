@@ -31,6 +31,7 @@ import KmBilgiPage from './pages/KmBilgiPage';
 import YeniAkuPage from './pages/YeniAkuPage';
 import LastikGecmisiPage from './pages/LastikGecmisiPage';
 import LastikHavuzPage from './pages/LastikHavuzPage';
+import BasincBilgiPage from './pages/BasincBilgiPage';
 import { supabase } from './lib/supabaseClient';
 import { useAuthStore } from './store/auth';
 
@@ -279,6 +280,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <LastikHavuzPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/basinc-bilgi/:tireId"
+          element={
+            <ProtectedRoute>
+              <BasincBilgiPage />
             </ProtectedRoute>
           }
         />

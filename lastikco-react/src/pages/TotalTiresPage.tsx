@@ -52,6 +52,8 @@ const TotalTiresPage = () => {
               <div className="table-responsive-sm">
                 {loading ? (
                   <p>Yükleniyor...</p>
+                ) : tires.length === 0 ? (
+                  <p className="text-center">Kayıtlı lastik bulunmamaktadır.</p>
                 ) : (
                   <table className="table table-hover">
                     <thead>

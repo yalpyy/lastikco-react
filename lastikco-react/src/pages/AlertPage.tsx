@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface AlertTire {
   id: number;
@@ -15,8 +17,15 @@ interface AlertTire {
 }
 
 const AlertPage = () => {
+  const navigate = useNavigate();
   const [alerts, setAlerts] = useState<AlertTire[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const handleChange = (_tireId: number) => {
+    toast.info('Lastik değiştirme işlemi için araca yönlendiriliyorsunuz...');
+    // TODO: Redirect to car edit page or open a modal
+    navigate(`/lastik-depo`);
+  };
 
   useEffect(() => {
     // TODO: Supabase'den dış derinlik < 8 olan lastikleri çek
@@ -138,9 +147,9 @@ const AlertPage = () => {
                           <td>{tire.car_name}</td>
                           <td>{tire.car_model}</td>
                           <td>
-                            <button className="btn btn-sm btn-primary">Değiştir</button>
+                            <button className="btn btn-sm btn-primary" onClick={() => handleChange(tire.id)}>Değiştir</button>
                             {' '}
-                            <button className="btn btn-sm btn-info">Detay</button>
+                            <button className="btn btn-sm btn-info" onClick={() => navigate(`/lastik-gecmisi/${tire.id}`)}>Detay</button>
                           </td>
                         </tr>
                       ))}
