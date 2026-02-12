@@ -1,44 +1,83 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
-interface Car {
-  id: number;
-  car_name: string;
-  car_model: string;
-  axle_count: number;
-  arac_bolgesi: string;
-  passiveDate: string;
-}
+import { listPassiveCars, activateCar, deleteCar } from '../services/vehicleService';
+import DataTable, { type Column } from '../components/DataTable';
+import type { CarWithAxle } from '../types';
 
 const AracPasifPage = () => {
-  const [cars, setCars] = useState<Car[]>([]);
+  const [cars, setCars] = useState<CarWithAxle[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // TODO: Supabase'den pasif araçları çek (status = 'pasif')
-    setTimeout(() => {
-      setCars([
-        { id: 3, car_name: '35 DEF 456', car_model: 'Scania R450', axle_count: 3, arac_bolgesi: 'Akdeniz', passiveDate: '2023-12-01' },
-      ]);
+  const loadCars = async () => {
+    try {
+      setLoading(true);
+      const result = await listPassiveCars();
+      setCars(result.data);
+    } catch (error) {
+      console.error('Pasif araçlar yüklenemedi:', error);
+      toast.error('Pasif araçlar yüklenirken hata oluştu!');
+    } finally {
       setLoading(false);
-    }, 500);
+    }
+  };
+
+  useEffect(() => {
+    loadCars();
   }, []);
 
   const handleActivate = async (carId: number) => {
     if (!window.confirm('Bu aracı aktif yapmak istediğinize emin misiniz?')) return;
-    // TODO: Supabase'de cars.status = 'aktif' yap
-    setCars(prev => prev.filter(c => c.id !== carId));
-    toast.success('Araç aktif duruma alındı.');
+    try {
+      await activateCar(carId);
+      setCars(prev => prev.filter(c => c.id !== carId));
+      toast.success('Araç aktif duruma alındı.');
+    } catch (error) {
+      console.error('Araç aktif yapılamadı:', error);
+      toast.error('Araç aktif yapılırken hata oluştu!');
+    }
   };
 
   const handleDelete = async (carId: number) => {
     if (!window.confirm('Bu aracı kalıcı olarak silmek istediğinize emin misiniz?')) return;
-    // TODO: Supabase'den aracı sil
-    setCars(prev => prev.filter(c => c.id !== carId));
-    toast.success('Araç kalıcı olarak silindi.');
+    try {
+      await deleteCar(carId);
+      setCars(prev => prev.filter(c => c.id !== carId));
+      toast.success('Araç kalıcı olarak silindi.');
+    } catch (error) {
+      console.error('Araç silinemedi:', error);
+      toast.error('Araç silinirken hata oluştu!');
+    }
   };
+
+  const columns: Column<CarWithAxle>[] = [
+    { key: 'id', header: '#', sortable: true },
+    { key: 'car_name', header: 'Plaka', sortable: true },
+    { key: 'car_model', header: 'Model', sortable: true },
+    { key: 'axle_count', header: 'Aks Sayısı', render: (row) => row.axle_count ?? '-' },
+    { key: 'bolge_adi', header: 'Bölge', render: (row) => row.bolge_adi ?? '-' },
+    {
+      key: 'updated_at',
+      header: 'Güncellenme Tarihi',
+      sortable: true,
+      render: (row) => row.updated_at ? new Date(row.updated_at).toLocaleDateString('tr-TR') : '-',
+    },
+  ];
+
+  const renderActions = (car: CarWithAxle) => (
+    <>
+      <button className="btn btn-success btn-sm" onClick={() => handleActivate(car.id)}>
+        Aktifleştir
+      </button>{' '}
+      <button className="btn btn-primary btn-sm" onClick={() => navigate(`/arac-duzenle/${car.id}`)}>
+        Düzenle
+      </button>{' '}
+      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(car.id)}>
+        Sil
+      </button>
+    </>
+  );
 
   return (
     <>
@@ -59,52 +98,16 @@ const AracPasifPage = () => {
               </div>
             </div>
             <div className="table_section padding_infor_info">
-              <div className="table-responsive-sm">
-                {loading ? (
-                  <p>Yükleniyor...</p>
-                ) : (
-                  <table className="table table-hover">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Plaka</th>
-                        <th>Model</th>
-                        <th>Aks Sayısı</th>
-                        <th>Bölge</th>
-                        <th>Pasif Olma Tarihi</th>
-                        <th>İşlemler</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {cars.length === 0 ? (
-                        <tr><td colSpan={7} className="text-center">Pasif araç bulunamadı</td></tr>
-                      ) : (
-                        cars.map((car) => (
-                          <tr key={car.id}>
-                            <td>{car.id}</td>
-                            <td>{car.car_name}</td>
-                            <td>{car.car_model}</td>
-                            <td>{car.axle_count}</td>
-                            <td>{car.arac_bolgesi}</td>
-                            <td>{car.passiveDate}</td>
-                            <td>
-                              <button className="btn btn-success btn-sm" onClick={() => handleActivate(car.id)}>
-                                Aktifleştir
-                              </button>{' '}
-                              <button className="btn btn-primary btn-sm" onClick={() => navigate(`/arac-duzenle/${car.id}`)}>
-                                Düzenle
-                              </button>{' '}
-                              <button className="btn btn-danger btn-sm" onClick={() => handleDelete(car.id)}>
-                                Sil
-                              </button>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                )}
-              </div>
+              <DataTable
+                data={cars}
+                columns={columns}
+                loading={loading}
+                emptyMessage="Pasif araç bulunamadı"
+                searchPlaceholder="Plaka veya model ara..."
+                rowKey="id"
+                actions={renderActions}
+                pageSize={10}
+              />
             </div>
           </div>
         </div>

@@ -1,46 +1,89 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
-interface Car {
-  id: number;
-  car_name: string;
-  car_model: string;
-  axle_count: number;
-  arac_bolgesi: string;
-  created_date: string;
-}
+import { listActiveCars, deactivateCar, deleteCar } from '../services/vehicleService';
+import DataTable, { type Column } from '../components/DataTable';
+import type { CarWithAxle } from '../types';
 
 const AracAktifPage = () => {
-  const [cars, setCars] = useState<Car[]>([]);
+  const [cars, setCars] = useState<CarWithAxle[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // TODO: Supabase'den veri çekilecek
-    // Mock data
-    setTimeout(() => {
-      setCars([
-        { id: 1, car_name: '34 ABC 123', car_model: 'Volvo FH', axle_count: 3, arac_bolgesi: 'Marmara', created_date: '2024-01-15' },
-        { id: 2, car_name: '06 XYZ 789', car_model: 'Mercedes Actros', axle_count: 4, arac_bolgesi: 'Ege', created_date: '2024-01-20' },
-      ]);
+  const loadCars = async (searchTerm?: string) => {
+    try {
+      setLoading(true);
+      const result = await listActiveCars(searchTerm);
+      setCars(result.data);
+    } catch (error) {
+      console.error('Araçlar yüklenemedi:', error);
+      toast.error('Araçlar yüklenirken hata oluştu!');
+    } finally {
       setLoading(false);
-    }, 500);
+    }
+  };
+
+  useEffect(() => {
+    loadCars();
   }, []);
 
   const handleDelete = async (carId: number) => {
     if (!window.confirm('Bu aracı silmek istediğinize emin misiniz? Tüm lastik ve akü verileri de silinecektir.')) return;
-    // TODO: Supabase'den aracı ve ilişkili verileri sil
-    setCars(prev => prev.filter(c => c.id !== carId));
-    toast.success('Araç başarıyla silindi.');
+    try {
+      await deleteCar(carId);
+      setCars(prev => prev.filter(c => c.id !== carId));
+      toast.success('Araç başarıyla silindi.');
+    } catch (error) {
+      console.error('Araç silinemedi:', error);
+      toast.error('Araç silinirken hata oluştu!');
+    }
   };
 
   const handlePassive = async (carId: number) => {
     if (!window.confirm('Bu aracı pasif yapmak istediğinize emin misiniz?')) return;
-    // TODO: Supabase'de cars.status = 'pasif' yap
-    setCars(prev => prev.filter(c => c.id !== carId));
-    toast.success('Araç pasif duruma alındı.');
+    try {
+      await deactivateCar(carId);
+      setCars(prev => prev.filter(c => c.id !== carId));
+      toast.success('Araç pasif duruma alındı.');
+    } catch (error) {
+      console.error('Araç pasif yapılamadı:', error);
+      toast.error('Araç pasif yapılırken hata oluştu!');
+    }
   };
+
+  const columns: Column<CarWithAxle>[] = [
+    { key: 'id', header: '#', sortable: true },
+    { key: 'car_name', header: 'Plaka', sortable: true },
+    { key: 'car_model', header: 'Model', sortable: true },
+    { key: 'axle_count', header: 'Aks Sayısı', render: (row) => row.axle_count ?? '-' },
+    { key: 'bolge_adi', header: 'Bölge', render: (row) => row.bolge_adi ?? '-' },
+    {
+      key: 'created_at',
+      header: 'Eklenme Tarihi',
+      sortable: true,
+      render: (row) => row.created_at ? new Date(row.created_at).toLocaleDateString('tr-TR') : '-',
+    },
+  ];
+
+  const renderActions = (car: CarWithAxle) => (
+    <>
+      <button className="btn btn-primary btn-sm" onClick={() => navigate(`/arac-duzenle/${car.id}`)}>
+        Lastik
+      </button>{' '}
+      <button className="btn btn-info btn-sm" onClick={() => navigate(`/aku-duzenle/${car.id}`)}>
+        Akü
+      </button>{' '}
+      <button className="btn btn-warning btn-sm" onClick={() => navigate(`/arac-bolge/${car.id}`)}>
+        Bölge
+      </button>{' '}
+      <button className="btn btn-secondary btn-sm" onClick={() => handlePassive(car.id)}>
+        Pasif Yap
+      </button>{' '}
+      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(car.id)}>
+        Sil
+      </button>
+    </>
+  );
 
   return (
     <>
@@ -61,58 +104,16 @@ const AracAktifPage = () => {
               </div>
             </div>
             <div className="table_section padding_infor_info">
-              <div className="table-responsive-sm">
-                {loading ? (
-                  <p>Yükleniyor...</p>
-                ) : (
-                  <table className="table table-hover">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Plaka</th>
-                        <th>Model</th>
-                        <th>Aks Sayısı</th>
-                        <th>Bölge</th>
-                        <th>Eklenme Tarihi</th>
-                        <th>İşlemler</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {cars.length === 0 ? (
-                        <tr><td colSpan={7} className="text-center">Aktif araç bulunamadı</td></tr>
-                      ) : (
-                        cars.map((car) => (
-                          <tr key={car.id}>
-                            <td>{car.id}</td>
-                            <td>{car.car_name}</td>
-                            <td>{car.car_model}</td>
-                            <td>{car.axle_count}</td>
-                            <td>{car.arac_bolgesi}</td>
-                            <td>{car.created_date}</td>
-                            <td>
-                              <button className="btn btn-primary btn-sm" onClick={() => navigate(`/arac-duzenle/${car.id}`)}>
-                                Lastik
-                              </button>{' '}
-                              <button className="btn btn-info btn-sm" onClick={() => navigate(`/aku-duzenle/${car.id}`)}>
-                                Akü
-                              </button>{' '}
-                              <button className="btn btn-warning btn-sm" onClick={() => navigate(`/arac-bolge/${car.id}`)}>
-                                Bölge
-                              </button>{' '}
-                              <button className="btn btn-secondary btn-sm" onClick={() => handlePassive(car.id)}>
-                                Pasif Yap
-                              </button>{' '}
-                              <button className="btn btn-danger btn-sm" onClick={() => handleDelete(car.id)}>
-                                Sil
-                              </button>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                )}
-              </div>
+              <DataTable
+                data={cars}
+                columns={columns}
+                loading={loading}
+                emptyMessage="Aktif araç bulunamadı"
+                searchPlaceholder="Plaka veya model ara..."
+                rowKey="id"
+                actions={renderActions}
+                pageSize={10}
+              />
             </div>
           </div>
         </div>

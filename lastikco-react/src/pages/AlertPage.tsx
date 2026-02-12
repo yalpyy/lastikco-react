@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { listAlertTires } from '../services/tireService';
 
 interface AlertTire {
   id: number;
-  tire_serino: string;
-  tire_marka: string;
-  tire_desen: string;
-  tire_olcu: string;
-  tire_dis_derinlik: number;
-  tire_ic_derinlik: number;
-  tire_orta_derinlik: number;
-  car_name: string;
-  car_model: string;
+  tire_id: number;
+  tire_serino: string | null;
+  tire_marka: string | null;
+  tire_desen: string | null;
+  tire_olcu: string | null;
+  tire_disderinligi: number | null;
+  car_name: string | null;
+  car_model: string | null;
   alert_level: 'critical' | 'warning';
 }
 
@@ -21,58 +21,26 @@ const AlertPage = () => {
   const [alerts, setAlerts] = useState<AlertTire[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const loadAlerts = async () => {
+    try {
+      setLoading(true);
+      const data = await listAlertTires();
+      setAlerts(data);
+    } catch (error) {
+      console.error('Uyarılar yüklenemedi:', error);
+      toast.error('Uyarılar yüklenirken hata oluştu!');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleChange = (_tireId: number) => {
     toast.info('Lastik değiştirme işlemi için araca yönlendiriliyorsunuz...');
-    // TODO: Redirect to car edit page or open a modal
     navigate(`/lastik-depo`);
   };
 
   useEffect(() => {
-    // TODO: Supabase'den dış derinlik < 8 olan lastikleri çek
-    setTimeout(() => {
-      setAlerts([
-        {
-          id: 1,
-          tire_serino: 'DOT9999',
-          tire_marka: 'Continental',
-          tire_desen: 'HDR2',
-          tire_olcu: '315/80R22.5',
-          tire_dis_derinlik: 7.5,
-          tire_ic_derinlik: 7.2,
-          tire_orta_derinlik: 7.3,
-          car_name: '34 ABC 123',
-          car_model: 'Volvo FH',
-          alert_level: 'warning',
-        },
-        {
-          id: 2,
-          tire_serino: 'DOT8888',
-          tire_marka: 'Goodyear',
-          tire_desen: 'KMAX',
-          tire_olcu: '295/80R22.5',
-          tire_dis_derinlik: 6.2,
-          tire_ic_derinlik: 6.0,
-          tire_orta_derinlik: 6.1,
-          car_name: '06 XYZ 789',
-          car_model: 'Mercedes Actros',
-          alert_level: 'warning',
-        },
-        {
-          id: 3,
-          tire_serino: 'DOT3333',
-          tire_marka: 'Michelin',
-          tire_desen: 'X Multi',
-          tire_olcu: '315/80R22.5',
-          tire_dis_derinlik: 4.5,
-          tire_ic_derinlik: 4.8,
-          tire_orta_derinlik: 4.6,
-          car_name: '16 GHI 321',
-          car_model: 'MAN TGX',
-          alert_level: 'critical',
-        },
-      ]);
-      setLoading(false);
-    }, 500);
+    loadAlerts();
   }, []);
 
   return (
@@ -118,9 +86,7 @@ const AlertPage = () => {
                         <th>Marka</th>
                         <th>Desen</th>
                         <th>Ölçü</th>
-                        <th>Dış</th>
-                        <th>Orta</th>
-                        <th>İç</th>
+                        <th>Dış Derinlik</th>
                         <th>Araç Plaka</th>
                         <th>Araç Model</th>
                         <th>İşlemler</th>
@@ -136,20 +102,18 @@ const AlertPage = () => {
                               <span className="badge badge-warning">UYARI</span>
                             )}
                           </td>
-                          <td>{tire.id}</td>
-                          <td>{tire.tire_serino}</td>
-                          <td>{tire.tire_marka}</td>
-                          <td>{tire.tire_desen}</td>
-                          <td>{tire.tire_olcu}</td>
-                          <td className="font-weight-bold text-danger">{tire.tire_dis_derinlik} mm</td>
-                          <td>{tire.tire_orta_derinlik} mm</td>
-                          <td>{tire.tire_ic_derinlik} mm</td>
-                          <td>{tire.car_name}</td>
-                          <td>{tire.car_model}</td>
+                          <td>{tire.tire_id}</td>
+                          <td>{tire.tire_serino ?? '-'}</td>
+                          <td>{tire.tire_marka ?? '-'}</td>
+                          <td>{tire.tire_desen ?? '-'}</td>
+                          <td>{tire.tire_olcu ?? '-'}</td>
+                          <td className="font-weight-bold text-danger">{tire.tire_disderinligi} mm</td>
+                          <td>{tire.car_name ?? '-'}</td>
+                          <td>{tire.car_model ?? '-'}</td>
                           <td>
-                            <button className="btn btn-sm btn-primary" onClick={() => handleChange(tire.id)}>Değiştir</button>
+                            <button className="btn btn-sm btn-primary" onClick={() => handleChange(tire.tire_id)}>Değiştir</button>
                             {' '}
-                            <button className="btn btn-sm btn-info" onClick={() => navigate(`/lastik-gecmisi/${tire.id}`)}>Detay</button>
+                            <button className="btn btn-sm btn-info" onClick={() => navigate(`/lastik-gecmisi/${tire.tire_id}`)}>Detay</button>
                           </td>
                         </tr>
                       ))}
