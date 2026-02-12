@@ -32,18 +32,33 @@ import YeniAkuPage from './pages/YeniAkuPage';
 import LastikGecmisiPage from './pages/LastikGecmisiPage';
 import LastikHavuzPage from './pages/LastikHavuzPage';
 import BasincBilgiPage from './pages/BasincBilgiPage';
-import { supabase } from './lib/supabaseClient';
+import { supabase, isSupabaseConfigured } from './lib/supabaseClient';
 import { useAuthStore } from './store/auth';
 
 const App = () => {
   const { setSession, setLoading } = useAuthStore();
 
   useEffect(() => {
+    // Skip Supabase auth check if not configured
+    if (!isSupabaseConfigured) {
+      console.warn('Supabase yapılandırılmadı - giriş sayfasına yönlendiriliyor');
+      setLoading(false);
+      return;
+    }
+
     const syncSession = async () => {
       setLoading(true);
-      const { data } = await supabase.auth.getSession();
-      setSession(data.session ?? null);
-      setLoading(false);
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error('Oturum alınamadı:', error);
+        }
+        setSession(data.session ?? null);
+      } catch (err) {
+        console.error('Supabase bağlantı hatası:', err);
+      } finally {
+        setLoading(false);
+      }
     };
 
     void syncSession();
