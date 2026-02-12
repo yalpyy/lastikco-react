@@ -239,7 +239,7 @@ Her aşama sonrası test edilecekler:
 | Aşama 1: Navbar | ✅ Tamamlandı | 2026-02-12 |
 | Aşama 2: Tablo | ✅ Tamamlandı | 2026-02-12 |
 | Aşama 3: CRUD | ✅ CarEditPage Tamamlandı | 2026-02-12 |
-| Aşama 4: AxleVisual | ⏳ Bekliyor | - |
+| Aşama 4: AxleVisual | ✅ Tamamlandı | 2026-02-12 |
 | Aşama 5: Layout | ✅ CarEditPage Tamamlandı | 2026-02-12 |
 | Aşama 6: Form/Buton | ✅ Tamamlandı | 2026-02-12 |
 | Aşama 7: Entegrasyonlar | ⏳ Bekliyor | - |
