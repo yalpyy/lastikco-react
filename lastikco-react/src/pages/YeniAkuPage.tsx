@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const YeniAkuPage = () => {
   const navigate = useNavigate();
@@ -8,6 +9,7 @@ const YeniAkuPage = () => {
     aku_volt: '12V',
     aku_amper: '72Ah',
     aku_durum: 'İyi',
+    aku_fatura_tarihi: '',
   });
 
   const markalar = ['Varta', 'İnci', 'Mutlu', 'Yiğit', 'Bosh', 'Exide', 'Banner', 'Diğer'];
@@ -18,8 +20,7 @@ const YeniAkuPage = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     // TODO: Supabase'e yeni akü ekle (car_id null - depoya)
-    console.log('Yeni akü ekleniyor:', formData);
-    alert('Akü başarıyla depoya eklendi!');
+    toast.success('Akü başarıyla depoya eklendi!');
     navigate('/aku-depo');
   };
 
@@ -81,6 +82,15 @@ const YeniAkuPage = () => {
                         onChange={e => setFormData({ ...formData, aku_durum: e.target.value })}>
                         {durumlar.map(d => <option key={d} value={d}>{d}</option>)}
                       </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label>Fatura Tarihi:</label>
+                      <input type="date" className="form-control" value={formData.aku_fatura_tarihi}
+                        onChange={e => setFormData({ ...formData, aku_fatura_tarihi: e.target.value })} />
                     </div>
                   </div>
                 </div>

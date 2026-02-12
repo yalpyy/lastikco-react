@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface DepotBattery {
   id: number;
@@ -11,7 +12,7 @@ interface DepotBattery {
 }
 
 const DepodanAkuGetirPage = () => {
-  const { carId } = useParams<{ carId: string }>();
+  const { carId: _carId } = useParams<{ carId: string }>();
   const navigate = useNavigate();
   const [batteries, setBatteries] = useState<DepotBattery[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,9 +33,8 @@ const DepodanAkuGetirPage = () => {
   const handleAssign = async (akuId: number) => {
     if (!window.confirm('Bu aküyü araca atamak istediğinize emin misiniz?')) return;
     // TODO: Supabase'de aku.car_id = carId olarak güncelle
-    console.log(`Akü ${akuId} araca ${carId} atanıyor`);
     setBatteries(prev => prev.filter(b => b.id !== akuId));
-    alert('Akü araca başarıyla atandı!');
+    toast.success('Akü araca başarıyla atandı!');
   };
 
   const filtered = batteries.filter(b =>

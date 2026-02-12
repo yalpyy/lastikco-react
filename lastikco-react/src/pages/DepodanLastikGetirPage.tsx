@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface DepotTire {
   id: number;
@@ -13,7 +14,7 @@ interface DepotTire {
 }
 
 const DepodanLastikGetirPage = () => {
-  const { carId } = useParams<{ carId: string }>();
+  const { carId: _carId } = useParams<{ carId: string }>();
   const navigate = useNavigate();
   const [tires, setTires] = useState<DepotTire[]>([]);
   const [loading, setLoading] = useState(true);
@@ -35,9 +36,8 @@ const DepodanLastikGetirPage = () => {
   const handleAssign = async (tireId: number) => {
     if (!window.confirm('Bu lastiği araca atamak istediğinize emin misiniz?')) return;
     // TODO: Supabase'de tire.car_id = carId olarak güncelle
-    console.log(`Lastik ${tireId} araca ${carId} atanıyor`);
     setTires(prev => prev.filter(t => t.tire_id !== tireId));
-    alert('Lastik araca başarıyla atandı!');
+    toast.success('Lastik araca başarıyla atandı!');
   };
 
   const brands = [...new Set(tires.map(t => t.tire_marka))];

@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const LastikSifirPage = () => {
   const navigate = useNavigate();
@@ -27,10 +28,11 @@ const LastikSifirPage = () => {
     try {
       // TODO: Supabase'e veri eklenecek
       await new Promise(resolve => setTimeout(resolve, 1000));
-      setMessage({ type: 'success', text: 'Lastik başarıyla eklendi.' });
+      toast.success('Lastik başarıyla eklendi!');
       setTimeout(() => navigate('/lastik-depo'), 1500);
     } catch (error) {
-      setMessage({ type: 'error', text: 'Lastik eklenirken hata oluştu.' });
+      console.error('Lastik eklenemedi:', error);
+      toast.error('Lastik eklenirken hata oluştu!');
     } finally {
       setLoading(false);
     }

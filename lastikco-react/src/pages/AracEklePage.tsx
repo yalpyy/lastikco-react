@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const AracEklePage = () => {
   const navigate = useNavigate();
@@ -21,10 +22,11 @@ const AracEklePage = () => {
       // TODO: Supabase'e veri eklenecek
       // Şimdilik mock
       await new Promise(resolve => setTimeout(resolve, 1000));
-      setMessage({ type: 'success', text: 'Araç başarıyla eklendi.' });
+      toast.success('Araç başarıyla eklendi!');
       setTimeout(() => navigate('/arac-aktif'), 1500);
     } catch (error) {
-      setMessage({ type: 'error', text: 'Araç eklenirken hata oluştu.' });
+      console.error('Araç eklenemedi:', error);
+      toast.error('Araç eklenirken hata oluştu!');
     } finally {
       setLoading(false);
     }

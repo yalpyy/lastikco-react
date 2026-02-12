@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 interface PoolTire {
   id: number;
@@ -29,13 +30,14 @@ const LastikHavuzPage = () => {
     if (!window.confirm('Bu lastiği aktif envantere taşımak istediğinize emin misiniz?')) return;
     // TODO: lastik_havuz'dan tire_details'e taşı, durum = kullanılabilir
     setTires(prev => prev.filter(t => t.id !== id));
-    alert('Lastik aktif envantere taşındı!');
+    toast.success('Lastik aktif envantere taşındı!');
   };
 
   const handleDelete = async (id: number) => {
     if (!window.confirm('Bu lastiği havuzdan silmek istediğinize emin misiniz?')) return;
     // TODO: Supabase'den sil
     setTires(prev => prev.filter(t => t.id !== id));
+    toast.success('Lastik havuzdan silindi.');
   };
 
   return (

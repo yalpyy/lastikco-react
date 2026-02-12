@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface Tire {
   id: number;
@@ -19,6 +20,28 @@ const LastikDepoPage = () => {
   const navigate = useNavigate();
   const [tires, setTires] = useState<Tire[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const handleDelete = async (id: number) => {
+    if (!window.confirm('Bu lastiği silmek istediğinizden emin misiniz?')) return;
+    try {
+      // TODO: Supabase'den lastik sil
+      setTires(tires.filter(t => t.id !== id));
+      toast.success('Lastik başarıyla silindi!');
+    } catch (error) {
+      console.error('Lastik silinemedi:', error);
+      toast.error('Lastik silinirken hata oluştu!');
+    }
+  };
+
+  const handleEdit = (id: number) => {
+    navigate(`/detay-sayfa/${id}`);
+  };
+
+  const handleAssignToCar = (id: number) => {
+    // Navigate to car selection or show modal
+    toast.info('Araç seçim sayfasına yönlendiriliyorsunuz...');
+    navigate(`/arac-aktif?assignTire=${id}`);
+  };
 
   useEffect(() => {
     // TODO: Supabase'den depodaki lastikleri çek (car_id IS NULL)
@@ -82,6 +105,8 @@ const LastikDepoPage = () => {
               <div className="table-responsive-sm">
                 {loading ? (
                   <p>Yükleniyor...</p>
+                ) : tires.length === 0 ? (
+                  <p className="text-center">Depoda lastik bulunmamaktadır.</p>
                 ) : (
                   <table className="table table-hover">
                     <thead>
@@ -115,11 +140,11 @@ const LastikDepoPage = () => {
                           <td>{tire.tire_fiyat.toFixed(2)} ₺</td>
                           <td>{tire.tire_tarih}</td>
                           <td>
-                            <button className="btn btn-primary btn-sm">Araca Tak</button>
+                            <button className="btn btn-primary btn-sm" onClick={() => handleAssignToCar(tire.id)}>Araca Tak</button>
                             {' '}
-                            <button className="btn btn-warning btn-sm">Düzenle</button>
+                            <button className="btn btn-warning btn-sm" onClick={() => handleEdit(tire.id)}>Düzenle</button>
                             {' '}
-                            <button className="btn btn-danger btn-sm">Sil</button>
+                            <button className="btn btn-danger btn-sm" onClick={() => handleDelete(tire.id)}>Sil</button>
                           </td>
                         </tr>
                       ))}

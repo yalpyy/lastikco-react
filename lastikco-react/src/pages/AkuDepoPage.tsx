@@ -1,4 +1,6 @@
 import { useState, useEffect, type FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface Battery {
   id: number;
@@ -14,6 +16,7 @@ const AkuDepoPage = () => {
   const [batteries, setBatteries] = useState<Battery[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     battery_brand: '',
     battery_serial: '',
@@ -51,7 +54,7 @@ const AkuDepoPage = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     // TODO: Supabase'e akü ekle
-    console.log('Form data:', formData);
+    toast.success('Akü başarıyla eklendi.');
     setShowForm(false);
     setFormData({ battery_brand: '', battery_serial: '', purchase_date: '', car_id: '' });
   };
@@ -188,9 +191,31 @@ const AkuDepoPage = () => {
                           </td>
                           <td>{battery.car_name || '-'}</td>
                           <td>
-                            <button className="btn btn-sm btn-primary">Düzenle</button>
+                            {battery.car_id ? (
+                              <button className="btn btn-sm btn-info" onClick={() => navigate(`/aku-duzenle/${battery.car_id}`)}>
+                                Araçta Görüntüle
+                              </button>
+                            ) : (
+                              <>
+                                <button className="btn btn-sm btn-warning" onClick={() => {
+                                  // TODO: Supabase'de akü depoya gönder
+                                  setBatteries(prev => prev.filter(b => b.id !== battery.id));
+                                  toast.success('Akü depoya gönderildi.');
+                                }}>
+                                  Depoya Gönder
+                                </button>{' '}
+                              </>
+                            )}
                             {' '}
-                            <button className="btn btn-sm btn-danger">Sil</button>
+                            <button className="btn btn-sm btn-danger" onClick={() => {
+                              if (window.confirm('Bu aküyü silmek istediğinize emin misiniz?')) {
+                                // TODO: Supabase'den akü sil
+                                setBatteries(prev => prev.filter(b => b.id !== battery.id));
+                                toast.success('Akü başarıyla silindi.');
+                              }
+                            }}>
+                              Sil
+                            </button>
                           </td>
                         </tr>
                       ))}

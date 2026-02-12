@@ -31,6 +31,7 @@ import KmBilgiPage from './pages/KmBilgiPage';
 import YeniAkuPage from './pages/YeniAkuPage';
 import LastikGecmisiPage from './pages/LastikGecmisiPage';
 import LastikHavuzPage from './pages/LastikHavuzPage';
+import BasincBilgiPage from './pages/BasincBilgiPage';
 import { supabase } from './lib/supabaseClient';
 import { useAuthStore } from './store/auth';
 
@@ -60,9 +61,12 @@ const App = () => {
 
   return (
     <Routes>
-      <Route element={<MainLayout />}>
-        <Route path="/giris" element={<LoginPage />} />
+      {/* Login sayfası layout dışında - sidebar/navbar görünmez */}
+      <Route path="/giris" element={<LoginPage />} />
+      <Route path="/cikis" element={<Navigate to="/giris" />} />
 
+      {/* Authenticated layout - sidebar + navbar ile */}
+      <Route element={<MainLayout />}>
         <Route
           index
           element={
@@ -279,9 +283,16 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/basinc-bilgi/:tireId"
+          element={
+            <ProtectedRoute>
+              <BasincBilgiPage />
+            </ProtectedRoute>
+          }
+        />
 
         <Route path="*" element={<NotFoundPage />} />
-        <Route path="/cikis" element={<Navigate to="/giris" />} />
       </Route>
     </Routes>
   );

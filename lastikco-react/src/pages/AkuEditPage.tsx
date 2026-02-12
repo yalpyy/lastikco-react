@@ -1,5 +1,6 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface BatteryRow {
   id: number;
@@ -57,7 +58,7 @@ const AkuEditPage = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     // TODO: Supabase'e akü ekle
-    console.log('Akü ekleniyor:', formData);
+    toast.success('Akü başarıyla eklendi.');
     setShowForm(false);
     setFormData({ aku_marka: '', aku_volt: '12V', aku_amper: '72Ah', aku_durum: 'İyi', aku_fatura_tarihi: '' });
   };
@@ -66,12 +67,14 @@ const AkuEditPage = () => {
     if (!window.confirm('Bu aküyü silmek istediğinize emin misiniz?')) return;
     // TODO: Supabase'den akü sil
     setBatteries(prev => prev.filter(b => b.id !== akuId));
+    toast.success('Akü başarıyla silindi.');
   };
 
   const handleSendToDepot = async (akuId: number) => {
     if (!window.confirm('Bu aküyü depoya göndermek istediğinize emin misiniz?')) return;
     // TODO: Supabase'de aku car_id = null yap
     setBatteries(prev => prev.filter(b => b.id !== akuId));
+    toast.success('Akü depoya gönderildi.');
   };
 
   if (loading) return <p>Yükleniyor...</p>;

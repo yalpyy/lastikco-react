@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { getDashboardStats, type DashboardStats } from '../services/dashboardService';
 
 const HomePage = () => {
@@ -14,6 +15,7 @@ const HomePage = () => {
         setStats(data);
       } catch (error) {
         console.error('Dashboard verisi yüklenemedi:', error);
+        toast.error('Dashboard verisi yüklenemedi!');
       } finally {
         setLoading(false);
       }
@@ -59,7 +61,7 @@ const HomePage = () => {
             </div>
             <div className="counter_no">
               <div>
-                <p className="total_no">{stats?.totalCars || 0}</p>
+                <p className="total_no">{stats?.totalCars ?? '-'}</p>
                 <p className="head_couter">Toplam Araç</p>
               </div>
             </div>
@@ -80,7 +82,7 @@ const HomePage = () => {
             </div>
             <div className="counter_no">
               <div>
-                <p className="total_no">{stats?.totalTires || 0}</p>
+                <p className="total_no">{stats?.totalTires ?? '-'}</p>
                 <p className="head_couter">Toplam Lastik</p>
               </div>
             </div>
@@ -101,7 +103,7 @@ const HomePage = () => {
             </div>
             <div className="counter_no">
               <div>
-                <p className="total_no">{stats?.alertCount || 0}</p>
+                <p className="total_no">{stats?.alertCount ?? '-'}</p>
                 <p className="head_couter">Alert</p>
               </div>
             </div>
@@ -118,7 +120,7 @@ const HomePage = () => {
             </div>
             <div className="counter_no">
               <div>
-                <p className="total_no">{stats?.faultyTires || 0}</p>
+                <p className="total_no">{stats?.faultyTires ?? '-'}</p>
                 <p className="head_couter">Hasarlı Lastik</p>
               </div>
             </div>
@@ -135,7 +137,7 @@ const HomePage = () => {
             </div>
             <div className="counter_no">
               <div>
-                <p className="total_no">{stats?.totalBatteries || 0}</p>
+                <p className="total_no">{stats?.totalBatteries ?? '-'}</p>
                 <p className="head_couter">Toplam Akü</p>
               </div>
             </div>
@@ -152,7 +154,7 @@ const HomePage = () => {
             </div>
             <div className="counter_no">
               <div>
-                <p className="total_no">{stats?.depotTires || 0}</p>
+                <p className="total_no">{stats?.depotTires ?? '-'}</p>
                 <p className="head_couter">Depodaki Lastik</p>
               </div>
             </div>

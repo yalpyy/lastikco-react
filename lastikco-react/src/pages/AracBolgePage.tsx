@@ -1,5 +1,6 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface Region {
   id: number;
@@ -37,8 +38,7 @@ const AracBolgePage = () => {
     e.preventDefault();
     if (!selectedRegion) return;
     // TODO: Supabase'de araç bölgesini güncelle ve log kaydet
-    console.log('Bölge güncelleniyor:', selectedRegion);
-    alert('Bölge başarıyla güncellendi!');
+    toast.success('Bölge başarıyla güncellendi!');
     navigate(-1);
   };
 

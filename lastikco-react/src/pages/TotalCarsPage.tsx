@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface Car {
   id: number;
@@ -11,6 +12,7 @@ interface Car {
 }
 
 const TotalCarsPage = () => {
+  const navigate = useNavigate();
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -50,6 +52,8 @@ const TotalCarsPage = () => {
               <div className="table-responsive-sm">
                 {loading ? (
                   <p>Yükleniyor...</p>
+                ) : cars.length === 0 ? (
+                  <p className="text-center">Kayıtlı araç bulunmamaktadır.</p>
                 ) : (
                   <table className="table table-hover">
                     <thead>
@@ -79,9 +83,9 @@ const TotalCarsPage = () => {
                           </td>
                           <td>{car.created_date}</td>
                           <td>
-                            <button className="btn btn-sm btn-info">Detay</button>
+                            <button className="btn btn-sm btn-info" onClick={() => navigate(`/arac-gecmisi/${car.id}`)}>Detay</button>
                             {' '}
-                            <button className="btn btn-sm btn-primary">Düzenle</button>
+                            <button className="btn btn-sm btn-primary" onClick={() => navigate(`/arac-duzenle/${car.id}`)}>Düzenle</button>
                           </td>
                         </tr>
                       ))}

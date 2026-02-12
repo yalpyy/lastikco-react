@@ -1,5 +1,6 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface DepthRecord {
   id: number;
@@ -36,7 +37,7 @@ const DisDerinligiPage = () => {
     if (records.length > 0) {
       const lastDepth = Number(records[records.length - 1].depth_value);
       if (depthNum >= lastDepth) {
-        alert('Yeni ölçüm önceki ölçümden küçük olmalıdır!');
+        toast.error('Yeni ölçüm önceki ölçümden küçük olmalıdır!');
         return;
       }
     }
@@ -48,12 +49,14 @@ const DisDerinligiPage = () => {
     };
     setRecords([...records, newRecord]);
     setNewDepth('');
+    toast.success('Diş derinliği ölçümü eklendi.');
   };
 
   const handleDelete = async (id: number) => {
     if (!window.confirm('Bu ölçümü silmek istediğinize emin misiniz?')) return;
     // TODO: Supabase'den sil
     setRecords(prev => prev.filter(r => r.id !== id));
+    toast.success('Ölçüm kaydı silindi.');
   };
 
   const handleEditSave = async (id: number) => {
@@ -61,6 +64,7 @@ const DisDerinligiPage = () => {
     setRecords(prev => prev.map(r => r.id === id ? { ...r, depth_value: editValue } : r));
     setEditingId(null);
     setEditValue('');
+    toast.success('Ölçüm kaydı güncellendi.');
   };
 
   const maxDepth = Math.max(...records.map(r => Number(r.depth_value)), 1);
