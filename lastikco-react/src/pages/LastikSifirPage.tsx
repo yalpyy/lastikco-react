@@ -119,7 +119,7 @@ const LastikSifirPage = () => {
       {/* Page Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-          <FiCircle className="w-7 h-7 text-primary" />
+          <FiCircle className="w-7 h-7 text-[#0B5394]" />
           Yeni Lastik Ekle
         </h1>
         <p className="text-sm text-gray-500 mt-1">Envantere yeni lastik kaydı oluşturun</p>
@@ -128,7 +128,7 @@ const LastikSifirPage = () => {
       {/* Premium Card Form */}
       <div className="bg-white shadow-xl rounded-2xl overflow-hidden max-w-4xl">
         {/* Card Header */}
-        <div className="bg-primary px-6 py-4">
+        <div className="bg-[#0B5394] px-6 py-4">
           <h2 className="text-lg font-semibold text-white">Lastik Bilgileri</h2>
           <p className="text-sm text-white/70 mt-1">* işaretli alanlar zorunludur</p>
         </div>
@@ -146,7 +146,7 @@ const LastikSifirPage = () => {
                 id="tire_serino"
                 name="tire_serino"
                 placeholder="örn: DOT2024ABC"
-                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors ${
+                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors ${
                   errors.tire_serino ? 'border-red-500 bg-red-50' : 'border-gray-300'
                 }`}
                 value={formData.tire_serino}
@@ -168,7 +168,7 @@ const LastikSifirPage = () => {
                 id="tire_marka"
                 name="tire_marka"
                 placeholder="örn: Michelin"
-                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors ${
+                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors ${
                   errors.tire_marka ? 'border-red-500 bg-red-50' : 'border-gray-300'
                 }`}
                 value={formData.tire_marka}
@@ -190,7 +190,7 @@ const LastikSifirPage = () => {
                 id="tire_desen"
                 name="tire_desen"
                 placeholder="örn: X Multi D"
-                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors ${
+                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors ${
                   errors.tire_desen ? 'border-red-500 bg-red-50' : 'border-gray-300'
                 }`}
                 value={formData.tire_desen}
@@ -212,7 +212,7 @@ const LastikSifirPage = () => {
                 id="tire_olcu"
                 name="tire_olcu"
                 placeholder="örn: 315/80R22.5"
-                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors ${
+                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors ${
                   errors.tire_olcu ? 'border-red-500 bg-red-50' : 'border-gray-300'
                 }`}
                 value={formData.tire_olcu}
@@ -235,7 +235,7 @@ const LastikSifirPage = () => {
                 id="tire_disderinligi"
                 name="tire_disderinligi"
                 placeholder="örn: 14.5"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors"
                 value={formData.tire_disderinligi}
                 onChange={(e) => setFormData({ ...formData, tire_disderinligi: e.target.value })}
               />
@@ -249,7 +249,7 @@ const LastikSifirPage = () => {
               <select
                 id="tire_durum"
                 name="tire_durum"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors"
                 value={formData.tire_durum}
                 onChange={(e) => setFormData({ ...formData, tire_durum: e.target.value })}
               >
@@ -270,7 +270,7 @@ const LastikSifirPage = () => {
                 type="date"
                 id="tire_olcumtarihi"
                 name="tire_olcumtarihi"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors"
                 value={formData.tire_olcumtarihi}
                 onChange={(e) => setFormData({ ...formData, tire_olcumtarihi: e.target.value })}
               />
@@ -286,7 +286,7 @@ const LastikSifirPage = () => {
                 id="tire_olcumkm"
                 name="tire_olcumkm"
                 placeholder="örn: 50000"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors"
                 value={formData.tire_olcumkm}
                 onChange={(e) => setFormData({ ...formData, tire_olcumkm: e.target.value })}
               />
@@ -328,7 +328,7 @@ const LastikSifirPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:opacity-90 transition-opacity font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-6 py-3 bg-[#0B5394] text-white rounded-lg hover:bg-[#094A84] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
@@ -345,7 +345,7 @@ const LastikSifirPage = () => {
             <button
               type="button"
               onClick={() => navigate('/lastik-depo')}
-              className="flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              className="flex items-center gap-2 px-6 py-3 bg-slate-200 text-gray-700 rounded-lg hover:bg-slate-300 transition-colors font-medium"
             >
               <FiArrowLeft className="w-4 h-4" />
               Geri Dön

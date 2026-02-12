@@ -117,7 +117,7 @@ const AracEklePage = () => {
       {/* Page Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-          <FiTruck className="w-7 h-7 text-primary" />
+          <FiTruck className="w-7 h-7 text-[#0B5394]" />
           Yeni Araç Ekle
         </h1>
         <p className="text-sm text-gray-500 mt-1">Sisteme yeni araç kaydı oluşturun</p>
@@ -126,7 +126,7 @@ const AracEklePage = () => {
       {/* Premium Card Form */}
       <div className="bg-white shadow-xl rounded-2xl overflow-hidden max-w-3xl">
         {/* Card Header */}
-        <div className="bg-primary px-6 py-4">
+        <div className="bg-[#0B5394] px-6 py-4">
           <h2 className="text-lg font-semibold text-white">Araç Bilgileri</h2>
           <p className="text-sm text-white/70 mt-1">* işaretli alanlar zorunludur</p>
         </div>
@@ -144,7 +144,7 @@ const AracEklePage = () => {
                 id="car_name"
                 name="car_name"
                 placeholder="örn: 34 ABC 123"
-                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors ${
+                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors ${
                   errors.car_name ? 'border-red-500 bg-red-50' : 'border-gray-300'
                 }`}
                 value={formData.car_name}
@@ -166,7 +166,7 @@ const AracEklePage = () => {
                 id="car_model"
                 name="car_model"
                 placeholder="örn: Volvo FH16"
-                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors ${
+                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors ${
                   errors.car_model ? 'border-red-500 bg-red-50' : 'border-gray-300'
                 }`}
                 value={formData.car_model}
@@ -186,7 +186,7 @@ const AracEklePage = () => {
               <select
                 id="axle_count"
                 name="axle_count"
-                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors ${
+                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors ${
                   errors.axle_count ? 'border-red-500 bg-red-50' : 'border-gray-300'
                 }`}
                 value={formData.axle_count}
@@ -213,7 +213,7 @@ const AracEklePage = () => {
               <select
                 id="bolge_id"
                 name="bolge_id"
-                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors ${
+                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors ${
                   errors.bolge_id ? 'border-red-500 bg-red-50' : 'border-gray-300'
                 }`}
                 value={formData.bolge_id}
@@ -241,7 +241,7 @@ const AracEklePage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-6 py-3 bg-[#0B5394] text-white rounded-lg hover:bg-[#094A84] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
@@ -258,7 +258,7 @@ const AracEklePage = () => {
             <button
               type="button"
               onClick={() => navigate('/arac-aktif')}
-              className="flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+              className="flex items-center gap-2 px-6 py-3 bg-slate-200 text-gray-700 rounded-lg hover:bg-slate-300 transition-colors font-medium"
             >
               <FiArrowLeft className="w-4 h-4" />
               Geri Dön
