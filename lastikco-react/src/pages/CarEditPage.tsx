@@ -1,6 +1,7 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import AxleVisual, { type TirePosition } from '../components/AxleVisual';
 
 interface TireRow {
   id: number;
@@ -226,6 +227,38 @@ const CarEditPage = () => {
               </div>
             </div>
             <div className="padding_infor_info">
+              {/* Axle Visual */}
+              {(car.axle_count === 2 || car.axle_count === 3 || car.axle_count === 4) && (
+                <div className="margin_bottom_30">
+                  <h5 className="text-center">Araç Lastik Düzeni</h5>
+                  <AxleVisual
+                    axleCount={car.axle_count as 2 | 3 | 4}
+                    tires={tires.map(t => ({
+                      id: t.id,
+                      tire_id: t.tire_id,
+                      tire_serino: t.tire_serino,
+                      tire_marka: t.tire_marka,
+                      tire_disderinligi: t.tire_disderinligi,
+                      tire_position: t.tire_position,
+                      axle_number: t.axle_number,
+                    } as TirePosition))}
+                    onTireClick={(tire) => {
+                      const fullTire = tires.find(t => t.tire_id === tire.tire_id);
+                      if (fullTire) handleEdit(fullTire);
+                    }}
+                    onEmptyClick={(axleNumber, position) => {
+                      resetForm();
+                      setFormData(prev => ({
+                        ...prev,
+                        axle_number: String(axleNumber),
+                        tire_position: position,
+                      }));
+                      setShowForm(true);
+                    }}
+                  />
+                </div>
+              )}
+
               {showForm && (
                 <form onSubmit={handleSubmit} className="margin_bottom_30">
                   <h5>{editingTire ? 'Lastik Düzenle' : 'Yeni Lastik Ekle'}</h5>
