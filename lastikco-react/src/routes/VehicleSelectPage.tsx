@@ -11,8 +11,8 @@ const VehicleSelectPage = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const data = await listCarsWithAxles();
-        setCars(data);
+        const result = await listCarsWithAxles();
+        setCars(result.data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Araçlar yüklenemedi.');
       } finally {
