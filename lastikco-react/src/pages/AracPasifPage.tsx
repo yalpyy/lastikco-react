@@ -1,43 +1,53 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
-interface Car {
-  id: number;
-  car_name: string;
-  car_model: string;
-  axle_count: number;
-  arac_bolgesi: string;
-  passiveDate: string;
-}
+import { listPassiveCars, activateCar, deleteCar } from '../services/vehicleService';
+import type { CarWithAxle } from '../types';
 
 const AracPasifPage = () => {
-  const [cars, setCars] = useState<Car[]>([]);
+  const [cars, setCars] = useState<CarWithAxle[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // TODO: Supabase'den pasif araçları çek (status = 'pasif')
-    setTimeout(() => {
-      setCars([
-        { id: 3, car_name: '35 DEF 456', car_model: 'Scania R450', axle_count: 3, arac_bolgesi: 'Akdeniz', passiveDate: '2023-12-01' },
-      ]);
+  const loadCars = async () => {
+    try {
+      setLoading(true);
+      const result = await listPassiveCars();
+      setCars(result.data);
+    } catch (error) {
+      console.error('Pasif araçlar yüklenemedi:', error);
+      toast.error('Pasif araçlar yüklenirken hata oluştu!');
+    } finally {
       setLoading(false);
-    }, 500);
+    }
+  };
+
+  useEffect(() => {
+    loadCars();
   }, []);
 
   const handleActivate = async (carId: number) => {
     if (!window.confirm('Bu aracı aktif yapmak istediğinize emin misiniz?')) return;
-    // TODO: Supabase'de cars.status = 'aktif' yap
-    setCars(prev => prev.filter(c => c.id !== carId));
-    toast.success('Araç aktif duruma alındı.');
+    try {
+      await activateCar(carId);
+      setCars(prev => prev.filter(c => c.id !== carId));
+      toast.success('Araç aktif duruma alındı.');
+    } catch (error) {
+      console.error('Araç aktif yapılamadı:', error);
+      toast.error('Araç aktif yapılırken hata oluştu!');
+    }
   };
 
   const handleDelete = async (carId: number) => {
     if (!window.confirm('Bu aracı kalıcı olarak silmek istediğinize emin misiniz?')) return;
-    // TODO: Supabase'den aracı sil
-    setCars(prev => prev.filter(c => c.id !== carId));
-    toast.success('Araç kalıcı olarak silindi.');
+    try {
+      await deleteCar(carId);
+      setCars(prev => prev.filter(c => c.id !== carId));
+      toast.success('Araç kalıcı olarak silindi.');
+    } catch (error) {
+      console.error('Araç silinemedi:', error);
+      toast.error('Araç silinirken hata oluştu!');
+    }
   };
 
   return (
@@ -71,7 +81,7 @@ const AracPasifPage = () => {
                         <th>Model</th>
                         <th>Aks Sayısı</th>
                         <th>Bölge</th>
-                        <th>Pasif Olma Tarihi</th>
+                        <th>Güncellenme Tarihi</th>
                         <th>İşlemler</th>
                       </tr>
                     </thead>
@@ -85,8 +95,8 @@ const AracPasifPage = () => {
                             <td>{car.car_name}</td>
                             <td>{car.car_model}</td>
                             <td>{car.axle_count}</td>
-                            <td>{car.arac_bolgesi}</td>
-                            <td>{car.passiveDate}</td>
+                            <td>{car.bolge_adi ?? '-'}</td>
+                            <td>{car.updated_at ? new Date(car.updated_at).toLocaleDateString('tr-TR') : '-'}</td>
                             <td>
                               <button className="btn btn-success btn-sm" onClick={() => handleActivate(car.id)}>
                                 Aktifleştir

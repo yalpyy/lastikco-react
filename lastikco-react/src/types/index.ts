@@ -16,6 +16,9 @@ export type Axle = {
 
 export type CarWithAxle = Car & {
   axle_count?: number | null;
+  status?: string;
+  bolge_id?: number | null;
+  bolge_adi?: string | null;
 };
 
 export type Tire = {

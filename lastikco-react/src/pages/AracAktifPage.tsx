@@ -1,45 +1,59 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
-interface Car {
-  id: number;
-  car_name: string;
-  car_model: string;
-  axle_count: number;
-  arac_bolgesi: string;
-  created_date: string;
-}
+import { listActiveCars, deactivateCar, deleteCar } from '../services/vehicleService';
+import type { CarWithAxle } from '../types';
 
 const AracAktifPage = () => {
-  const [cars, setCars] = useState<Car[]>([]);
+  const [cars, setCars] = useState<CarWithAxle[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // TODO: Supabase'den veri çekilecek
-    // Mock data
-    setTimeout(() => {
-      setCars([
-        { id: 1, car_name: '34 ABC 123', car_model: 'Volvo FH', axle_count: 3, arac_bolgesi: 'Marmara', created_date: '2024-01-15' },
-        { id: 2, car_name: '06 XYZ 789', car_model: 'Mercedes Actros', axle_count: 4, arac_bolgesi: 'Ege', created_date: '2024-01-20' },
-      ]);
+  const loadCars = async (searchTerm?: string) => {
+    try {
+      setLoading(true);
+      const result = await listActiveCars(searchTerm);
+      setCars(result.data);
+    } catch (error) {
+      console.error('Araçlar yüklenemedi:', error);
+      toast.error('Araçlar yüklenirken hata oluştu!');
+    } finally {
       setLoading(false);
-    }, 500);
+    }
+  };
+
+  useEffect(() => {
+    loadCars();
   }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    loadCars(search);
+  };
 
   const handleDelete = async (carId: number) => {
     if (!window.confirm('Bu aracı silmek istediğinize emin misiniz? Tüm lastik ve akü verileri de silinecektir.')) return;
-    // TODO: Supabase'den aracı ve ilişkili verileri sil
-    setCars(prev => prev.filter(c => c.id !== carId));
-    toast.success('Araç başarıyla silindi.');
+    try {
+      await deleteCar(carId);
+      setCars(prev => prev.filter(c => c.id !== carId));
+      toast.success('Araç başarıyla silindi.');
+    } catch (error) {
+      console.error('Araç silinemedi:', error);
+      toast.error('Araç silinirken hata oluştu!');
+    }
   };
 
   const handlePassive = async (carId: number) => {
     if (!window.confirm('Bu aracı pasif yapmak istediğinize emin misiniz?')) return;
-    // TODO: Supabase'de cars.status = 'pasif' yap
-    setCars(prev => prev.filter(c => c.id !== carId));
-    toast.success('Araç pasif duruma alındı.');
+    try {
+      await deactivateCar(carId);
+      setCars(prev => prev.filter(c => c.id !== carId));
+      toast.success('Araç pasif duruma alındı.');
+    } catch (error) {
+      console.error('Araç pasif yapılamadı:', error);
+      toast.error('Araç pasif yapılırken hata oluştu!');
+    }
   };
 
   return (
@@ -58,6 +72,19 @@ const AracAktifPage = () => {
             <div className="full graph_head">
               <div className="heading1 margin_0">
                 <h2>Aktif Araçlar</h2>
+              </div>
+              <div style={{ float: 'right' }}>
+                <form onSubmit={handleSearch} style={{ display: 'flex', gap: '8px' }}>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Plaka veya model ara..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    style={{ width: '200px' }}
+                  />
+                  <button type="submit" className="btn btn-primary btn-sm">Ara</button>
+                </form>
               </div>
             </div>
             <div className="table_section padding_infor_info">
@@ -87,8 +114,8 @@ const AracAktifPage = () => {
                             <td>{car.car_name}</td>
                             <td>{car.car_model}</td>
                             <td>{car.axle_count}</td>
-                            <td>{car.arac_bolgesi}</td>
-                            <td>{car.created_date}</td>
+                            <td>{car.bolge_adi ?? '-'}</td>
+                            <td>{car.created_at ? new Date(car.created_at).toLocaleDateString('tr-TR') : '-'}</td>
                             <td>
                               <button className="btn btn-primary btn-sm" onClick={() => navigate(`/arac-duzenle/${car.id}`)}>
                                 Lastik
