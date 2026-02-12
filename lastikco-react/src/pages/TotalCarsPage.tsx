@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { listCarsWithAxles } from '../services/vehicleService';
+import DataTable, { type Column } from '../components/DataTable';
 import type { CarWithAxle } from '../types';
 
 const TotalCarsPage = () => {
@@ -26,6 +27,37 @@ const TotalCarsPage = () => {
     loadCars();
   }, []);
 
+  const columns: Column<CarWithAxle>[] = [
+    { key: 'id', header: '#', sortable: true },
+    { key: 'car_name', header: 'Plaka', sortable: true },
+    { key: 'car_model', header: 'Model', sortable: true },
+    { key: 'axle_count', header: 'Aks Sayısı', render: (row) => row.axle_count ?? '-' },
+    { key: 'bolge_adi', header: 'Bölge', render: (row) => row.bolge_adi ?? '-' },
+    {
+      key: 'status',
+      header: 'Durum',
+      render: (row) => (
+        <span className={`badge ${row.status === 'aktif' ? 'badge-success' : 'badge-secondary'}`}>
+          {row.status === 'aktif' ? 'Aktif' : 'Pasif'}
+        </span>
+      ),
+    },
+    {
+      key: 'created_at',
+      header: 'Eklenme Tarihi',
+      sortable: true,
+      render: (row) => row.created_at ? new Date(row.created_at).toLocaleDateString('tr-TR') : '-',
+    },
+  ];
+
+  const renderActions = (car: CarWithAxle) => (
+    <>
+      <button className="btn btn-sm btn-info" onClick={() => navigate(`/arac-gecmisi/${car.id}`)}>Detay</button>
+      {' '}
+      <button className="btn btn-sm btn-primary" onClick={() => navigate(`/arac-duzenle/${car.id}`)}>Düzenle</button>
+    </>
+  );
+
   return (
     <>
       <div className="row column_title">
@@ -45,50 +77,16 @@ const TotalCarsPage = () => {
               </div>
             </div>
             <div className="table_section padding_infor_info">
-              <div className="table-responsive-sm">
-                {loading ? (
-                  <p>Yükleniyor...</p>
-                ) : cars.length === 0 ? (
-                  <p className="text-center">Kayıtlı araç bulunmamaktadır.</p>
-                ) : (
-                  <table className="table table-hover">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Plaka</th>
-                        <th>Model</th>
-                        <th>Aks Sayısı</th>
-                        <th>Bölge</th>
-                        <th>Durum</th>
-                        <th>Eklenme Tarihi</th>
-                        <th>İşlemler</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {cars.map((car) => (
-                        <tr key={car.id}>
-                          <td>{car.id}</td>
-                          <td>{car.car_name}</td>
-                          <td>{car.car_model}</td>
-                          <td>{car.axle_count ?? '-'}</td>
-                          <td>{car.bolge_adi ?? '-'}</td>
-                          <td>
-                            <span className={`badge ${car.status === 'aktif' ? 'badge-success' : 'badge-secondary'}`}>
-                              {car.status === 'aktif' ? 'Aktif' : 'Pasif'}
-                            </span>
-                          </td>
-                          <td>{car.created_at ? new Date(car.created_at).toLocaleDateString('tr-TR') : '-'}</td>
-                          <td>
-                            <button className="btn btn-sm btn-info" onClick={() => navigate(`/arac-gecmisi/${car.id}`)}>Detay</button>
-                            {' '}
-                            <button className="btn btn-sm btn-primary" onClick={() => navigate(`/arac-duzenle/${car.id}`)}>Düzenle</button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-              </div>
+              <DataTable
+                data={cars}
+                columns={columns}
+                loading={loading}
+                emptyMessage="Kayıtlı araç bulunmamaktadır."
+                searchPlaceholder="Plaka veya model ara..."
+                rowKey="id"
+                actions={renderActions}
+                pageSize={10}
+              />
             </div>
           </div>
         </div>

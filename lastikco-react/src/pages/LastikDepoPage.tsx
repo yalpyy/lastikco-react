@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { listDepotTires, deleteTire, type TireWithDetails } from '../services/tireService';
+import DataTable, { type Column } from '../components/DataTable';
 
 const LastikDepoPage = () => {
   const navigate = useNavigate();
   const [tires, setTires] = useState<TireWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
 
-  const loadTires = async (searchTerm?: string) => {
+  const loadTires = async () => {
     try {
       setLoading(true);
-      const data = await listDepotTires(searchTerm);
+      const data = await listDepotTires();
       setTires(data);
     } catch (error) {
       console.error('Depodaki lastikler yüklenemedi:', error);
@@ -43,13 +43,40 @@ const LastikDepoPage = () => {
     navigate(`/arac-aktif?assignTire=${id}`);
   };
 
-  const handleSearch = () => {
-    loadTires(search);
-  };
-
   useEffect(() => {
     loadTires();
   }, []);
+
+  const columns: Column<TireWithDetails>[] = [
+    { key: 'id', header: '#', sortable: true },
+    { key: 'tire_serino', header: 'Seri No', sortable: true, render: (row) => row.tire_serino ?? '-' },
+    { key: 'tire_marka', header: 'Marka', sortable: true, render: (row) => row.tire_marka ?? '-' },
+    { key: 'tire_desen', header: 'Desen', render: (row) => row.tire_desen ?? '-' },
+    { key: 'tire_olcu', header: 'Ölçü', render: (row) => row.tire_olcu ?? '-' },
+    {
+      key: 'tire_disderinligi',
+      header: 'Dış Derinlik',
+      sortable: true,
+      render: (row) => row.tire_disderinligi ? `${row.tire_disderinligi} mm` : '-',
+    },
+    { key: 'tire_durum', header: 'Durum', render: (row) => row.tire_durum ?? 'Normal' },
+    {
+      key: 'tire_olcumtarihi',
+      header: 'Ölçüm Tarihi',
+      sortable: true,
+      render: (row) => row.tire_olcumtarihi ? new Date(row.tire_olcumtarihi).toLocaleDateString('tr-TR') : '-',
+    },
+  ];
+
+  const renderActions = (tire: TireWithDetails) => (
+    <>
+      <button className="btn btn-primary btn-sm" onClick={() => handleAssignToCar(tire.id)}>Araca Tak</button>
+      {' '}
+      <button className="btn btn-warning btn-sm" onClick={() => handleEdit(tire.id)}>Düzenle</button>
+      {' '}
+      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(tire.id)}>Sil</button>
+    </>
+  );
 
   return (
     <>
@@ -68,67 +95,23 @@ const LastikDepoPage = () => {
               <div className="heading1 margin_0">
                 <h2>Depo Lastik Listesi</h2>
               </div>
-              <div className="heading1 margin_0" style={{ float: 'right', display: 'flex', gap: '10px' }}>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Seri no veya marka ara..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                  style={{ width: '200px' }}
-                />
-                <button className="btn btn-secondary" onClick={handleSearch}>Ara</button>
+              <div className="heading1 margin_0" style={{ float: 'right' }}>
                 <button className="btn btn-primary" onClick={() => navigate('/lastik-sifir')}>
                   Yeni Lastik Ekle
                 </button>
               </div>
             </div>
             <div className="table_section padding_infor_info">
-              <div className="table-responsive-sm">
-                {loading ? (
-                  <p>Yükleniyor...</p>
-                ) : tires.length === 0 ? (
-                  <p className="text-center">Depoda lastik bulunmamaktadır.</p>
-                ) : (
-                  <table className="table table-hover">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Seri No</th>
-                        <th>Marka</th>
-                        <th>Desen</th>
-                        <th>Ölçü</th>
-                        <th>Dış Derinlik</th>
-                        <th>Durum</th>
-                        <th>Ölçüm Tarihi</th>
-                        <th>İşlemler</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {tires.map((tire) => (
-                        <tr key={tire.id}>
-                          <td>{tire.id}</td>
-                          <td>{tire.tire_serino ?? '-'}</td>
-                          <td>{tire.tire_marka ?? '-'}</td>
-                          <td>{tire.tire_desen ?? '-'}</td>
-                          <td>{tire.tire_olcu ?? '-'}</td>
-                          <td>{tire.tire_disderinligi ? `${tire.tire_disderinligi} mm` : '-'}</td>
-                          <td>{tire.tire_durum ?? 'Normal'}</td>
-                          <td>{tire.tire_olcumtarihi ? new Date(tire.tire_olcumtarihi).toLocaleDateString('tr-TR') : '-'}</td>
-                          <td>
-                            <button className="btn btn-primary btn-sm" onClick={() => handleAssignToCar(tire.id)}>Araca Tak</button>
-                            {' '}
-                            <button className="btn btn-warning btn-sm" onClick={() => handleEdit(tire.id)}>Düzenle</button>
-                            {' '}
-                            <button className="btn btn-danger btn-sm" onClick={() => handleDelete(tire.id)}>Sil</button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-              </div>
+              <DataTable
+                data={tires}
+                columns={columns}
+                loading={loading}
+                emptyMessage="Depoda lastik bulunmamaktadır."
+                searchPlaceholder="Seri no veya marka ara..."
+                rowKey="id"
+                actions={renderActions}
+                pageSize={10}
+              />
             </div>
           </div>
         </div>

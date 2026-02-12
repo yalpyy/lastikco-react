@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { listPassiveCars, activateCar, deleteCar } from '../services/vehicleService';
+import DataTable, { type Column } from '../components/DataTable';
 import type { CarWithAxle } from '../types';
 
 const AracPasifPage = () => {
@@ -50,6 +51,34 @@ const AracPasifPage = () => {
     }
   };
 
+  const columns: Column<CarWithAxle>[] = [
+    { key: 'id', header: '#', sortable: true },
+    { key: 'car_name', header: 'Plaka', sortable: true },
+    { key: 'car_model', header: 'Model', sortable: true },
+    { key: 'axle_count', header: 'Aks Sayısı', render: (row) => row.axle_count ?? '-' },
+    { key: 'bolge_adi', header: 'Bölge', render: (row) => row.bolge_adi ?? '-' },
+    {
+      key: 'updated_at',
+      header: 'Güncellenme Tarihi',
+      sortable: true,
+      render: (row) => row.updated_at ? new Date(row.updated_at).toLocaleDateString('tr-TR') : '-',
+    },
+  ];
+
+  const renderActions = (car: CarWithAxle) => (
+    <>
+      <button className="btn btn-success btn-sm" onClick={() => handleActivate(car.id)}>
+        Aktifleştir
+      </button>{' '}
+      <button className="btn btn-primary btn-sm" onClick={() => navigate(`/arac-duzenle/${car.id}`)}>
+        Düzenle
+      </button>{' '}
+      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(car.id)}>
+        Sil
+      </button>
+    </>
+  );
+
   return (
     <>
       <div className="row column_title">
@@ -69,52 +98,16 @@ const AracPasifPage = () => {
               </div>
             </div>
             <div className="table_section padding_infor_info">
-              <div className="table-responsive-sm">
-                {loading ? (
-                  <p>Yükleniyor...</p>
-                ) : (
-                  <table className="table table-hover">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Plaka</th>
-                        <th>Model</th>
-                        <th>Aks Sayısı</th>
-                        <th>Bölge</th>
-                        <th>Güncellenme Tarihi</th>
-                        <th>İşlemler</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {cars.length === 0 ? (
-                        <tr><td colSpan={7} className="text-center">Pasif araç bulunamadı</td></tr>
-                      ) : (
-                        cars.map((car) => (
-                          <tr key={car.id}>
-                            <td>{car.id}</td>
-                            <td>{car.car_name}</td>
-                            <td>{car.car_model}</td>
-                            <td>{car.axle_count}</td>
-                            <td>{car.bolge_adi ?? '-'}</td>
-                            <td>{car.updated_at ? new Date(car.updated_at).toLocaleDateString('tr-TR') : '-'}</td>
-                            <td>
-                              <button className="btn btn-success btn-sm" onClick={() => handleActivate(car.id)}>
-                                Aktifleştir
-                              </button>{' '}
-                              <button className="btn btn-primary btn-sm" onClick={() => navigate(`/arac-duzenle/${car.id}`)}>
-                                Düzenle
-                              </button>{' '}
-                              <button className="btn btn-danger btn-sm" onClick={() => handleDelete(car.id)}>
-                                Sil
-                              </button>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                )}
-              </div>
+              <DataTable
+                data={cars}
+                columns={columns}
+                loading={loading}
+                emptyMessage="Pasif araç bulunamadı"
+                searchPlaceholder="Plaka veya model ara..."
+                rowKey="id"
+                actions={renderActions}
+                pageSize={10}
+              />
             </div>
           </div>
         </div>
