@@ -1,47 +1,39 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import { listScrapTires } from '../services/tireService';
 
 interface ScrapTire {
   id: number;
-  tire_serino: string;
-  tire_marka: string;
-  tire_desen: string;
-  tire_olcu: string;
-  car_name: string;
-  scrap_date: string;
-  scrap_reason: string;
+  tire_id: number;
+  tire_serino: string | null;
+  tire_marka: string | null;
+  tire_desen: string | null;
+  tire_olcu: string | null;
+  tire_durum: string | null;
+  car_name: string | null;
+  car_model: string | null;
+  tire_olcumtarihi: string | null;
 }
 
 const LastikHurdaPage = () => {
   const [tires, setTires] = useState<ScrapTire[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // TODO: Supabase'den hurdaya çıkmış lastikleri çek
-    setTimeout(() => {
-      setTires([
-        {
-          id: 1,
-          tire_serino: 'DOT1111',
-          tire_marka: 'Pirelli',
-          tire_desen: 'FR85',
-          tire_olcu: '315/80R22.5',
-          car_name: '34 ABC 123',
-          scrap_date: '2023-12-15',
-          scrap_reason: 'Diş derinliği sıfır',
-        },
-        {
-          id: 2,
-          tire_serino: 'DOT2222',
-          tire_marka: 'Dunlop',
-          tire_desen: 'SP346',
-          tire_olcu: '295/80R22.5',
-          car_name: '06 XYZ 789',
-          scrap_date: '2023-12-20',
-          scrap_reason: 'Onarılamaz hasar',
-        },
-      ]);
+  const loadTires = async () => {
+    try {
+      setLoading(true);
+      const data = await listScrapTires();
+      setTires(data);
+    } catch (error) {
+      console.error('Hurda lastikler yüklenemedi:', error);
+      toast.error('Hurda lastikler yüklenirken hata oluştu!');
+    } finally {
       setLoading(false);
-    }, 500);
+    }
+  };
+
+  useEffect(() => {
+    loadTires();
   }, []);
 
   return (
@@ -78,21 +70,21 @@ const LastikHurdaPage = () => {
                         <th>Desen</th>
                         <th>Ölçü</th>
                         <th>Son Araç</th>
-                        <th>Hurda Tarihi</th>
-                        <th>Sebep</th>
+                        <th>Araç Model</th>
+                        <th>Durum</th>
                       </tr>
                     </thead>
                     <tbody>
                       {tires.map((tire) => (
                         <tr key={tire.id}>
-                          <td>{tire.id}</td>
-                          <td>{tire.tire_serino}</td>
-                          <td>{tire.tire_marka}</td>
-                          <td>{tire.tire_desen}</td>
-                          <td>{tire.tire_olcu}</td>
-                          <td>{tire.car_name}</td>
-                          <td>{tire.scrap_date}</td>
-                          <td>{tire.scrap_reason}</td>
+                          <td>{tire.tire_id}</td>
+                          <td>{tire.tire_serino ?? '-'}</td>
+                          <td>{tire.tire_marka ?? '-'}</td>
+                          <td>{tire.tire_desen ?? '-'}</td>
+                          <td>{tire.tire_olcu ?? '-'}</td>
+                          <td>{tire.car_name ?? '-'}</td>
+                          <td>{tire.car_model ?? '-'}</td>
+                          <td>{tire.tire_durum ?? '-'}</td>
                         </tr>
                       ))}
                     </tbody>

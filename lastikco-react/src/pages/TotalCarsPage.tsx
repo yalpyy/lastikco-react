@@ -1,33 +1,29 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-interface Car {
-  id: number;
-  car_name: string;
-  car_model: string;
-  axle_count: number;
-  arac_bolgesi: string;
-  status: string;
-  created_date: string;
-}
+import { toast } from 'react-toastify';
+import { listCarsWithAxles } from '../services/vehicleService';
+import type { CarWithAxle } from '../types';
 
 const TotalCarsPage = () => {
   const navigate = useNavigate();
-  const [cars, setCars] = useState<Car[]>([]);
+  const [cars, setCars] = useState<CarWithAxle[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // TODO: Supabase'den tüm araçları çek
-    setTimeout(() => {
-      setCars([
-        { id: 1, car_name: '34 ABC 123', car_model: 'Volvo FH', axle_count: 3, arac_bolgesi: 'Bölge 1', status: 'Aktif', created_date: '2024-01-15' },
-        { id: 2, car_name: '06 XYZ 789', car_model: 'Mercedes Actros', axle_count: 4, arac_bolgesi: 'Bölge 2', status: 'Aktif', created_date: '2024-01-20' },
-        { id: 3, car_name: '35 DEF 456', car_model: 'Scania R450', axle_count: 3, arac_bolgesi: 'Bölge 3', status: 'Pasif', created_date: '2023-12-01' },
-        { id: 4, car_name: '16 GHI 321', car_model: 'MAN TGX', axle_count: 4, arac_bolgesi: 'Bölge 1', status: 'Aktif', created_date: '2024-02-10' },
-        { id: 5, car_name: '01 JKL 654', car_model: 'DAF XF', axle_count: 3, arac_bolgesi: 'Bölge 2', status: 'Aktif', created_date: '2024-02-15' },
-      ]);
+  const loadCars = async () => {
+    try {
+      setLoading(true);
+      const result = await listCarsWithAxles();
+      setCars(result.data);
+    } catch (error) {
+      console.error('Araçlar yüklenemedi:', error);
+      toast.error('Araçlar yüklenirken hata oluştu!');
+    } finally {
       setLoading(false);
-    }, 500);
+    }
+  };
+
+  useEffect(() => {
+    loadCars();
   }, []);
 
   return (
@@ -74,14 +70,14 @@ const TotalCarsPage = () => {
                           <td>{car.id}</td>
                           <td>{car.car_name}</td>
                           <td>{car.car_model}</td>
-                          <td>{car.axle_count}</td>
-                          <td>{car.arac_bolgesi}</td>
+                          <td>{car.axle_count ?? '-'}</td>
+                          <td>{car.bolge_adi ?? '-'}</td>
                           <td>
-                            <span className={`badge ${car.status === 'Aktif' ? 'badge-success' : 'badge-secondary'}`}>
-                              {car.status}
+                            <span className={`badge ${car.status === 'aktif' ? 'badge-success' : 'badge-secondary'}`}>
+                              {car.status === 'aktif' ? 'Aktif' : 'Pasif'}
                             </span>
                           </td>
-                          <td>{car.created_date}</td>
+                          <td>{car.created_at ? new Date(car.created_at).toLocaleDateString('tr-TR') : '-'}</td>
                           <td>
                             <button className="btn btn-sm btn-info" onClick={() => navigate(`/arac-gecmisi/${car.id}`)}>Detay</button>
                             {' '}

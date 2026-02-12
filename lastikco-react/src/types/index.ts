@@ -44,14 +44,14 @@ export type TireDetail = {
 };
 
 export type TireInput = {
-  axle_number: number;
-  tire_position: string;
-  tire_serino?: string;
-  tire_marka?: string;
-  tire_desen?: string;
-  tire_olcu?: string;
-  tire_disderinligi?: string;
-  tire_durum?: string;
-  tire_olcumtarihi?: string;
-  tire_olcumkm?: number;
+  axle_number?: number;
+  tire_position?: string;
+  tire_serino?: string | null;
+  tire_marka?: string | null;
+  tire_desen?: string | null;
+  tire_olcu?: string | null;
+  tire_disderinligi?: string | null;
+  tire_durum?: string | null;
+  tire_olcumtarihi?: string | null;
+  tire_olcumkm?: number | null;
 };

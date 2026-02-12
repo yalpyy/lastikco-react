@@ -1,25 +1,41 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { listServiceTires, repairTire, sendTireToScrap } from '../services/tireService';
 
 interface ServiceTire {
   id: number;
-  tire_serino: string;
-  tire_marka: string;
-  tire_desen: string;
-  tire_olcu: string;
-  car_name: string;
-  service_date: string;
-  service_reason: string;
+  tire_id: number;
+  tire_serino: string | null;
+  tire_marka: string | null;
+  tire_desen: string | null;
+  tire_olcu: string | null;
+  tire_durum: string | null;
+  car_name: string | null;
+  car_model: string | null;
+  tire_olcumtarihi: string | null;
 }
 
 const LastikServisPage = () => {
   const [tires, setTires] = useState<ServiceTire[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const handleRepair = async (id: number) => {
+  const loadTires = async () => {
     try {
-      // TODO: Supabase'de lastiği depo durumuna çevir
-      setTires(tires.filter(t => t.id !== id));
+      setLoading(true);
+      const data = await listServiceTires();
+      setTires(data);
+    } catch (error) {
+      console.error('Servisteki lastikler yüklenemedi:', error);
+      toast.error('Servisteki lastikler yüklenirken hata oluştu!');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRepair = async (tireId: number) => {
+    try {
+      await repairTire(tireId);
+      setTires(tires.filter(t => t.tire_id !== tireId));
       toast.success('Lastik onarıldı ve depoya gönderildi!');
     } catch (error) {
       console.error('Onarma hatası:', error);
@@ -27,11 +43,11 @@ const LastikServisPage = () => {
     }
   };
 
-  const handleScrap = async (id: number) => {
+  const handleScrap = async (tireId: number) => {
     if (!window.confirm('Bu lastiği hurdaya çıkarmak istediğinizden emin misiniz?')) return;
     try {
-      // TODO: Supabase'de lastiği hurda durumuna çevir
-      setTires(tires.filter(t => t.id !== id));
+      await sendTireToScrap(tireId);
+      setTires(tires.filter(t => t.tire_id !== tireId));
       toast.success('Lastik hurdaya çıkarıldı!');
     } catch (error) {
       console.error('Hurda hatası:', error);
@@ -40,32 +56,7 @@ const LastikServisPage = () => {
   };
 
   useEffect(() => {
-    // TODO: Supabase'den servisteki lastikleri çek
-    setTimeout(() => {
-      setTires([
-        {
-          id: 1,
-          tire_serino: 'DOT9999',
-          tire_marka: 'Continental',
-          tire_desen: 'HDR2',
-          tire_olcu: '315/80R22.5',
-          car_name: '34 ABC 123',
-          service_date: '2024-01-20',
-          service_reason: 'Diş derinliği düşük',
-        },
-        {
-          id: 2,
-          tire_serino: 'DOT8888',
-          tire_marka: 'Goodyear',
-          tire_desen: 'KMAX',
-          tire_olcu: '295/80R22.5',
-          car_name: '06 XYZ 789',
-          service_date: '2024-01-22',
-          service_reason: 'Yanak hasarı',
-        },
-      ]);
-      setLoading(false);
-    }, 500);
+    loadTires();
   }, []);
 
   return (
@@ -102,26 +93,26 @@ const LastikServisPage = () => {
                         <th>Desen</th>
                         <th>Ölçü</th>
                         <th>Araç Plakası</th>
-                        <th>Servis Tarihi</th>
-                        <th>Sebep</th>
+                        <th>Araç Model</th>
+                        <th>Durum</th>
                         <th>İşlemler</th>
                       </tr>
                     </thead>
                     <tbody>
                       {tires.map((tire) => (
                         <tr key={tire.id}>
-                          <td>{tire.id}</td>
-                          <td>{tire.tire_serino}</td>
-                          <td>{tire.tire_marka}</td>
-                          <td>{tire.tire_desen}</td>
-                          <td>{tire.tire_olcu}</td>
-                          <td>{tire.car_name}</td>
-                          <td>{tire.service_date}</td>
-                          <td>{tire.service_reason}</td>
+                          <td>{tire.tire_id}</td>
+                          <td>{tire.tire_serino ?? '-'}</td>
+                          <td>{tire.tire_marka ?? '-'}</td>
+                          <td>{tire.tire_desen ?? '-'}</td>
+                          <td>{tire.tire_olcu ?? '-'}</td>
+                          <td>{tire.car_name ?? '-'}</td>
+                          <td>{tire.car_model ?? '-'}</td>
+                          <td>{tire.tire_durum ?? '-'}</td>
                           <td>
-                            <button className="btn btn-success btn-sm" onClick={() => handleRepair(tire.id)}>Onar</button>
+                            <button className="btn btn-success btn-sm" onClick={() => handleRepair(tire.tire_id)}>Onar</button>
                             {' '}
-                            <button className="btn btn-danger btn-sm" onClick={() => handleScrap(tire.id)}>Hurdaya Çıkar</button>
+                            <button className="btn btn-danger btn-sm" onClick={() => handleScrap(tire.tire_id)}>Hurdaya Çıkar</button>
                           </td>
                         </tr>
                       ))}

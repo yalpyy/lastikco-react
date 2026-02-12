@@ -66,7 +66,7 @@ const TireCreatePage = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!carId) return;
-    const hasEmptyPosition = rows.some((row) => !row.tire_position.trim());
+    const hasEmptyPosition = rows.some((row) => !row.tire_position?.trim());
     if (hasEmptyPosition) {
       setError('Her aks için lastik pozisyonu doldurulmalı.');
       return;

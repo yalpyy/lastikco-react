@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { createTireWithDetails } from '../services/tireService';
 
 const LastikSifirPage = () => {
   const navigate = useNavigate();
@@ -9,12 +10,10 @@ const LastikSifirPage = () => {
     tire_marka: '',
     tire_desen: '',
     tire_olcu: '',
-    tire_dis_derinlik: '',
-    tire_ic_derinlik: '',
-    tire_orta_derinlik: '',
-    tire_adet: '',
-    tire_fiyat: '',
-    tire_tarih: '',
+    tire_disderinligi: '',
+    tire_durum: 'Normal',
+    tire_olcumtarihi: '',
+    tire_olcumkm: '',
     car_id: '',
   });
   const [loading, setLoading] = useState(false);
@@ -26,8 +25,17 @@ const LastikSifirPage = () => {
     setMessage(null);
 
     try {
-      // TODO: Supabase'e veri eklenecek
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const carId = formData.car_id ? parseInt(formData.car_id, 10) : null;
+      await createTireWithDetails(carId, {
+        tire_serino: formData.tire_serino || null,
+        tire_marka: formData.tire_marka || null,
+        tire_desen: formData.tire_desen || null,
+        tire_olcu: formData.tire_olcu || null,
+        tire_disderinligi: formData.tire_disderinligi || null,
+        tire_durum: formData.tire_durum || 'Normal',
+        tire_olcumtarihi: formData.tire_olcumtarihi || null,
+        tire_olcumkm: formData.tire_olcumkm ? parseInt(formData.tire_olcumkm, 10) : null,
+      });
       toast.success('Lastik başarıyla eklendi!');
       setTimeout(() => navigate('/lastik-depo'), 1500);
     } catch (error) {
@@ -121,92 +129,60 @@ const LastikSifirPage = () => {
           <div className="row">
             <div className="col-md-4">
               <div className="form-group">
-                <label htmlFor="tire_dis_derinlik">Dış Derinlik:</label>
+                <label htmlFor="tire_disderinligi">Dış Derinlik (mm):</label>
                 <input
                   type="number"
                   step="0.1"
-                  id="tire_dis_derinlik"
-                  name="tire_dis_derinlik"
+                  id="tire_disderinligi"
+                  name="tire_disderinligi"
                   className="form-control"
-                  value={formData.tire_dis_derinlik}
-                  onChange={(e) => setFormData({ ...formData, tire_dis_derinlik: e.target.value })}
-                  required
+                  value={formData.tire_disderinligi}
+                  onChange={(e) => setFormData({ ...formData, tire_disderinligi: e.target.value })}
                 />
               </div>
             </div>
             <div className="col-md-4">
               <div className="form-group">
-                <label htmlFor="tire_orta_derinlik">Orta Derinlik:</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  id="tire_orta_derinlik"
-                  name="tire_orta_derinlik"
+                <label htmlFor="tire_durum">Durum:</label>
+                <select
+                  id="tire_durum"
+                  name="tire_durum"
                   className="form-control"
-                  value={formData.tire_orta_derinlik}
-                  onChange={(e) => setFormData({ ...formData, tire_orta_derinlik: e.target.value })}
-                  required
-                />
+                  value={formData.tire_durum}
+                  onChange={(e) => setFormData({ ...formData, tire_durum: e.target.value })}
+                >
+                  <option value="Normal">Normal</option>
+                  <option value="Serviste">Serviste</option>
+                  <option value="Hurda">Hurda</option>
+                </select>
               </div>
             </div>
             <div className="col-md-4">
               <div className="form-group">
-                <label htmlFor="tire_ic_derinlik">İç Derinlik:</label>
+                <label htmlFor="tire_olcumtarihi">Ölçüm Tarihi:</label>
                 <input
-                  type="number"
-                  step="0.1"
-                  id="tire_ic_derinlik"
-                  name="tire_ic_derinlik"
+                  type="date"
+                  id="tire_olcumtarihi"
+                  name="tire_olcumtarihi"
                   className="form-control"
-                  value={formData.tire_ic_derinlik}
-                  onChange={(e) => setFormData({ ...formData, tire_ic_derinlik: e.target.value })}
-                  required
+                  value={formData.tire_olcumtarihi}
+                  onChange={(e) => setFormData({ ...formData, tire_olcumtarihi: e.target.value })}
                 />
               </div>
             </div>
           </div>
 
           <div className="row">
-            <div className="col-md-4">
+            <div className="col-md-6">
               <div className="form-group">
-                <label htmlFor="tire_adet">Adet:</label>
+                <label htmlFor="tire_olcumkm">Ölçüm KM:</label>
                 <input
                   type="number"
-                  id="tire_adet"
-                  name="tire_adet"
+                  id="tire_olcumkm"
+                  name="tire_olcumkm"
                   className="form-control"
-                  value={formData.tire_adet}
-                  onChange={(e) => setFormData({ ...formData, tire_adet: e.target.value })}
-                  required
-                />
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="form-group">
-                <label htmlFor="tire_fiyat">Fiyat:</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  id="tire_fiyat"
-                  name="tire_fiyat"
-                  className="form-control"
-                  value={formData.tire_fiyat}
-                  onChange={(e) => setFormData({ ...formData, tire_fiyat: e.target.value })}
-                  required
-                />
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="form-group">
-                <label htmlFor="tire_tarih">Tarih:</label>
-                <input
-                  type="date"
-                  id="tire_tarih"
-                  name="tire_tarih"
-                  className="form-control"
-                  value={formData.tire_tarih}
-                  onChange={(e) => setFormData({ ...formData, tire_tarih: e.target.value })}
-                  required
+                  value={formData.tire_olcumkm}
+                  onChange={(e) => setFormData({ ...formData, tire_olcumkm: e.target.value })}
                 />
               </div>
             </div>

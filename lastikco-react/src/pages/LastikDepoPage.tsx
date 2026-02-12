@@ -1,30 +1,31 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
-interface Tire {
-  id: number;
-  tire_serino: string;
-  tire_marka: string;
-  tire_desen: string;
-  tire_olcu: string;
-  tire_dis_derinlik: number;
-  tire_ic_derinlik: number;
-  tire_orta_derinlik: number;
-  tire_adet: number;
-  tire_fiyat: number;
-  tire_tarih: string;
-}
+import { listDepotTires, deleteTire, type TireWithDetails } from '../services/tireService';
 
 const LastikDepoPage = () => {
   const navigate = useNavigate();
-  const [tires, setTires] = useState<Tire[]>([]);
+  const [tires, setTires] = useState<TireWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+
+  const loadTires = async (searchTerm?: string) => {
+    try {
+      setLoading(true);
+      const data = await listDepotTires(searchTerm);
+      setTires(data);
+    } catch (error) {
+      console.error('Depodaki lastikler yüklenemedi:', error);
+      toast.error('Depodaki lastikler yüklenirken hata oluştu!');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDelete = async (id: number) => {
     if (!window.confirm('Bu lastiği silmek istediğinizden emin misiniz?')) return;
     try {
-      // TODO: Supabase'den lastik sil
+      await deleteTire(id);
       setTires(tires.filter(t => t.id !== id));
       toast.success('Lastik başarıyla silindi!');
     } catch (error) {
@@ -38,44 +39,16 @@ const LastikDepoPage = () => {
   };
 
   const handleAssignToCar = (id: number) => {
-    // Navigate to car selection or show modal
     toast.info('Araç seçim sayfasına yönlendiriliyorsunuz...');
     navigate(`/arac-aktif?assignTire=${id}`);
   };
 
+  const handleSearch = () => {
+    loadTires(search);
+  };
+
   useEffect(() => {
-    // TODO: Supabase'den depodaki lastikleri çek (car_id IS NULL)
-    setTimeout(() => {
-      setTires([
-        {
-          id: 1,
-          tire_serino: 'DOT1234',
-          tire_marka: 'Michelin',
-          tire_desen: 'X Multi',
-          tire_olcu: '315/80R22.5',
-          tire_dis_derinlik: 14.5,
-          tire_ic_derinlik: 14.2,
-          tire_orta_derinlik: 14.3,
-          tire_adet: 4,
-          tire_fiyat: 2500.00,
-          tire_tarih: '2024-01-10',
-        },
-        {
-          id: 2,
-          tire_serino: 'DOT5678',
-          tire_marka: 'Bridgestone',
-          tire_desen: 'R297',
-          tire_olcu: '295/80R22.5',
-          tire_dis_derinlik: 13.8,
-          tire_ic_derinlik: 13.5,
-          tire_orta_derinlik: 13.6,
-          tire_adet: 2,
-          tire_fiyat: 2300.00,
-          tire_tarih: '2024-01-15',
-        },
-      ]);
-      setLoading(false);
-    }, 500);
+    loadTires();
   }, []);
 
   return (
@@ -95,7 +68,17 @@ const LastikDepoPage = () => {
               <div className="heading1 margin_0">
                 <h2>Depo Lastik Listesi</h2>
               </div>
-              <div className="heading1 margin_0" style={{ float: 'right' }}>
+              <div className="heading1 margin_0" style={{ float: 'right', display: 'flex', gap: '10px' }}>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Seri no veya marka ara..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                  style={{ width: '200px' }}
+                />
+                <button className="btn btn-secondary" onClick={handleSearch}>Ara</button>
                 <button className="btn btn-primary" onClick={() => navigate('/lastik-sifir')}>
                   Yeni Lastik Ekle
                 </button>
@@ -116,12 +99,9 @@ const LastikDepoPage = () => {
                         <th>Marka</th>
                         <th>Desen</th>
                         <th>Ölçü</th>
-                        <th>Dış</th>
-                        <th>Orta</th>
-                        <th>İç</th>
-                        <th>Adet</th>
-                        <th>Fiyat</th>
-                        <th>Tarih</th>
+                        <th>Dış Derinlik</th>
+                        <th>Durum</th>
+                        <th>Ölçüm Tarihi</th>
                         <th>İşlemler</th>
                       </tr>
                     </thead>
@@ -129,16 +109,13 @@ const LastikDepoPage = () => {
                       {tires.map((tire) => (
                         <tr key={tire.id}>
                           <td>{tire.id}</td>
-                          <td>{tire.tire_serino}</td>
-                          <td>{tire.tire_marka}</td>
-                          <td>{tire.tire_desen}</td>
-                          <td>{tire.tire_olcu}</td>
-                          <td>{tire.tire_dis_derinlik}</td>
-                          <td>{tire.tire_orta_derinlik}</td>
-                          <td>{tire.tire_ic_derinlik}</td>
-                          <td>{tire.tire_adet}</td>
-                          <td>{tire.tire_fiyat.toFixed(2)} ₺</td>
-                          <td>{tire.tire_tarih}</td>
+                          <td>{tire.tire_serino ?? '-'}</td>
+                          <td>{tire.tire_marka ?? '-'}</td>
+                          <td>{tire.tire_desen ?? '-'}</td>
+                          <td>{tire.tire_olcu ?? '-'}</td>
+                          <td>{tire.tire_disderinligi ? `${tire.tire_disderinligi} mm` : '-'}</td>
+                          <td>{tire.tire_durum ?? 'Normal'}</td>
+                          <td>{tire.tire_olcumtarihi ? new Date(tire.tire_olcumtarihi).toLocaleDateString('tr-TR') : '-'}</td>
                           <td>
                             <button className="btn btn-primary btn-sm" onClick={() => handleAssignToCar(tire.id)}>Araca Tak</button>
                             {' '}
