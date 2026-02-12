@@ -1,9 +1,77 @@
+@import "tailwindcss";
+
 :root {
   font-family: "Inter", system-ui, -apple-system, sans-serif;
   color: #0f172a;
   background: radial-gradient(circle at 20% 20%, #f3f5ff, #f8fafc 35%, #ffffff);
   line-height: 1.5;
   font-weight: 400;
+  --color-primary: #0B5394;
+  --color-primary-dark: #094A84;
+  --color-primary-light: #4D93D1;
+}
+
+/* Design System - Icon Button Styles */
+.btn-icon {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+.btn-icon:hover {
+  transform: scale(1.1);
+}
+
+.btn-icon-primary {
+  color: var(--color-primary);
+}
+
+.btn-icon-primary:hover {
+  background: rgba(11, 83, 148, 0.1);
+}
+
+.btn-icon-danger {
+  color: #ef4444;
+}
+
+.btn-icon-danger:hover {
+  background: #fef2f2;
+}
+
+.btn-icon-warning {
+  color: #f59e0b;
+}
+
+.btn-icon-warning:hover {
+  background: #fffbeb;
+}
+
+.btn-icon-info {
+  color: #3b82f6;
+}
+
+.btn-icon-info:hover {
+  background: #eff6ff;
+}
+
+.btn-icon-success {
+  color: #22c55e;
+}
+
+.btn-icon-success:hover {
+  background: #f0fdf4;
+}
+
+/* Background primary color */
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.text-primary {
+  color: var(--color-primary);
 }
 
 * {
