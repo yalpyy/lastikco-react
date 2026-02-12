@@ -131,7 +131,7 @@ function GenericTable<T>({
     if (totalPages <= 1) return null;
 
     return (
-      <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-t border-gray-200">
+      <div className="flex items-center justify-between px-6 py-4 bg-slate-50 border-t border-gray-200">
         <div className="text-sm text-gray-600">
           {filteredData.length} kayıttan {startIndex + 1}-{Math.min(startIndex + pageSize, filteredData.length)} arası gösteriliyor
         </div>
@@ -139,7 +139,7 @@ function GenericTable<T>({
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="p-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <FiChevronLeft className="w-4 h-4" />
           </button>
@@ -162,8 +162,8 @@ function GenericTable<T>({
                 onClick={() => handlePageChange(pageNum)}
                 className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
                   pageNum === currentPage
-                    ? 'bg-primary text-white'
-                    : 'hover:bg-gray-100 text-gray-700'
+                    ? 'bg-[#0B5394] text-white'
+                    : 'bg-white border border-gray-300 hover:bg-gray-100 text-gray-700'
                 }`}
               >
                 {pageNum}
@@ -174,7 +174,7 @@ function GenericTable<T>({
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="p-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <FiChevronRight className="w-4 h-4" />
           </button>
@@ -186,15 +186,15 @@ function GenericTable<T>({
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       {/* Header */}
-      <div className="bg-primary px-6 py-4 flex items-center justify-between">
+      <div className="bg-[#0B5394] px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h3 className="text-lg font-semibold text-white">{title || 'Liste'}</h3>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
           {/* Search */}
-          <div className="relative">
+          <div className="relative flex-1 sm:flex-initial">
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
               type="text"
-              className="pl-9 pr-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/60 text-sm focus:outline-none focus:ring-2 focus:ring-white/30 w-56"
+              className="w-full sm:w-56 pl-9 pr-4 py-2 rounded-lg bg-white border-0 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-white/30"
               placeholder={searchPlaceholder}
               value={searchTerm}
               onChange={(e) => handleSearchChange(e.target.value)}
@@ -209,7 +209,7 @@ function GenericTable<T>({
       <div className="overflow-x-auto">
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0B5394]"></div>
             <span className="ml-3 text-gray-500">Yükleniyor...</span>
           </div>
         ) : paginatedData.length === 0 ? (
@@ -218,14 +218,14 @@ function GenericTable<T>({
           </div>
         ) : (
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-[#0B5394]/5 border-b border-gray-200">
               <tr>
                 {columns.map((col) => (
                   <th
                     key={String(col.key)}
                     onClick={() => col.sortable && handleSort(String(col.key))}
-                    className={`px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider ${
-                      col.sortable ? 'cursor-pointer hover:bg-gray-100 select-none' : ''
+                    className={`px-6 py-4 text-left text-xs font-bold text-[#0B5394] uppercase tracking-wider ${
+                      col.sortable ? 'cursor-pointer hover:bg-[#0B5394]/10 select-none' : ''
                     } ${col.className || ''}`}
                   >
                     <div className="flex items-center gap-1">
@@ -241,7 +241,7 @@ function GenericTable<T>({
                   </th>
                 ))}
                 {actions && (
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-[#0B5394] uppercase tracking-wider">
                     İşlemler
                   </th>
                 )}
@@ -251,17 +251,17 @@ function GenericTable<T>({
               {paginatedData.map((row, index) => (
                 <tr
                   key={String(row[rowKey])}
-                  className={`transition-colors hover:bg-gray-50 ${
-                    index % 2 === 1 ? 'bg-blue-50/30' : ''
+                  className={`transition-colors hover:bg-slate-100 ${
+                    index % 2 === 1 ? 'bg-slate-50' : 'bg-white'
                   }`}
                 >
                   {columns.map((col) => (
-                    <td key={String(col.key)} className={`px-4 py-3 text-sm text-gray-700 ${col.className || ''}`}>
+                    <td key={String(col.key)} className={`px-6 py-4 text-sm text-gray-700 ${col.className || ''}`}>
                       {col.render ? col.render(row) : String(getNestedValue(row, col.key as string) ?? '-')}
                     </td>
                   ))}
                   {actions && (
-                    <td className="px-4 py-3">
+                    <td className="px-6 py-4">
                       <div className="flex items-center gap-1">
                         {actions(row)}
                       </div>
