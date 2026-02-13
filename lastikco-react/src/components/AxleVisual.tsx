@@ -18,52 +18,52 @@ interface AxleVisualProps {
 }
 
 // Position mapping for different axle configurations
-// These positions are relative percentages for overlaying on the image
+// These positions are calibrated to match the actual tire positions in the images
 const POSITION_MAPS: Record<number, Record<string, { top: string; left: string }>> = {
   2: {
-    // Axle 1 - Front
-    '1-Sol Ön': { top: '35%', left: '8%' },
-    '1-Sağ Ön': { top: '35%', left: '84%' },
-    // Axle 2 - Rear
-    '2-Sol Dış': { top: '75%', left: '5%' },
-    '2-Sol İç': { top: '75%', left: '18%' },
-    '2-Sağ İç': { top: '75%', left: '74%' },
-    '2-Sağ Dış': { top: '75%', left: '87%' },
+    // Axle 1 - Front (single tires)
+    '1-Sol Ön': { top: '22%', left: '10%' },
+    '1-Sağ Ön': { top: '22%', left: '90%' },
+    // Axle 2 - Rear (dual tires)
+    '2-Sol Dış': { top: '78%', left: '4%' },
+    '2-Sol İç': { top: '78%', left: '16%' },
+    '2-Sağ İç': { top: '78%', left: '84%' },
+    '2-Sağ Dış': { top: '78%', left: '96%' },
   },
   3: {
-    // Axle 1 - Front
-    '1-Sol Ön': { top: '25%', left: '8%' },
-    '1-Sağ Ön': { top: '25%', left: '84%' },
-    // Axle 2 - Middle
-    '2-Sol Dış': { top: '55%', left: '5%' },
-    '2-Sol İç': { top: '55%', left: '18%' },
-    '2-Sağ İç': { top: '55%', left: '74%' },
-    '2-Sağ Dış': { top: '55%', left: '87%' },
-    // Axle 3 - Rear
-    '3-Sol Dış': { top: '80%', left: '5%' },
-    '3-Sol İç': { top: '80%', left: '18%' },
-    '3-Sağ İç': { top: '80%', left: '74%' },
-    '3-Sağ Dış': { top: '80%', left: '87%' },
+    // Axle 1 - Front (single tires)
+    '1-Sol Ön': { top: '15%', left: '10%' },
+    '1-Sağ Ön': { top: '15%', left: '90%' },
+    // Axle 2 - Middle (dual tires)
+    '2-Sol Dış': { top: '52%', left: '4%' },
+    '2-Sol İç': { top: '52%', left: '16%' },
+    '2-Sağ İç': { top: '52%', left: '84%' },
+    '2-Sağ Dış': { top: '52%', left: '96%' },
+    // Axle 3 - Rear (dual tires)
+    '3-Sol Dış': { top: '85%', left: '4%' },
+    '3-Sol İç': { top: '85%', left: '16%' },
+    '3-Sağ İç': { top: '85%', left: '84%' },
+    '3-Sağ Dış': { top: '85%', left: '96%' },
   },
   4: {
-    // Axle 1 - Front
-    '1-Sol Ön': { top: '18%', left: '8%' },
-    '1-Sağ Ön': { top: '18%', left: '84%' },
-    // Axle 2 - Middle Front
-    '2-Sol Dış': { top: '42%', left: '5%' },
-    '2-Sol İç': { top: '42%', left: '18%' },
-    '2-Sağ İç': { top: '42%', left: '74%' },
-    '2-Sağ Dış': { top: '42%', left: '87%' },
-    // Axle 3 - Middle Rear
-    '3-Sol Dış': { top: '62%', left: '5%' },
-    '3-Sol İç': { top: '62%', left: '18%' },
-    '3-Sağ İç': { top: '62%', left: '74%' },
-    '3-Sağ Dış': { top: '62%', left: '87%' },
-    // Axle 4 - Rear
-    '4-Sol Dış': { top: '82%', left: '5%' },
-    '4-Sol İç': { top: '82%', left: '18%' },
-    '4-Sağ İç': { top: '82%', left: '74%' },
-    '4-Sağ Dış': { top: '82%', left: '87%' },
+    // Axle 1 - Front (single tires)
+    '1-Sol Ön': { top: '12%', left: '10%' },
+    '1-Sağ Ön': { top: '12%', left: '90%' },
+    // Axle 2 - Middle Front (dual tires)
+    '2-Sol Dış': { top: '38%', left: '4%' },
+    '2-Sol İç': { top: '38%', left: '16%' },
+    '2-Sağ İç': { top: '38%', left: '84%' },
+    '2-Sağ Dış': { top: '38%', left: '96%' },
+    // Axle 3 - Middle Rear (dual tires)
+    '3-Sol Dış': { top: '62%', left: '4%' },
+    '3-Sol İç': { top: '62%', left: '16%' },
+    '3-Sağ İç': { top: '62%', left: '84%' },
+    '3-Sağ Dış': { top: '62%', left: '96%' },
+    // Axle 4 - Rear (dual tires)
+    '4-Sol Dış': { top: '86%', left: '4%' },
+    '4-Sol İç': { top: '86%', left: '16%' },
+    '4-Sağ İç': { top: '86%', left: '84%' },
+    '4-Sağ Dış': { top: '86%', left: '96%' },
   },
 };
 
@@ -98,12 +98,12 @@ const AxleVisual = ({ axleCount, tires, onTireClick, onEmptyClick }: AxleVisualP
     return tires.find(t => t.axle_number === axle && t.tire_position === position);
   };
 
-  const getDepthColor = (depth: string): string => {
+  const getDepthStatus = (depth: string): { color: string; bgColor: string; borderColor: string; status: string } => {
     const depthNum = parseFloat(depth);
-    if (isNaN(depthNum)) return '#6c757d';
-    if (depthNum < 5) return '#dc3545'; // Red - Critical
-    if (depthNum < 8) return '#ffc107'; // Yellow - Warning
-    return '#28a745'; // Green - Good
+    if (isNaN(depthNum)) return { color: 'text-gray-600', bgColor: 'bg-gray-100', borderColor: 'border-gray-400', status: 'N/A' };
+    if (depthNum < 5) return { color: 'text-white', bgColor: 'bg-red-500', borderColor: 'border-red-600', status: 'Kritik' };
+    if (depthNum < 8) return { color: 'text-gray-900', bgColor: 'bg-amber-400', borderColor: 'border-amber-500', status: 'Uyarı' };
+    return { color: 'text-white', bgColor: 'bg-emerald-500', borderColor: 'border-emerald-600', status: 'İyi' };
   };
 
   const renderTireMarker = (posKey: string, axle: number, position: string): ReactNode => {
@@ -112,95 +112,93 @@ const AxleVisual = ({ axleCount, tires, onTireClick, onEmptyClick }: AxleVisualP
 
     const tire = getTireAtPosition(axle, position);
 
-    const style: React.CSSProperties = {
-      position: 'absolute',
-      top: coords.top,
-      left: coords.left,
-      transform: 'translate(-50%, -50%)',
-      width: '55px',
-      height: '22px',
-      borderRadius: '4px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: '10px',
-      fontWeight: 'bold',
-      cursor: 'pointer',
-      border: '2px solid',
-      transition: 'transform 0.2s',
-    };
-
     if (tire) {
-      const depthColor = getDepthColor(tire.tire_disderinligi);
+      const status = getDepthStatus(tire.tire_disderinligi);
       return (
-        <div
+        <button
           key={posKey}
-          style={{
-            ...style,
-            backgroundColor: depthColor,
-            borderColor: depthColor,
-            color: '#fff',
-          }}
           onClick={() => onTireClick?.(tire)}
-          title={`${tire.tire_marka} - ${tire.tire_serino}\nDiş: ${tire.tire_disderinligi}mm`}
-          className="axle-tire-marker"
+          title={`${tire.tire_marka} - ${tire.tire_serino}\nDiş Derinliği: ${tire.tire_disderinligi}mm\nDurum: ${status.status}`}
+          className={`
+            absolute -translate-x-1/2 -translate-y-1/2
+            w-10 h-5 rounded-full
+            ${status.bgColor} ${status.color} ${status.borderColor}
+            border-2 shadow-md
+            flex items-center justify-center
+            text-[9px] font-bold
+            hover:scale-125 hover:z-20
+            transition-all duration-200
+            cursor-pointer
+          `}
+          style={{ top: coords.top, left: coords.left }}
         >
-          {tire.tire_disderinligi}mm
-        </div>
+          {tire.tire_disderinligi || '?'}
+        </button>
       );
     } else {
       return (
-        <div
+        <button
           key={posKey}
-          style={{
-            ...style,
-            backgroundColor: '#f8f9fa',
-            borderColor: '#dee2e6',
-            color: '#6c757d',
-          }}
           onClick={() => onEmptyClick?.(axle, position)}
-          title={`Boş: ${position} (Aks ${axle})`}
-          className="axle-tire-marker axle-tire-empty"
+          title={`Boş Pozisyon: ${position} (Aks ${axle})\nLastik eklemek için tıklayın`}
+          className={`
+            absolute -translate-x-1/2 -translate-y-1/2
+            w-10 h-5 rounded-full
+            bg-slate-200 border-2 border-dashed border-slate-400
+            flex items-center justify-center
+            text-slate-500 text-sm font-bold
+            hover:bg-[#0B5394] hover:border-[#0B5394] hover:text-white hover:border-solid
+            hover:scale-125 hover:z-20
+            transition-all duration-200
+            cursor-pointer
+          `}
+          style={{ top: coords.top, left: coords.left }}
         >
           +
-        </div>
+        </button>
       );
     }
   };
 
   return (
-    <div className="axle-visual-container" style={{ position: 'relative', maxWidth: '400px', margin: '0 auto' }}>
-      <style>{`
-        .axle-tire-marker:hover {
-          transform: translate(-50%, -50%) scale(1.1);
-          z-index: 10;
-        }
-        .axle-tire-empty:hover {
-          background-color: #e9ecef !important;
-        }
-      `}</style>
-      <img
-        src={`/images/aks/aks${axleCount}.png`}
-        alt={`${axleCount} akslı araç şeması`}
-        style={{ width: '100%', height: 'auto' }}
-      />
-      {allPositions.map(({ key, axle, position }) => renderTireMarker(key, axle, position))}
+    <div className="axle-visual-container max-w-md mx-auto">
+      {/* Image Container */}
+      <div className="relative bg-white rounded-xl p-4 shadow-inner border border-gray-200">
+        <img
+          src={`/images/aks/aks${axleCount}.png`}
+          alt={`${axleCount} akslı araç şeması`}
+          className="w-full h-auto"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"%3E%3Crect fill="%23f1f5f9" width="400" height="300"/%3E%3Ctext fill="%2364748b" font-family="system-ui" font-size="14" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle"%3EAks görseli yüklenemedi%3C/text%3E%3C/svg%3E';
+          }}
+        />
+        {allPositions.map(({ key, axle, position }) => renderTireMarker(key, axle, position))}
+      </div>
 
       {/* Legend */}
-      <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'center', gap: '15px', fontSize: '12px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-          <span style={{ width: '12px', height: '12px', backgroundColor: '#28a745', borderRadius: '2px', display: 'inline-block' }}></span>
-          İyi (≥8mm)
+      <div className="mt-4 flex flex-wrap justify-center gap-4 text-xs">
+        <div className="flex items-center gap-2">
+          <span className="w-4 h-4 bg-emerald-500 rounded-full border-2 border-emerald-600"></span>
+          <span className="text-gray-600">İyi (≥8mm)</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-          <span style={{ width: '12px', height: '12px', backgroundColor: '#ffc107', borderRadius: '2px', display: 'inline-block' }}></span>
-          Uyarı (5-8mm)
+        <div className="flex items-center gap-2">
+          <span className="w-4 h-4 bg-amber-400 rounded-full border-2 border-amber-500"></span>
+          <span className="text-gray-600">Uyarı (5-8mm)</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-          <span style={{ width: '12px', height: '12px', backgroundColor: '#dc3545', borderRadius: '2px', display: 'inline-block' }}></span>
-          Kritik (&lt;5mm)
+        <div className="flex items-center gap-2">
+          <span className="w-4 h-4 bg-red-500 rounded-full border-2 border-red-600"></span>
+          <span className="text-gray-600">Kritik (&lt;5mm)</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="w-4 h-4 bg-slate-200 rounded-full border-2 border-dashed border-slate-400"></span>
+          <span className="text-gray-600">Boş</span>
         </div>
       </div>
+
+      {/* Info Text */}
+      <p className="mt-3 text-center text-xs text-gray-500">
+        Lastik eklemek veya düzenlemek için pozisyona tıklayın
+      </p>
     </div>
   );
 };

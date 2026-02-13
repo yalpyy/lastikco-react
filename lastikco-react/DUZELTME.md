@@ -1,6 +1,6 @@
 # Lastik Yönetim Sistemi - Düzeltme Yol Haritası
 
-**Son Güncelleme:** 2026-02-12
+**Son Güncelleme:** 2026-02-13
 **Branch:** claude/migrate-php-pages-react-FEmxv
 
 ---
@@ -63,26 +63,27 @@
 ## Aşama 3: CRUD İşlemleri Düzeltme
 **Öncelik:** P0 - Kritik
 
-### 3.1 CarEditPage.tsx
-- [ ] getCarWithAxles() ile araç verisi çek
-- [ ] listTiresByCar() ile lastikleri çek
-- [ ] createTireWithDetails() ile yeni lastik ekle
-- [ ] updateTireDetails() ile lastik güncelle
-- [ ] deleteTire() ile lastik sil
-- [ ] removeTireFromCar() ile araçtan çıkar
-- [ ] deleteCar() ile araç sil
+### 3.1 CarEditPage.tsx ✅ TAMAMLANDI
+- [x] getCarWithAxles() ile araç verisi çek
+- [x] listTiresByCar() ile lastikleri çek
+- [x] createTireWithDetails() ile yeni lastik ekle
+- [x] updateTireDetails() ile lastik güncelle
+- [x] deleteTire() ile lastik sil
+- [x] removeTireFromCar() ile araçtan çıkar
+- [x] deleteCar() ile araç sil
 
-### 3.2 AkuEditPage.tsx
-- [ ] Akü servisini kontrol et
-- [ ] CRUD işlemlerini entegre et
+### 3.2 AkuEditPage.tsx ✅ TAMAMLANDI
+- [x] Akü servisini kontrol et
+- [x] CRUD işlemlerini entegre et (createAku, updateAku, deleteAku, sendAkuToDepot)
 
-### 3.3 DepodanLastikGetirPage.tsx
-- [ ] Depo lastiklerini listele
-- [ ] assignTireToCar() ile lastiği araca ata
+### 3.3 DepodanLastikGetirPage.tsx ✅ TAMAMLANDI
+- [x] Depo lastiklerini listele (listDepotTires)
+- [x] assignTireToCar() ile lastiği araca ata
+- [x] Aks ve pozisyon seçimi modal
 
-### 3.4 DepodanAkuGetirPage.tsx
-- [ ] Depo akülerini listele
-- [ ] Akü ataması yap
+### 3.4 DepodanAkuGetirPage.tsx ✅ TAMAMLANDI
+- [x] Depo akülerini listele (listDepotAkus)
+- [x] Akü ataması yap (assignAkuToCar)
 
 ### Dosyalar:
 - `src/pages/CarEditPage.tsx`
@@ -238,9 +239,9 @@ Her aşama sonrası test edilecekler:
 |-------|-------|-------|
 | Aşama 1: Navbar | ✅ Tamamlandı | 2026-02-12 |
 | Aşama 2: Tablo | ✅ Tamamlandı | 2026-02-12 |
-| Aşama 3: CRUD | ✅ CarEditPage Tamamlandı | 2026-02-12 |
-| Aşama 4: AxleVisual | ⏳ Bekliyor | - |
-| Aşama 5: Layout | ✅ CarEditPage Tamamlandı | 2026-02-12 |
+| Aşama 3: CRUD | ✅ Tamamlandı (CarEditPage, AkuEditPage, DepodanLastikGetirPage, DepodanAkuGetirPage) | 2026-02-13 |
+| Aşama 4: AxleVisual | ✅ Tamamlandı | 2026-02-12 |
+| Aşama 5: Layout | ✅ Tamamlandı (CarEditPage, AkuEditPage) | 2026-02-13 |
 | Aşama 6: Form/Buton | ✅ Tamamlandı | 2026-02-12 |
-| Aşama 7: Entegrasyonlar | ⏳ Bekliyor | - |
+| Aşama 7: Entegrasyonlar | ✅ Tamamlandı (DisDerinligiPage, KmBilgiPage, BasincBilgiPage) | 2026-02-13 |
 | Aşama 8: Eksik Sayfalar | ⏳ Bekliyor | - |
