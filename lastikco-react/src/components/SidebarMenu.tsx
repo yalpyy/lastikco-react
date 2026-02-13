@@ -194,6 +194,7 @@ const SidebarMenu = () => {
       </div>
 
       <style>{`
+        /* Main menu icon styling */
         .sidebar-icon {
           display: inline-flex;
           align-items: center;
@@ -202,39 +203,78 @@ const SidebarMenu = () => {
           height: 20px;
           margin-right: 15px;
           font-size: 18px;
+          color: inherit;
         }
         .sidebar-icon svg {
           width: 18px;
           height: 18px;
         }
-        #sidebar ul li a {
+
+        /* Main menu item styling */
+        #sidebar ul.components > li > a {
           display: flex;
           align-items: center;
+          padding: 15px 25px;
+          color: rgba(255, 255, 255, 0.85);
+          font-size: 14px;
+          transition: all 0.3s ease;
         }
+        #sidebar ul.components > li > a:hover {
+          color: #fff;
+          background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Chevron arrow styling */
         .menu-arrow {
           margin-left: auto;
           display: flex;
           align-items: center;
+          color: rgba(255, 255, 255, 0.5);
         }
         .menu-arrow svg {
           width: 14px;
           height: 14px;
         }
-        .child-indicator {
-          margin-right: 10px;
-          color: rgba(255, 255, 255, 0.5);
+
+        /* Submenu container */
+        #sidebar ul.components ul.collapse {
+          display: none;
+          background: #214162;
+          padding: 10px 0;
         }
+        #sidebar ul.components ul.collapse.show {
+          display: block;
+        }
+
+        /* Submenu items */
         #sidebar ul.components ul li a {
           display: flex;
           align-items: center;
+          padding: 10px 25px 10px 45px;
+          color: rgba(255, 255, 255, 0.7) !important;
+          font-size: 13px;
+          transition: all 0.3s ease;
+        }
+        #sidebar ul.components ul li a:hover {
+          color: #fff !important;
+          padding-left: 50px;
         }
         #sidebar ul.components ul li a.active-child {
-          color: #fff;
+          color: #fff !important;
           background: rgba(255, 255, 255, 0.1);
         }
-        #sidebar ul li a.active {
+
+        /* Child indicator */
+        .child-indicator {
+          margin-right: 10px;
+          color: rgba(255, 255, 255, 0.5);
+          font-size: 12px;
+        }
+
+        /* Active main menu item */
+        #sidebar ul.components > li.active > a {
           color: #fff;
-          background: rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.05);
         }
       `}</style>
     </nav>
