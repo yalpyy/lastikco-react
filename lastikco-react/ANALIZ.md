@@ -24,7 +24,7 @@
 | Pasif Araçlar | AracPasifPage.tsx | `/arac-pasif` | ✅ | READ | GenericTable kullanıyor |
 | Araç Ekle | AracEklePage.tsx | `/arac-ekle` | ✅ | CREATE | Form validasyonu var |
 | Araç Düzenle | CarEditPage.tsx | `/arac-duzenle/:carId` | ✅ | CRUD | Supabase entegrasyonu tamamlandı |
-| Araç Geçmişi | AracGecmisiPage.tsx | `/arac-gecmisi/:carId` | ⚠️ | READ | - |
+| Araç Geçmişi | AracGecmisiPage.tsx | `/arac-gecmisi/:carId` | ✅ | READ | **Supabase entegrasyonu tamamlandı!** |
 | Araç Bölge | AracBolgePage.tsx | `/arac-bolge/:carId` | ⚠️ | UPDATE | - |
 | Toplam Araç | TotalCarsPage.tsx | `/toplam-arac` | ✅ | READ | - |
 
@@ -39,11 +39,11 @@
 | Lastik Havuzu | LastikHavuzPage.tsx | `/lastik-havuz` | ⚠️ | READ | - |
 | Toplam Lastik | TotalTiresPage.tsx | `/toplam-lastik` | ✅ | READ | - |
 | Alert Lastikler | AlertPage.tsx | `/alert` | ✅ | READ | Düşük diş derinliği uyarı |
-| Detay Sayfa | DetaySayfaPage.tsx | `/detay-sayfa/:tireId` | ⚠️ | READ | - |
+| Detay Sayfa | DetaySayfaPage.tsx | `/detay-sayfa/:tireId` | ✅ | READ | **Supabase entegrasyonu tamamlandı!** |
 | Diş Derinliği | DisDerinligiPage.tsx | `/dis-derinligi/:tireId` | ✅ | CRUD | **Supabase entegrasyonu tamamlandı!** |
 | KM Bilgi | KmBilgiPage.tsx | `/km-bilgi/:tireId` | ✅ | CRUD | **Supabase entegrasyonu tamamlandı!** |
 | Basınç Bilgi | BasincBilgiPage.tsx | `/basinc-bilgi/:tireId` | ✅ | CRUD | **Supabase entegrasyonu tamamlandı!** |
-| Lastik Geçmişi | LastikGecmisiPage.tsx | `/lastik-gecmisi/:tireId` | ⚠️ | READ | - |
+| Lastik Geçmişi | LastikGecmisiPage.tsx | `/lastik-gecmisi/:tireId` | ✅ | READ | **Supabase entegrasyonu tamamlandı!** |
 | Depodan Lastik Getir | DepodanLastikGetirPage.tsx | `/depodan-lastik-getir/:carId` | ✅ | UPDATE | **Supabase entegrasyonu tamamlandı!** |
 
 ### Akü İşlemleri
@@ -73,8 +73,8 @@
 | Servis | Dosya | Fonksiyonlar | Durum |
 |--------|-------|--------------|-------|
 | Auth | authService.ts | signIn, signOut, signUp | ✅ |
-| Vehicle | vehicleService.ts | createCarWithAxles, listCarsWithAxles, getCarWithAxles, updateCar, deleteCar | ✅ |
-| Tire | tireService.ts | createTireWithDetails, listTiresByCar, listDepotTires, assignTireToCar, updateTireDetails, deleteTire, removeTireFromCar, addTireDepth, addTireKm | ✅ |
+| Vehicle | vehicleService.ts | createCarWithAxles, listCarsWithAxles, getCarWithAxles, updateCar, deleteCar, getCarHistory | ✅ |
+| Tire | tireService.ts | createTireWithDetails, listTiresByCar, listDepotTires, assignTireToCar, updateTireDetails, deleteTire, removeTireFromCar, addTireDepth, addTireKm, getTireHistory, getTireDepthHistory, getTireKmHistory | ✅ |
 | Aku | akuService.ts | listAkus, listDepotAkus, listCarAkus, getAku, createAku, updateAku, deleteAku, assignAkuToCar, sendAkuToDepot | ✅ |
 | Bolge | bolgeService.ts | listBolges, createBolge | ✅ |
 | Dashboard | dashboardService.ts | getDashboardStats | ✅ |
@@ -113,8 +113,9 @@
 - [x] DisDerinligiPage - Supabase entegrasyonu ✅
 - [x] KmBilgiPage - Supabase entegrasyonu ✅
 - [x] BasincBilgiPage - Supabase entegrasyonu ✅
-- [ ] LastikGecmisiPage - Supabase entegrasyonu
-- [ ] AracGecmisiPage - Supabase entegrasyonu
+- [x] LastikGecmisiPage - Supabase entegrasyonu ✅
+- [x] AracGecmisiPage - Supabase entegrasyonu ✅
+- [x] DetaySayfaPage - Supabase entegrasyonu ✅
 
 ### Düşük Öncelik (P3)
 - [ ] Loading state iyileştirmeleri
@@ -130,6 +131,9 @@
 3. ~~**Bootstrap sınıfları:** Tailwind ile karışık kullanılıyor~~ ✅ ÇÖZÜLDÜ
 4. ~~**DepodanLastikGetirPage.tsx:** TODO yorumları var~~ ✅ ÇÖZÜLDÜ
 5. ~~**DepodanAkuGetirPage.tsx:** TODO yorumları var~~ ✅ ÇÖZÜLDÜ
+6. ~~**LastikGecmisiPage.tsx:** TODO yorumları var~~ ✅ ÇÖZÜLDÜ
+7. ~~**AracGecmisiPage.tsx:** TODO yorumları var~~ ✅ ÇÖZÜLDÜ
+8. ~~**DetaySayfaPage.tsx:** TODO yorumları var~~ ✅ ÇÖZÜLDÜ
 
 ---
 
@@ -157,11 +161,16 @@
 - [x] DisDerinligiPage Supabase entegrasyonu (grafik, CRUD)
 - [x] KmBilgiPage Supabase entegrasyonu (özet kartları, CRUD)
 - [x] BasincBilgiPage Supabase entegrasyonu (uyarı sistemi, CRUD)
+- [x] LastikGecmisiPage Supabase entegrasyonu (timeline görünümü)
+- [x] AracGecmisiPage Supabase entegrasyonu (timeline görünümü)
+- [x] DetaySayfaPage Supabase entegrasyonu (grafik, özet kartları, hızlı işlemler)
 
 ---
 
 ## Sıradaki Görevler
 
-1. **LastikGecmisiPage** - Lastik geçmişi görüntüleme
-2. **AracGecmisiPage** - Araç geçmişi görüntüleme
-3. **DetaySayfaPage** - Lastik detay sayfası entegrasyonu
+1. **AkuDepoPage** - Akü depo listesi entegrasyonu
+2. **YeniAkuPage** - Yeni akü ekleme formu
+3. **LastikBilgiPage** - Lastik bilgi sayfası
+4. **LastikHavuzPage** - Lastik havuzu sayfası
+5. **AracBolgePage** - Araç bölge güncelleme
