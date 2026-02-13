@@ -2,7 +2,7 @@
 
 ## Proje Durumu
 
-**Son Güncelleme:** 2026-02-12
+**Son Güncelleme:** 2026-02-13
 **Branch:** claude/migrate-php-pages-react-FEmxv
 
 ---
@@ -23,7 +23,7 @@
 | Aktif Araçlar | AracAktifPage.tsx | `/arac-aktif` | ✅ | READ | GenericTable kullanıyor |
 | Pasif Araçlar | AracPasifPage.tsx | `/arac-pasif` | ✅ | READ | GenericTable kullanıyor |
 | Araç Ekle | AracEklePage.tsx | `/arac-ekle` | ✅ | CREATE | Form validasyonu var |
-| Araç Düzenle | CarEditPage.tsx | `/arac-duzenle/:carId` | ✅ | CRUD | **Supabase entegrasyonu tamamlandı!** |
+| Araç Düzenle | CarEditPage.tsx | `/arac-duzenle/:carId` | ✅ | CRUD | Supabase entegrasyonu tamamlandı |
 | Araç Geçmişi | AracGecmisiPage.tsx | `/arac-gecmisi/:carId` | ⚠️ | READ | - |
 | Araç Bölge | AracBolgePage.tsx | `/arac-bolge/:carId` | ⚠️ | UPDATE | - |
 | Toplam Araç | TotalCarsPage.tsx | `/toplam-arac` | ✅ | READ | - |
@@ -44,15 +44,15 @@
 | KM Bilgi | KmBilgiPage.tsx | `/km-bilgi/:tireId` | ⚠️ | CREATE/READ | - |
 | Basınç Bilgi | BasincBilgiPage.tsx | `/basinc-bilgi/:tireId` | ⚠️ | CREATE/READ | - |
 | Lastik Geçmişi | LastikGecmisiPage.tsx | `/lastik-gecmisi/:tireId` | ⚠️ | READ | - |
-| Depodan Lastik Getir | DepodanLastikGetirPage.tsx | `/depodan-lastik-getir/:carId` | ⚠️ | UPDATE | - |
+| Depodan Lastik Getir | DepodanLastikGetirPage.tsx | `/depodan-lastik-getir/:carId` | ✅ | UPDATE | **Supabase entegrasyonu tamamlandı!** |
 
 ### Akü İşlemleri
 | Sayfa | Dosya | Route | Durum | CRUD | Notlar |
 |-------|-------|-------|-------|------|--------|
 | Akü Depo | AkuDepoPage.tsx | `/aku-depo` | ⚠️ | READ | - |
 | Yeni Akü | YeniAkuPage.tsx | `/yeni-aku` | ⚠️ | CREATE | - |
-| Akü Düzenle | AkuEditPage.tsx | `/aku-duzenle/:carId` | ❌ | UPDATE/DELETE | **Supabase entegrasyonu yok!** |
-| Depodan Akü Getir | DepodanAkuGetirPage.tsx | `/depodan-aku-getir/:carId` | ⚠️ | UPDATE | - |
+| Akü Düzenle | AkuEditPage.tsx | `/aku-duzenle/:carId` | ✅ | CRUD | **Supabase entegrasyonu tamamlandı!** |
+| Depodan Akü Getir | DepodanAkuGetirPage.tsx | `/depodan-aku-getir/:carId` | ✅ | UPDATE | **Supabase entegrasyonu tamamlandı!** |
 
 ### Yönetim
 | Sayfa | Dosya | Route | Durum | CRUD | Notlar |
@@ -74,8 +74,8 @@
 |--------|-------|--------------|-------|
 | Auth | authService.ts | signIn, signOut, signUp | ✅ |
 | Vehicle | vehicleService.ts | createCarWithAxles, listCarsWithAxles, getCarWithAxles, updateCar, deleteCar | ✅ |
-| Tire | tireService.ts | createTireWithDetails, listTiresByCar, updateTireDetails, deleteTire, removeTireFromCar | ✅ |
-| Aku | akuService.ts | - | ⚠️ Kontrol edilmeli |
+| Tire | tireService.ts | createTireWithDetails, listTiresByCar, listDepotTires, assignTireToCar, updateTireDetails, deleteTire, removeTireFromCar, addTireDepth, addTireKm | ✅ |
+| Aku | akuService.ts | listAkus, listDepotAkus, listCarAkus, getAku, createAku, updateAku, deleteAku, assignAkuToCar, sendAkuToDepot | ✅ |
 | Bolge | bolgeService.ts | listBolges, createBolge | ✅ |
 | Dashboard | dashboardService.ts | getDashboardStats | ✅ |
 
@@ -89,7 +89,7 @@
 | Footer | Footer.tsx | ✅ | - |
 | Layout | Layout.tsx | ✅ | max-w-7xl container, bg-slate-50 |
 | GenericTable | GenericTable.tsx | ✅ | Pagination, arama, sıralama, koyu header |
-| AxleVisual | AxleVisual.tsx | ⚠️ | **Pozisyonlar düzeltilmeli** |
+| AxleVisual | AxleVisual.tsx | ✅ | **Pozisyonlar düzeltildi, Tailwind CSS** |
 | ProtectedRoute | ProtectedRoute.tsx | ✅ | - |
 
 ---
@@ -99,20 +99,22 @@
 ### Kritik (P0) - TAMAMLANDI
 - [x] CarEditPage - Supabase UPDATE/DELETE entegrasyonu ✅
 - [x] Navbar menü linkleri ✅
-- [ ] AkuEditPage - Supabase UPDATE/DELETE entegrasyonu
+- [x] AkuEditPage - Supabase CRUD entegrasyonu ✅
 
 ### Yüksek Öncelik (P1) - TAMAMLANDI
 - [x] Tablo header renkleri (#0B5394, beyaz yazı) ✅
 - [x] GenericTable pagination ✅
 - [x] Form buton stilleri tutarlı ✅
-- [ ] AxleVisual lastik pozisyonları düzeltilmeli
+- [x] AxleVisual lastik pozisyonları düzeltildi ✅
+- [x] DepodanLastikGetirPage - Supabase entegrasyonu ✅
+- [x] DepodanAkuGetirPage - Supabase entegrasyonu ✅
 
 ### Orta Öncelik (P2)
 - [ ] DisDerinligiPage - Supabase entegrasyonu
 - [ ] KmBilgiPage - Supabase entegrasyonu
 - [ ] BasincBilgiPage - Supabase entegrasyonu
-- [ ] DepodanLastikGetirPage - Supabase entegrasyonu
-- [ ] DepodanAkuGetirPage - Supabase entegrasyonu
+- [ ] LastikGecmisiPage - Supabase entegrasyonu
+- [ ] AracGecmisiPage - Supabase entegrasyonu
 
 ### Düşük Öncelik (P3)
 - [ ] Loading state iyileştirmeleri
@@ -124,8 +126,10 @@
 ## Teknik Borçlar
 
 1. ~~**CarEditPage.tsx:** Tüm CRUD işlemleri TODO yorumlu~~ ✅ ÇÖZÜLDÜ
-2. **AkuEditPage.tsx:** Hala TODO yorumları var
-3. ~~**Bootstrap sınıfları:** Tailwind ile karışık kullanılıyor~~ ✅ ÇÖZÜLDÜ (CarEditPage)
+2. ~~**AkuEditPage.tsx:** Hala TODO yorumları var~~ ✅ ÇÖZÜLDÜ
+3. ~~**Bootstrap sınıfları:** Tailwind ile karışık kullanılıyor~~ ✅ ÇÖZÜLDÜ
+4. ~~**DepodanLastikGetirPage.tsx:** TODO yorumları var~~ ✅ ÇÖZÜLDÜ
+5. ~~**DepodanAkuGetirPage.tsx:** TODO yorumları var~~ ✅ ÇÖZÜLDÜ
 
 ---
 
@@ -143,8 +147,11 @@
 - [x] Araç ekleme formu (validasyon dahil)
 - [x] Lastik ekleme formu (validasyon dahil)
 - [x] Bölge yönetimi
-- [x] AxleVisual bileşeni (temel)
+- [x] AxleVisual bileşeni (pozisyonlar düzeltildi)
 - [x] CarEditPage CRUD entegrasyonu
+- [x] AkuEditPage CRUD entegrasyonu
+- [x] DepodanLastikGetirPage Supabase entegrasyonu
+- [x] DepodanAkuGetirPage Supabase entegrasyonu
 - [x] Tablo stilleri (#0B5394 header, zebra striping)
 - [x] Layout düzeltmesi (max-w-7xl, bg-slate-50)
 
@@ -152,6 +159,8 @@
 
 ## Sıradaki Görevler
 
-1. **AxleVisual Düzeltme** - Lastik pozisyonlarını aks resmine göre konumlandır
-2. **AkuEditPage CRUD** - Supabase entegrasyonu
-3. **DepodanLastikGetirPage** - Depo lastiklerini araca atama
+1. **DisDerinligiPage** - Diş derinliği kayıt ve geçmiş Supabase entegrasyonu
+2. **KmBilgiPage** - KM kayıt ve geçmiş Supabase entegrasyonu
+3. **BasincBilgiPage** - Basınç kayıt Supabase entegrasyonu
+4. **LastikGecmisiPage** - Lastik geçmişi görüntüleme
+5. **AracGecmisiPage** - Araç geçmişi görüntüleme
