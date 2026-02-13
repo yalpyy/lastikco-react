@@ -1,5 +1,4 @@
-
-name: Flutter CI
+name: Node CI
 
 on:
   push:
@@ -11,33 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+      - name: Use Node
+        uses: actions/setup-node@v4
         with:
-          flutter-version: "stable"
+          node-version: 20
+          cache: "npm"
 
-      - name: Install deps
-        run: flutter pub get
+      - name: Install
+        run: npm ci
 
-      - name: Analyze
-        run: flutter analyze
+      - name: Lint
+        run: npm run lint --if-present
 
-      - name: Test
-        run: flutter test
-
-      - name: Build Android APK
-        run: flutter build apk --release
-
-      - name: Build Web
-        run: flutter build web --release
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-outputs
-          path: |
-            build/app/outputs/flutter-apk/app-release.apk
-            build/web
+      - name: Build
+        run: npm run build
