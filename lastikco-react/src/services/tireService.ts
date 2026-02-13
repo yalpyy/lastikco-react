@@ -53,6 +53,13 @@ export const createTireWithDetails = async (carId: number | null, payload: TireI
     throw new UserFacingError(mapSupabaseError(detailError));
   }
 
+  // Log kaydı oluştur
+  const location = carId ? 'araca takılı olarak' : 'depoya';
+  await supabase.from('logs').insert({
+    tire_id: tireData.id,
+    message: `Yeni lastik oluşturuldu (${payload.tire_serino || 'Seri no yok'}) ve ${location} eklendi.`,
+  });
+
   return tireData as Tire;
 };
 
@@ -239,7 +246,8 @@ export const assignTireToCar = async (
   tireId: number,
   carId: number,
   axleNumber: number,
-  position: string
+  position: string,
+  carName?: string
 ) => {
   const { error } = await supabase
     .from('tires')
@@ -254,11 +262,63 @@ export const assignTireToCar = async (
     throw new UserFacingError(mapSupabaseError(error));
   }
 
+  // Log kaydı oluştur
+  const positionLabel = position.replace(/_/g, ' ');
+  await addTireLog(
+    tireId,
+    `Lastik ${carName || `Araç #${carId}`} aracına takıldı. Aks: ${axleNumber}, Pozisyon: ${positionLabel}`
+  );
+
   return true;
 };
 
 // Lastiği araçtan çıkar (depoya gönder)
-export const removeTireFromCar = async (tireId: number) => {
+export const removeTireFromCar = async (tireId: number, carName?: string) => {
+  // Önce mevcut araç bilgisini al (log için)
+  const { data: tireData } = await supabase
+    .from('tires')
+    .select('car_id, cars(car_name)')
+    .eq('id', tireId)
+    .single();
+
+  const previousCarName = carName || (tireData?.cars as any)?.car_name || `Araç #${tireData?.car_id}`;
+
+  const { error } = await supabase
+    .from('tires')
+    .update({ car_id: null })
+    .eq('id', tireId);
+
+  if (error) {
+    throw new UserFacingError(mapSupabaseError(error));
+  }
+
+  // Log kaydı oluştur
+  await addTireLog(tireId, `Lastik ${previousCarName} aracından çıkarıldı ve depoya gönderildi.`);
+
+  return true;
+};
+
+// Lastiği servise gönder
+export const sendTireToService = async (tireId: number) => {
+  await updateTireDetails(tireId, { tire_durum: 'Serviste' });
+  await addTireLog(tireId, 'Lastik servise gönderildi.');
+  return true;
+};
+
+// Lastiği hurdaya çıkar
+export const sendTireToScrap = async (tireId: number) => {
+  await updateTireDetails(tireId, { tire_durum: 'Hurda' });
+  await addTireLog(tireId, 'Lastik hurdaya çıkarıldı.');
+  return true;
+};
+
+// Lastiği onar (servisten depoya)
+export const repairTire = async (tireId: number) => {
+  // Önce durumu Normal yap
+  await updateTireDetails(tireId, { tire_durum: 'Normal' });
+  // Log kaydı
+  await addTireLog(tireId, 'Lastik serviste onarıldı ve depoya gönderildi.');
+  // Araçtan çıkar (depoya gönder) - bu fonksiyon kendi log'unu oluşturmaz artık
   const { error } = await supabase
     .from('tires')
     .update({ car_id: null })
@@ -269,24 +329,6 @@ export const removeTireFromCar = async (tireId: number) => {
   }
 
   return true;
-};
-
-// Lastiği servise gönder
-export const sendTireToService = async (tireId: number) => {
-  return updateTireDetails(tireId, { tire_durum: 'Serviste' });
-};
-
-// Lastiği hurdaya çıkar
-export const sendTireToScrap = async (tireId: number) => {
-  return updateTireDetails(tireId, { tire_durum: 'Hurda' });
-};
-
-// Lastiği onar (servisten depoya)
-export const repairTire = async (tireId: number) => {
-  // Önce durumu Normal yap
-  await updateTireDetails(tireId, { tire_durum: 'Normal' });
-  // Sonra araçtan çıkar (depoya gönder)
-  return removeTireFromCar(tireId);
 };
 
 // Lastik sil
