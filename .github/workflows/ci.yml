@@ -11,7 +11,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: Revaçta
+        working-directory: lastikco-react
 
     steps:
       - name: Checkout
