@@ -25,7 +25,7 @@
 | Araç Ekle | AracEklePage.tsx | `/arac-ekle` | ✅ | CREATE | Form validasyonu var |
 | Araç Düzenle | CarEditPage.tsx | `/arac-duzenle/:carId` | ✅ | CRUD | Supabase entegrasyonu tamamlandı |
 | Araç Geçmişi | AracGecmisiPage.tsx | `/arac-gecmisi/:carId` | ✅ | READ | **Supabase entegrasyonu tamamlandı!** |
-| Araç Bölge | AracBolgePage.tsx | `/arac-bolge/:carId` | ⚠️ | UPDATE | - |
+| Araç Bölge | AracBolgePage.tsx | `/arac-bolge/:carId` | ✅ | UPDATE | **Supabase entegrasyonu tamamlandı!** |
 | Toplam Araç | TotalCarsPage.tsx | `/toplam-arac` | ✅ | READ | - |
 
 ### Lastik İşlemleri
@@ -35,8 +35,8 @@
 | Depo Lastikleri | LastikDepoPage.tsx | `/lastik-depo` | ✅ | READ | - |
 | Servis Lastikler | LastikServisPage.tsx | `/lastik-servis` | ✅ | READ | - |
 | Hurda Lastikler | LastikHurdaPage.tsx | `/lastik-hurda` | ✅ | READ | - |
-| Lastik Bilgi | LastikBilgiPage.tsx | `/lastik-bilgi` | ⚠️ | READ | - |
-| Lastik Havuzu | LastikHavuzPage.tsx | `/lastik-havuz` | ⚠️ | READ | - |
+| Lastik Bilgi | LastikBilgiPage.tsx | `/lastik-bilgi` | ✅ | READ | **Supabase entegrasyonu tamamlandı!** |
+| Lastik Havuzu | LastikHavuzPage.tsx | `/lastik-havuz` | ✅ | CRUD | **Supabase entegrasyonu tamamlandı!** |
 | Toplam Lastik | TotalTiresPage.tsx | `/toplam-lastik` | ✅ | READ | - |
 | Alert Lastikler | AlertPage.tsx | `/alert` | ✅ | READ | Düşük diş derinliği uyarı |
 | Detay Sayfa | DetaySayfaPage.tsx | `/detay-sayfa/:tireId` | ✅ | READ | **Supabase entegrasyonu tamamlandı!** |
@@ -49,8 +49,8 @@
 ### Akü İşlemleri
 | Sayfa | Dosya | Route | Durum | CRUD | Notlar |
 |-------|-------|-------|-------|------|--------|
-| Akü Depo | AkuDepoPage.tsx | `/aku-depo` | ⚠️ | READ | - |
-| Yeni Akü | YeniAkuPage.tsx | `/yeni-aku` | ⚠️ | CREATE | - |
+| Akü Depo | AkuDepoPage.tsx | `/aku-depo` | ✅ | CRUD | **Supabase entegrasyonu tamamlandı!** |
+| Yeni Akü | YeniAkuPage.tsx | `/yeni-aku` | ✅ | CREATE | **Supabase entegrasyonu tamamlandı!** |
 | Akü Düzenle | AkuEditPage.tsx | `/aku-duzenle/:carId` | ✅ | CRUD | **Supabase entegrasyonu tamamlandı!** |
 | Depodan Akü Getir | DepodanAkuGetirPage.tsx | `/depodan-aku-getir/:carId` | ✅ | UPDATE | **Supabase entegrasyonu tamamlandı!** |
 
@@ -73,7 +73,7 @@
 | Servis | Dosya | Fonksiyonlar | Durum |
 |--------|-------|--------------|-------|
 | Auth | authService.ts | signIn, signOut, signUp | ✅ |
-| Vehicle | vehicleService.ts | createCarWithAxles, listCarsWithAxles, getCarWithAxles, updateCar, deleteCar, getCarHistory | ✅ |
+| Vehicle | vehicleService.ts | createCarWithAxles, listCarsWithAxles, getCarWithAxles, updateCar, deleteCar, getCarHistory, updateCarRegion, addCarLog | ✅ |
 | Tire | tireService.ts | createTireWithDetails, listTiresByCar, listDepotTires, assignTireToCar, updateTireDetails, deleteTire, removeTireFromCar, addTireDepth, addTireKm, getTireHistory, getTireDepthHistory, getTireKmHistory | ✅ |
 | Aku | akuService.ts | listAkus, listDepotAkus, listCarAkus, getAku, createAku, updateAku, deleteAku, assignAkuToCar, sendAkuToDepot | ✅ |
 | Bolge | bolgeService.ts | listBolges, createBolge | ✅ |
@@ -117,6 +117,13 @@
 - [x] AracGecmisiPage - Supabase entegrasyonu ✅
 - [x] DetaySayfaPage - Supabase entegrasyonu ✅
 
+### Orta Öncelik (P2.5) - TAMAMLANDI
+- [x] AkuDepoPage - Supabase entegrasyonu ✅
+- [x] YeniAkuPage - Supabase entegrasyonu ✅
+- [x] LastikBilgiPage - Supabase entegrasyonu ✅
+- [x] LastikHavuzPage - Supabase entegrasyonu ✅
+- [x] AracBolgePage - Supabase entegrasyonu ✅
+
 ### Düşük Öncelik (P3)
 - [ ] Loading state iyileştirmeleri
 - [ ] Error handling iyileştirmeleri
@@ -134,6 +141,11 @@
 6. ~~**LastikGecmisiPage.tsx:** TODO yorumları var~~ ✅ ÇÖZÜLDÜ
 7. ~~**AracGecmisiPage.tsx:** TODO yorumları var~~ ✅ ÇÖZÜLDÜ
 8. ~~**DetaySayfaPage.tsx:** TODO yorumları var~~ ✅ ÇÖZÜLDÜ
+9. ~~**AkuDepoPage.tsx:** TODO yorumları var~~ ✅ ÇÖZÜLDÜ
+10. ~~**YeniAkuPage.tsx:** TODO yorumları var~~ ✅ ÇÖZÜLDÜ
+11. ~~**LastikBilgiPage.tsx:** TODO yorumları var~~ ✅ ÇÖZÜLDÜ
+12. ~~**LastikHavuzPage.tsx:** TODO yorumları var~~ ✅ ÇÖZÜLDÜ
+13. ~~**AracBolgePage.tsx:** TODO yorumları var~~ ✅ ÇÖZÜLDÜ
 
 ---
 
@@ -164,13 +176,18 @@
 - [x] LastikGecmisiPage Supabase entegrasyonu (timeline görünümü)
 - [x] AracGecmisiPage Supabase entegrasyonu (timeline görünümü)
 - [x] DetaySayfaPage Supabase entegrasyonu (grafik, özet kartları, hızlı işlemler)
+- [x] AkuDepoPage Supabase entegrasyonu (istatistik kartları, arama, pagination)
+- [x] YeniAkuPage Supabase entegrasyonu (form validasyonu)
+- [x] LastikBilgiPage Supabase entegrasyonu (araç/pozisyon sorgulama, tüm lastikler tablosu)
+- [x] LastikHavuzPage Supabase entegrasyonu (depo lastikleri, envantere taşıma)
+- [x] AracBolgePage Supabase entegrasyonu (bölge seçim butonları, log kaydı)
 
 ---
 
 ## Sıradaki Görevler
 
-1. **AkuDepoPage** - Akü depo listesi entegrasyonu
-2. **YeniAkuPage** - Yeni akü ekleme formu
-3. **LastikBilgiPage** - Lastik bilgi sayfası
-4. **LastikHavuzPage** - Lastik havuzu sayfası
-5. **AracBolgePage** - Araç bölge güncelleme
+Tüm ana sayfalar tamamlandı! Kalan işler:
+
+1. **DestekPage** - Destek sayfası içeriği (isteğe bağlı)
+2. **P3 İyileştirmeler** - Loading state, error handling, toast standardizasyonu
+3. **Test** - Tüm sayfaların manuel test edilmesi
