@@ -1,9 +1,102 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuthStore } from '../store/auth';
+import {
+  FiHome,
+  FiTruck,
+  FiPlus,
+  FiCheckCircle,
+  FiXCircle,
+  FiDisc,
+  FiPackage,
+  FiTool,
+  FiTrash2,
+  FiLayers,
+  FiBattery,
+  FiMapPin,
+  FiInfo,
+  FiAlertTriangle,
+  FiPieChart,
+  FiChevronDown,
+  FiChevronRight,
+  FiHelpCircle,
+} from 'react-icons/fi';
+
+interface MenuItem {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  path?: string;
+  children?: { label: string; path: string }[];
+}
+
+const menuItems: MenuItem[] = [
+  {
+    id: 'home',
+    label: 'Anasayfa',
+    icon: <FiHome />,
+    path: '/',
+  },
+  {
+    id: 'dashboard',
+    label: 'Raporlar',
+    icon: <FiPieChart />,
+    children: [
+      { label: 'Toplam Araç', path: '/toplam-arac' },
+      { label: 'Toplam Lastik', path: '/toplam-lastik' },
+      { label: 'Uyarılar', path: '/alert' },
+    ],
+  },
+  {
+    id: 'arac',
+    label: 'Araç İşlemleri',
+    icon: <FiTruck />,
+    children: [
+      { label: 'Araç Ekle', path: '/arac-ekle' },
+      { label: 'Aktif Araçlar', path: '/arac-aktif' },
+      { label: 'Pasif Araçlar', path: '/arac-pasif' },
+    ],
+  },
+  {
+    id: 'lastik',
+    label: 'Lastik İşlemleri',
+    icon: <FiDisc />,
+    children: [
+      { label: 'Sıfır Lastik Ekle', path: '/lastik-sifir' },
+      { label: 'Depodaki Lastikler', path: '/lastik-depo' },
+      { label: 'Servisteki Lastikler', path: '/lastik-servis' },
+      { label: 'Hurda Lastikler', path: '/lastik-hurda' },
+      { label: 'Lastik Havuzu', path: '/lastik-havuz' },
+    ],
+  },
+  {
+    id: 'aku',
+    label: 'Akü İşlemleri',
+    icon: <FiBattery />,
+    children: [
+      { label: 'Akü Yönetimi', path: '/aku-depo' },
+      { label: 'Yeni Akü Ekle', path: '/yeni-aku' },
+    ],
+  },
+  {
+    id: 'diger',
+    label: 'Diğer İşlemler',
+    icon: <FiMapPin />,
+    children: [
+      { label: 'Bölge Ekleme', path: '/bolge-ekle' },
+      { label: 'Lastik Bilgi', path: '/lastik-bilgi' },
+    ],
+  },
+  {
+    id: 'destek',
+    label: 'Destek',
+    icon: <FiHelpCircle />,
+    path: '/destek',
+  },
+];
 
 const SidebarMenu = () => {
-  const [openMenus, setOpenMenus] = useState<string[]>(['dashboard', 'element', 'element2', 'apps', 'additional_page']);
+  const [openMenus, setOpenMenus] = useState<string[]>(['dashboard', 'arac', 'lastik', 'aku', 'diger']);
   const { session } = useAuthStore();
 
   const toggleMenu = (menuId: string) => {
@@ -45,117 +138,105 @@ const SidebarMenu = () => {
       <div className="sidebar_blog_2">
         <h4>Lastik.co</h4>
         <ul className="list-unstyled components">
-          <li>
-            <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
-              <i className="fa fa-road yellow_color" /> <span>Anasayfa</span>
-            </NavLink>
-          </li>
+          {menuItems.map((item) => {
+            // Single link item (no children)
+            if (item.path && !item.children) {
+              return (
+                <li key={item.id}>
+                  <NavLink
+                    to={item.path}
+                    className={({ isActive }) => (isActive ? 'active' : '')}
+                  >
+                    <span className="sidebar-icon">{item.icon}</span>
+                    <span>{item.label}</span>
+                  </NavLink>
+                </li>
+              );
+            }
 
-          <li className={openMenus.includes('dashboard') ? 'active' : ''}>
-            <a
-              href="#dashboard"
-              data-toggle="collapse"
-              aria-expanded={openMenus.includes('dashboard')}
-              className="dropdown-toggle"
-              onClick={(e) => {
-                e.preventDefault();
-                toggleMenu('dashboard');
-              }}
-            >
-              <i className="fa fa-car purple_color2" /> <span>Araç İşlemleri</span>
-            </a>
-            <ul className={`collapse list-unstyled ${openMenus.includes('dashboard') ? 'show' : ''}`} id="dashboard">
-              <li>
-                <NavLink to="/arac-ekle">&gt; <span>Araç Ekle</span></NavLink>
+            // Collapsible menu with children
+            const isOpen = openMenus.includes(item.id);
+            return (
+              <li key={item.id} className={isOpen ? 'active' : ''}>
+                <a
+                  href={`#${item.id}`}
+                  data-toggle="collapse"
+                  aria-expanded={isOpen}
+                  className="dropdown-toggle"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toggleMenu(item.id);
+                  }}
+                >
+                  <span className="sidebar-icon">{item.icon}</span>
+                  <span>{item.label}</span>
+                  <span className="menu-arrow">
+                    {isOpen ? <FiChevronDown /> : <FiChevronRight />}
+                  </span>
+                </a>
+                <ul className={`collapse list-unstyled ${isOpen ? 'show' : ''}`} id={item.id}>
+                  {item.children?.map((child) => (
+                    <li key={child.path}>
+                      <NavLink
+                        to={child.path}
+                        className={({ isActive }) => (isActive ? 'active-child' : '')}
+                      >
+                        <span className="child-indicator">&gt;</span>
+                        <span>{child.label}</span>
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
               </li>
-              <li>
-                <NavLink to="/arac-aktif">&gt; <span>Aktif Araç İşlemleri</span></NavLink>
-              </li>
-              <li>
-                <NavLink to="/arac-pasif">&gt; <span>Pasif Araç İşlemleri</span></NavLink>
-              </li>
-            </ul>
-          </li>
-
-          <li className={openMenus.includes('element') ? 'active' : ''}>
-            <a
-              href="#element"
-              data-toggle="collapse"
-              aria-expanded={openMenus.includes('element')}
-              className="dropdown-toggle"
-              onClick={(e) => {
-                e.preventDefault();
-                toggleMenu('element');
-              }}
-            >
-              <i className="fa fa-life-ring purple_color" /> <span>Lastik İşlemleri</span>
-            </a>
-            <ul className={`collapse list-unstyled ${openMenus.includes('element') ? 'show' : ''}`} id="element">
-              <li>
-                <NavLink to="/lastik-sifir">&gt; <span>Sıfır Lastik Ekle</span></NavLink>
-              </li>
-              <li>
-                <NavLink to="/lastik-depo">&gt; <span>Depodaki Lastikler</span></NavLink>
-              </li>
-              <li>
-                <NavLink to="/lastik-servis">&gt; <span>Servisteki Lastikler</span></NavLink>
-              </li>
-              <li>
-                <NavLink to="/lastik-hurda">&gt; <span>Hurda Lastikler</span></NavLink>
-              </li>
-              <li>
-                <NavLink to="/lastik-havuz">&gt; <span>Lastik Havuzu</span></NavLink>
-              </li>
-            </ul>
-          </li>
-
-          <li className={openMenus.includes('apps') ? 'active' : ''}>
-            <a
-              href="#apps"
-              data-toggle="collapse"
-              aria-expanded={openMenus.includes('apps')}
-              className="dropdown-toggle"
-              onClick={(e) => {
-                e.preventDefault();
-                toggleMenu('apps');
-              }}
-            >
-              <i className="fa fa-wrench blue2_color" /> <span>Akü İşlemleri</span>
-            </a>
-            <ul className={`collapse list-unstyled ${openMenus.includes('apps') ? 'show' : ''}`} id="apps">
-              <li>
-                <NavLink to="/aku-depo">&gt; <span>Akü Ekleme / Depo</span></NavLink>
-              </li>
-              <li>
-                <NavLink to="/yeni-aku">&gt; <span>Yeni Akü Ekle</span></NavLink>
-              </li>
-            </ul>
-          </li>
-
-          <li className={openMenus.includes('additional_page') ? 'active' : ''}>
-            <a
-              href="#additional_page"
-              data-toggle="collapse"
-              aria-expanded={openMenus.includes('additional_page')}
-              className="dropdown-toggle"
-              onClick={(e) => {
-                e.preventDefault();
-                toggleMenu('additional_page');
-              }}
-            >
-              <i className="fa fa-road blue2_color" /> <span>Diğer İşlemler</span>
-            </a>
-            <ul className={`collapse list-unstyled ${openMenus.includes('additional_page') ? 'show' : ''}`} id="additional_page">
-              <li>
-                <NavLink to="/bolge-ekle">&gt; <span>Yeni Bölge Ekleme</span></NavLink>
-              </li>
-              <li>
-                <NavLink to="/lastik-bilgi">&gt; <span>Lastik Bilgi Ekleme</span></NavLink>
-              </li>
-            </ul>
-          </li>
+            );
+          })}
         </ul>
       </div>
+
+      <style>{`
+        .sidebar-icon {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 20px;
+          height: 20px;
+          margin-right: 15px;
+          font-size: 18px;
+        }
+        .sidebar-icon svg {
+          width: 18px;
+          height: 18px;
+        }
+        #sidebar ul li a {
+          display: flex;
+          align-items: center;
+        }
+        .menu-arrow {
+          margin-left: auto;
+          display: flex;
+          align-items: center;
+        }
+        .menu-arrow svg {
+          width: 14px;
+          height: 14px;
+        }
+        .child-indicator {
+          margin-right: 10px;
+          color: rgba(255, 255, 255, 0.5);
+        }
+        #sidebar ul.components ul li a {
+          display: flex;
+          align-items: center;
+        }
+        #sidebar ul.components ul li a.active-child {
+          color: #fff;
+          background: rgba(255, 255, 255, 0.1);
+        }
+        #sidebar ul li a.active {
+          color: #fff;
+          background: rgba(255, 255, 255, 0.1);
+        }
+      `}</style>
     </nav>
   );
 };
