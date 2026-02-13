@@ -4,23 +4,20 @@ import { useAuthStore } from '../store/auth';
 import {
   FiHome,
   FiTruck,
-  FiPlus,
-  FiCheckCircle,
-  FiXCircle,
   FiDisc,
-  FiPackage,
-  FiTool,
-  FiTrash2,
-  FiLayers,
   FiBattery,
   FiMapPin,
-  FiInfo,
-  FiAlertTriangle,
   FiPieChart,
   FiChevronDown,
   FiChevronRight,
   FiHelpCircle,
+  FiX,
 } from 'react-icons/fi';
+
+interface SidebarMenuProps {
+  isOpen: boolean;
+  onToggle: () => void;
+}
 
 interface MenuItem {
   id: string;
@@ -34,13 +31,13 @@ const menuItems: MenuItem[] = [
   {
     id: 'home',
     label: 'Anasayfa',
-    icon: <FiHome />,
+    icon: <FiHome className="w-5 h-5" />,
     path: '/',
   },
   {
     id: 'dashboard',
     label: 'Raporlar',
-    icon: <FiPieChart />,
+    icon: <FiPieChart className="w-5 h-5" />,
     children: [
       { label: 'Toplam Araç', path: '/toplam-arac' },
       { label: 'Toplam Lastik', path: '/toplam-lastik' },
@@ -50,7 +47,7 @@ const menuItems: MenuItem[] = [
   {
     id: 'arac',
     label: 'Araç İşlemleri',
-    icon: <FiTruck />,
+    icon: <FiTruck className="w-5 h-5" />,
     children: [
       { label: 'Araç Ekle', path: '/arac-ekle' },
       { label: 'Aktif Araçlar', path: '/arac-aktif' },
@@ -60,7 +57,7 @@ const menuItems: MenuItem[] = [
   {
     id: 'lastik',
     label: 'Lastik İşlemleri',
-    icon: <FiDisc />,
+    icon: <FiDisc className="w-5 h-5" />,
     children: [
       { label: 'Sıfır Lastik Ekle', path: '/lastik-sifir' },
       { label: 'Depodaki Lastikler', path: '/lastik-depo' },
@@ -72,7 +69,7 @@ const menuItems: MenuItem[] = [
   {
     id: 'aku',
     label: 'Akü İşlemleri',
-    icon: <FiBattery />,
+    icon: <FiBattery className="w-5 h-5" />,
     children: [
       { label: 'Akü Yönetimi', path: '/aku-depo' },
       { label: 'Yeni Akü Ekle', path: '/yeni-aku' },
@@ -81,7 +78,7 @@ const menuItems: MenuItem[] = [
   {
     id: 'diger',
     label: 'Diğer İşlemler',
-    icon: <FiMapPin />,
+    icon: <FiMapPin className="w-5 h-5" />,
     children: [
       { label: 'Bölge Ekleme', path: '/bolge-ekle' },
       { label: 'Lastik Bilgi', path: '/lastik-bilgi' },
@@ -90,194 +87,158 @@ const menuItems: MenuItem[] = [
   {
     id: 'destek',
     label: 'Destek',
-    icon: <FiHelpCircle />,
+    icon: <FiHelpCircle className="w-5 h-5" />,
     path: '/destek',
   },
 ];
 
-const SidebarMenu = () => {
-  const [openMenus, setOpenMenus] = useState<string[]>(['dashboard', 'arac', 'lastik', 'aku', 'diger']);
+const SidebarMenu = ({ isOpen, onToggle }: SidebarMenuProps) => {
+  const [openMenus, setOpenMenus] = useState<string[]>(['dashboard', 'arac', 'lastik']);
   const { session } = useAuthStore();
 
   const toggleMenu = (menuId: string) => {
-    setOpenMenus(prev =>
-      prev.includes(menuId)
-        ? prev.filter(id => id !== menuId)
-        : [...prev, menuId]
+    setOpenMenus((prev) =>
+      prev.includes(menuId) ? prev.filter((id) => id !== menuId) : [...prev, menuId]
     );
   };
 
   const username = session?.user?.email?.split('@')[0] || 'Kullanıcı';
 
   return (
-    <nav id="sidebar">
-      <div className="sidebar_blog_1">
-        <div className="sidebar-header">
-          <div className="logo_section">
-            <NavLink to="/">
-              <img className="logo_icon img-responsive" src="/images/logo/logo_icon.png" alt="logo icon" />
-            </NavLink>
-          </div>
+    <>
+      {/* Overlay for mobile */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={onToggle}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed top-0 left-0 z-50 h-full w-64 bg-[#15283c] text-white transition-transform duration-300 overflow-y-auto ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        {/* Logo & Close Button */}
+        <div className="flex items-center justify-between p-4 border-b border-white/10">
+          <NavLink to="/" className="flex items-center gap-2">
+            <img
+              src="/images/logo/logo_icon.png"
+              alt="Lastik.co"
+              className="w-10 h-10"
+            />
+            <span className="text-lg font-bold">Lastik.co</span>
+          </NavLink>
+          <button
+            onClick={onToggle}
+            className="lg:hidden p-1 hover:bg-white/10 rounded"
+          >
+            <FiX className="w-5 h-5" />
+          </button>
         </div>
-        <div className="sidebar_user_info">
-          <div className="icon_setting" />
-          <div className="user_profle_side">
-            <div className="user_img">
-              <img className="img-responsive" src="/images/layout_img/user_img.jpg" alt="user" />
-            </div>
-            <div className="user_info">
-              <h6>Lastik.co</h6>
-              <p>
-                <span className="online_animation" /> {username} Online
+
+        {/* User Info */}
+        <div className="p-4 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <img
+              src="/images/layout_img/user_img.jpg"
+              alt="User"
+              className="w-10 h-10 rounded-full"
+            />
+            <div>
+              <p className="text-sm font-medium">{username}</p>
+              <p className="text-xs text-emerald-400 flex items-center gap-1">
+                <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                Online
               </p>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="sidebar_blog_2">
-        <h4>Lastik.co</h4>
-        <ul className="list-unstyled components">
+        {/* Menu Items */}
+        <nav className="p-2">
           {menuItems.map((item) => {
-            // Single link item (no children)
+            // Single link (no children)
             if (item.path && !item.children) {
               return (
-                <li key={item.id}>
-                  <NavLink
-                    to={item.path}
-                    className={({ isActive }) => (isActive ? 'active' : '')}
-                  >
-                    <span className="sidebar-icon">{item.icon}</span>
-                    <span>{item.label}</span>
-                  </NavLink>
-                </li>
+                <NavLink
+                  key={item.id}
+                  to={item.path}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-colors ${
+                      isActive
+                        ? 'bg-[#0B5394] text-white'
+                        : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                    }`
+                  }
+                >
+                  {item.icon}
+                  <span className="text-sm font-medium">{item.label}</span>
+                </NavLink>
               );
             }
 
             // Collapsible menu with children
-            const isOpen = openMenus.includes(item.id);
+            const isMenuOpen = openMenus.includes(item.id);
             return (
-              <li key={item.id} className={isOpen ? 'active' : ''}>
-                <a
-                  href={`#${item.id}`}
-                  data-toggle="collapse"
-                  aria-expanded={isOpen}
-                  className="dropdown-toggle"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    toggleMenu(item.id);
-                  }}
+              <div key={item.id} className="mb-1">
+                <button
+                  onClick={() => toggleMenu(item.id)}
+                  className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors ${
+                    isMenuOpen
+                      ? 'bg-white/5 text-white'
+                      : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                  }`}
                 >
-                  <span className="sidebar-icon">{item.icon}</span>
-                  <span>{item.label}</span>
-                  <span className="menu-arrow">
-                    {isOpen ? <FiChevronDown /> : <FiChevronRight />}
-                  </span>
-                </a>
-                <ul className={`collapse list-unstyled ${isOpen ? 'show' : ''}`} id={item.id}>
-                  {item.children?.map((child) => (
-                    <li key={child.path}>
+                  <div className="flex items-center gap-3">
+                    {item.icon}
+                    <span className="text-sm font-medium">{item.label}</span>
+                  </div>
+                  {isMenuOpen ? (
+                    <FiChevronDown className="w-4 h-4" />
+                  ) : (
+                    <FiChevronRight className="w-4 h-4" />
+                  )}
+                </button>
+
+                {/* Submenu */}
+                <div
+                  className={`overflow-hidden transition-all duration-200 ${
+                    isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                  }`}
+                >
+                  <div className="ml-4 pl-4 border-l border-white/10 mt-1">
+                    {item.children?.map((child) => (
                       <NavLink
+                        key={child.path}
                         to={child.path}
-                        className={({ isActive }) => (isActive ? 'active-child' : '')}
+                        className={({ isActive }) =>
+                          `block px-4 py-2 rounded-lg text-sm transition-colors ${
+                            isActive
+                              ? 'bg-[#0B5394] text-white'
+                              : 'text-gray-400 hover:bg-white/10 hover:text-white'
+                          }`
+                        }
                       >
-                        <span className="child-indicator">&gt;</span>
-                        <span>{child.label}</span>
+                        {child.label}
                       </NavLink>
-                    </li>
-                  ))}
-                </ul>
-              </li>
+                    ))}
+                  </div>
+                </div>
+              </div>
             );
           })}
-        </ul>
-      </div>
+        </nav>
 
-      <style>{`
-        /* Main menu icon styling */
-        .sidebar-icon {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          width: 20px;
-          height: 20px;
-          margin-right: 15px;
-          font-size: 18px;
-          color: inherit;
-        }
-        .sidebar-icon svg {
-          width: 18px;
-          height: 18px;
-        }
-
-        /* Main menu item styling */
-        #sidebar ul.components > li > a {
-          display: flex;
-          align-items: center;
-          padding: 15px 25px;
-          color: rgba(255, 255, 255, 0.85);
-          font-size: 14px;
-          transition: all 0.3s ease;
-        }
-        #sidebar ul.components > li > a:hover {
-          color: #fff;
-          background: rgba(255, 255, 255, 0.05);
-        }
-
-        /* Chevron arrow styling */
-        .menu-arrow {
-          margin-left: auto;
-          display: flex;
-          align-items: center;
-          color: rgba(255, 255, 255, 0.5);
-        }
-        .menu-arrow svg {
-          width: 14px;
-          height: 14px;
-        }
-
-        /* Submenu container */
-        #sidebar ul.components ul.collapse {
-          display: none;
-          background: #214162;
-          padding: 10px 0;
-        }
-        #sidebar ul.components ul.collapse.show {
-          display: block;
-        }
-
-        /* Submenu items */
-        #sidebar ul.components ul li a {
-          display: flex;
-          align-items: center;
-          padding: 10px 25px 10px 45px;
-          color: rgba(255, 255, 255, 0.7) !important;
-          font-size: 13px;
-          transition: all 0.3s ease;
-        }
-        #sidebar ul.components ul li a:hover {
-          color: #fff !important;
-          padding-left: 50px;
-        }
-        #sidebar ul.components ul li a.active-child {
-          color: #fff !important;
-          background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Child indicator */
-        .child-indicator {
-          margin-right: 10px;
-          color: rgba(255, 255, 255, 0.5);
-          font-size: 12px;
-        }
-
-        /* Active main menu item */
-        #sidebar ul.components > li.active > a {
-          color: #fff;
-          background: rgba(255, 255, 255, 0.05);
-        }
-      `}</style>
-    </nav>
+        {/* Footer */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-[#15283c]">
+          <p className="text-xs text-gray-500 text-center">
+            © 2024 Lastik.co
+          </p>
+        </div>
+      </aside>
+    </>
   );
 };
 
