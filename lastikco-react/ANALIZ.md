@@ -40,9 +40,9 @@
 | Toplam Lastik | TotalTiresPage.tsx | `/toplam-lastik` | ✅ | READ | - |
 | Alert Lastikler | AlertPage.tsx | `/alert` | ✅ | READ | Düşük diş derinliği uyarı |
 | Detay Sayfa | DetaySayfaPage.tsx | `/detay-sayfa/:tireId` | ⚠️ | READ | - |
-| Diş Derinliği | DisDerinligiPage.tsx | `/dis-derinligi/:tireId` | ⚠️ | CREATE/READ | - |
-| KM Bilgi | KmBilgiPage.tsx | `/km-bilgi/:tireId` | ⚠️ | CREATE/READ | - |
-| Basınç Bilgi | BasincBilgiPage.tsx | `/basinc-bilgi/:tireId` | ⚠️ | CREATE/READ | - |
+| Diş Derinliği | DisDerinligiPage.tsx | `/dis-derinligi/:tireId` | ✅ | CRUD | **Supabase entegrasyonu tamamlandı!** |
+| KM Bilgi | KmBilgiPage.tsx | `/km-bilgi/:tireId` | ✅ | CRUD | **Supabase entegrasyonu tamamlandı!** |
+| Basınç Bilgi | BasincBilgiPage.tsx | `/basinc-bilgi/:tireId` | ✅ | CRUD | **Supabase entegrasyonu tamamlandı!** |
 | Lastik Geçmişi | LastikGecmisiPage.tsx | `/lastik-gecmisi/:tireId` | ⚠️ | READ | - |
 | Depodan Lastik Getir | DepodanLastikGetirPage.tsx | `/depodan-lastik-getir/:carId` | ✅ | UPDATE | **Supabase entegrasyonu tamamlandı!** |
 
@@ -109,10 +109,10 @@
 - [x] DepodanLastikGetirPage - Supabase entegrasyonu ✅
 - [x] DepodanAkuGetirPage - Supabase entegrasyonu ✅
 
-### Orta Öncelik (P2)
-- [ ] DisDerinligiPage - Supabase entegrasyonu
-- [ ] KmBilgiPage - Supabase entegrasyonu
-- [ ] BasincBilgiPage - Supabase entegrasyonu
+### Orta Öncelik (P2) - TAMAMLANDI
+- [x] DisDerinligiPage - Supabase entegrasyonu ✅
+- [x] KmBilgiPage - Supabase entegrasyonu ✅
+- [x] BasincBilgiPage - Supabase entegrasyonu ✅
 - [ ] LastikGecmisiPage - Supabase entegrasyonu
 - [ ] AracGecmisiPage - Supabase entegrasyonu
 
@@ -154,13 +154,14 @@
 - [x] DepodanAkuGetirPage Supabase entegrasyonu
 - [x] Tablo stilleri (#0B5394 header, zebra striping)
 - [x] Layout düzeltmesi (max-w-7xl, bg-slate-50)
+- [x] DisDerinligiPage Supabase entegrasyonu (grafik, CRUD)
+- [x] KmBilgiPage Supabase entegrasyonu (özet kartları, CRUD)
+- [x] BasincBilgiPage Supabase entegrasyonu (uyarı sistemi, CRUD)
 
 ---
 
 ## Sıradaki Görevler
 
-1. **DisDerinligiPage** - Diş derinliği kayıt ve geçmiş Supabase entegrasyonu
-2. **KmBilgiPage** - KM kayıt ve geçmiş Supabase entegrasyonu
-3. **BasincBilgiPage** - Basınç kayıt Supabase entegrasyonu
-4. **LastikGecmisiPage** - Lastik geçmişi görüntüleme
-5. **AracGecmisiPage** - Araç geçmişi görüntüleme
+1. **LastikGecmisiPage** - Lastik geçmişi görüntüleme
+2. **AracGecmisiPage** - Araç geçmişi görüntüleme
+3. **DetaySayfaPage** - Lastik detay sayfası entegrasyonu
