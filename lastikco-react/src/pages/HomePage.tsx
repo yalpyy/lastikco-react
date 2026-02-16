@@ -182,7 +182,7 @@ const HomePage = () => {
               </div>
             </button>
             <button
-              onClick={() => navigate('/aku-ekle')}
+              onClick={() => navigate('/yeni-aku')}
               className="flex items-center gap-3 px-4 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors text-left"
             >
               <div className="p-2 bg-white/20 rounded-lg">
