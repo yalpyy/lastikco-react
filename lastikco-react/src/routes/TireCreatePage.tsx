@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { useParams } from 'react-router-dom';
 import { createTireWithDetails } from '../services/tireService';
 import { getCarWithAxles } from '../services/vehicleService';
+import { getConstantsByType, type TireConstant } from '../services/constantsService';
 import type { TireInput } from '../types';
 
 const emptyRow = (axleNumber: number): TireInput => ({
@@ -27,17 +28,27 @@ const TireCreatePage = () => {
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [markalar, setMarkalar] = useState<TireConstant[]>([]);
+  const [desenler, setDesenler] = useState<TireConstant[]>([]);
+  const [olculer, setOlculer] = useState<TireConstant[]>([]);
 
   useEffect(() => {
     const load = async () => {
       if (!carId) return;
       try {
-        const carIdNum = Number(carId);
-        const car = await getCarWithAxles(carIdNum);
+        const [car, markaData, desenData, olcuData] = await Promise.all([
+          getCarWithAxles(Number(carId)),
+          getConstantsByType('marka'),
+          getConstantsByType('desen'),
+          getConstantsByType('olcu'),
+        ]);
         setCarName(`${car.car_name} (${car.car_model})`);
         const count = Number(car.axle_count ?? 0);
         setAxleCount(count);
         setRows(Array.from({ length: count }).map((_, idx) => emptyRow(idx + 1)));
+        setMarkalar(markaData);
+        setDesenler(desenData);
+        setOlculer(olcuData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Araç bilgisi alınamadı.');
       } finally {
@@ -129,25 +140,40 @@ const TireCreatePage = () => {
             />
 
             <label htmlFor={`tire_marka_${index}`}>Marka</label>
-            <input
+            <select
               id={`tire_marka_${index}`}
               value={row.tire_marka ?? ''}
               onChange={(e) => handleRowChange(index, 'tire_marka', e.target.value)}
-            />
+            >
+              <option value="">-- Marka Seçin --</option>
+              {markalar.map(m => (
+                <option key={m.id} value={m.value}>{m.value}</option>
+              ))}
+            </select>
 
             <label htmlFor={`tire_desen_${index}`}>Desen</label>
-            <input
+            <select
               id={`tire_desen_${index}`}
               value={row.tire_desen ?? ''}
               onChange={(e) => handleRowChange(index, 'tire_desen', e.target.value)}
-            />
+            >
+              <option value="">-- Desen Seçin --</option>
+              {desenler.map(d => (
+                <option key={d.id} value={d.value}>{d.value}</option>
+              ))}
+            </select>
 
             <label htmlFor={`tire_olcu_${index}`}>Ölçü</label>
-            <input
+            <select
               id={`tire_olcu_${index}`}
               value={row.tire_olcu ?? ''}
               onChange={(e) => handleRowChange(index, 'tire_olcu', e.target.value)}
-            />
+            >
+              <option value="">-- Ölçü Seçin --</option>
+              {olculer.map(o => (
+                <option key={o.id} value={o.value}>{o.value}</option>
+              ))}
+            </select>
 
             <label htmlFor={`tire_disderinligi_${index}`}>Dış derinlik</label>
             <input

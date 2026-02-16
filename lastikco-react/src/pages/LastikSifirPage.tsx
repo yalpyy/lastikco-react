@@ -175,12 +175,9 @@ const LastikSifirPage = () => {
               <label htmlFor="tire_marka" className="block text-sm font-medium text-gray-700 mb-2">
                 Marka <span className="text-red-500">*</span>
               </label>
-              <input
-                type="text"
+              <select
                 id="tire_marka"
                 name="tire_marka"
-                list="marka-list"
-                placeholder="Seçin veya yazın..."
                 className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors ${
                   errors.tire_marka ? 'border-red-500 bg-red-50' : 'border-gray-300'
                 }`}
@@ -189,12 +186,12 @@ const LastikSifirPage = () => {
                   setFormData({ ...formData, tire_marka: e.target.value });
                   if (errors.tire_marka) setErrors({ ...errors, tire_marka: undefined });
                 }}
-              />
-              <datalist id="marka-list">
+              >
+                <option value="">-- Marka Seçin --</option>
                 {markalar.map(m => (
-                  <option key={m.id} value={m.value} />
+                  <option key={m.id} value={m.value}>{m.value}</option>
                 ))}
-              </datalist>
+              </select>
               <InputError message={errors.tire_marka} />
             </div>
 
@@ -203,12 +200,9 @@ const LastikSifirPage = () => {
               <label htmlFor="tire_desen" className="block text-sm font-medium text-gray-700 mb-2">
                 Desen <span className="text-red-500">*</span>
               </label>
-              <input
-                type="text"
+              <select
                 id="tire_desen"
                 name="tire_desen"
-                list="desen-list"
-                placeholder="Seçin veya yazın..."
                 className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors ${
                   errors.tire_desen ? 'border-red-500 bg-red-50' : 'border-gray-300'
                 }`}
@@ -217,12 +211,12 @@ const LastikSifirPage = () => {
                   setFormData({ ...formData, tire_desen: e.target.value });
                   if (errors.tire_desen) setErrors({ ...errors, tire_desen: undefined });
                 }}
-              />
-              <datalist id="desen-list">
+              >
+                <option value="">-- Desen Seçin --</option>
                 {desenler.map(d => (
-                  <option key={d.id} value={d.value} />
+                  <option key={d.id} value={d.value}>{d.value}</option>
                 ))}
-              </datalist>
+              </select>
               <InputError message={errors.tire_desen} />
             </div>
 
@@ -231,12 +225,9 @@ const LastikSifirPage = () => {
               <label htmlFor="tire_olcu" className="block text-sm font-medium text-gray-700 mb-2">
                 Ölçü <span className="text-red-500">*</span>
               </label>
-              <input
-                type="text"
+              <select
                 id="tire_olcu"
                 name="tire_olcu"
-                list="olcu-list"
-                placeholder="Seçin veya yazın..."
                 className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors ${
                   errors.tire_olcu ? 'border-red-500 bg-red-50' : 'border-gray-300'
                 }`}
@@ -245,12 +236,12 @@ const LastikSifirPage = () => {
                   setFormData({ ...formData, tire_olcu: e.target.value });
                   if (errors.tire_olcu) setErrors({ ...errors, tire_olcu: undefined });
                 }}
-              />
-              <datalist id="olcu-list">
+              >
+                <option value="">-- Ölçü Seçin --</option>
                 {olculer.map(o => (
-                  <option key={o.id} value={o.value} />
+                  <option key={o.id} value={o.value}>{o.value}</option>
                 ))}
-              </datalist>
+              </select>
               <InputError message={errors.tire_olcu} />
             </div>
 
