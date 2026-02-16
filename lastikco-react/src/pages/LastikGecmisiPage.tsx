@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FiArrowLeft, FiClock, FiActivity, FiTruck, FiAlertCircle, FiCheckCircle, FiRefreshCw, FiTrash2 } from 'react-icons/fi';
 import { getTireHistory } from '../services/tireService';
@@ -195,7 +195,7 @@ const LastikGecmisiPage = () => {
               <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
 
               <div className="space-y-4">
-                {paginatedLogs.map((log, index) => (
+                {paginatedLogs.map((log) => (
                   <div key={log.id} className="relative flex gap-4 pl-10">
                     {/* Timeline dot */}
                     <div className="absolute left-2 top-1 w-4 h-4 bg-white border-2 border-[#0B5394] rounded-full"></div>

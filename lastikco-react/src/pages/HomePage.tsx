@@ -159,50 +159,50 @@ const HomePage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <button
               onClick={() => navigate('/arac-ekle')}
-              className="flex items-center gap-3 px-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors text-left"
+              className="flex items-center gap-3 px-4 py-3 bg-[#0B5394] hover:bg-[#094A84] rounded-lg transition-colors text-left"
             >
-              <div className="p-2 bg-[#0B5394] rounded-lg">
+              <div className="p-2 bg-white/20 rounded-lg">
                 <FiTruck className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="font-medium text-gray-900">Araç Ekle</p>
-                <p className="text-xs text-gray-500">Yeni araç kaydı oluştur</p>
+                <p className="font-medium text-white">Araç Ekle</p>
+                <p className="text-xs text-white/80">Yeni araç kaydı oluştur</p>
               </div>
             </button>
             <button
               onClick={() => navigate('/lastik-sifir')}
-              className="flex items-center gap-3 px-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors text-left"
+              className="flex items-center gap-3 px-4 py-3 bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors text-left"
             >
-              <div className="p-2 bg-emerald-600 rounded-lg">
+              <div className="p-2 bg-white/20 rounded-lg">
                 <FiDisc className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="font-medium text-gray-900">Lastik Ekle</p>
-                <p className="text-xs text-gray-500">Sıfır lastik kaydı</p>
+                <p className="font-medium text-white">Lastik Ekle</p>
+                <p className="text-xs text-white/80">Sıfır lastik kaydı</p>
               </div>
             </button>
             <button
               onClick={() => navigate('/aku-ekle')}
-              className="flex items-center gap-3 px-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors text-left"
+              className="flex items-center gap-3 px-4 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors text-left"
             >
-              <div className="p-2 bg-purple-600 rounded-lg">
+              <div className="p-2 bg-white/20 rounded-lg">
                 <FiBattery className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="font-medium text-gray-900">Akü Ekle</p>
-                <p className="text-xs text-gray-500">Yeni akü kaydı oluştur</p>
+                <p className="font-medium text-white">Akü Ekle</p>
+                <p className="text-xs text-white/80">Yeni akü kaydı oluştur</p>
               </div>
             </button>
             <button
               onClick={() => navigate('/arac-aktif')}
-              className="flex items-center gap-3 px-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors text-left"
+              className="flex items-center gap-3 px-4 py-3 bg-amber-600 hover:bg-amber-700 rounded-lg transition-colors text-left"
             >
-              <div className="p-2 bg-amber-600 rounded-lg">
+              <div className="p-2 bg-white/20 rounded-lg">
                 <FiTool className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="font-medium text-gray-900">Lastik Yönetimi</p>
-                <p className="text-xs text-gray-500">Araç lastiklerini düzenle</p>
+                <p className="font-medium text-white">Lastik Yönetimi</p>
+                <p className="text-xs text-white/80">Araç lastiklerini düzenle</p>
               </div>
             </button>
           </div>

@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FiCircle, FiCheck, FiTrash2, FiSearch, FiRefreshCw, FiPackage, FiPlus } from 'react-icons/fi';
+import { useConfirm } from '../hooks/useConfirm';
 import { listDepotTires, deleteTire, updateTireDetails, type TireWithDetails } from '../services/tireService';
 
 const LastikHavuzPage = () => {
+  const { confirm, ConfirmDialog } = useConfirm();
   const [tires, setTires] = useState<TireWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -29,7 +31,7 @@ const LastikHavuzPage = () => {
   };
 
   const handleActivate = async (tireId: number) => {
-    if (!window.confirm('Bu lastiği aktif envantere taşımak istediğinize emin misiniz?')) return;
+    if (!(await confirm({ message: 'Bu lastiği aktif envantere taşımak istediğinize emin misiniz?', variant: 'warning' }))) return;
 
     try {
       await updateTireDetails(tireId, { tire_durum: 'Normal' });
@@ -41,7 +43,7 @@ const LastikHavuzPage = () => {
   };
 
   const handleDelete = async (tireId: number) => {
-    if (!window.confirm('Bu lastiği silmek istediğinize emin misiniz?')) return;
+    if (!(await confirm({ message: 'Bu lastiği silmek istediğinize emin misiniz?', variant: 'danger' }))) return;
 
     try {
       await deleteTire(tireId);
@@ -280,6 +282,7 @@ const LastikHavuzPage = () => {
           "Envantere Taşı" butonu ile lastikleri aktif envantere taşıyabilirsiniz.
         </p>
       </div>
+      <ConfirmDialog />
     </div>
   );
 };

@@ -2,11 +2,13 @@ import { useState, useEffect, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FiMapPin, FiPlus, FiArrowLeft, FiSave, FiTrash2 } from 'react-icons/fi';
+import { useConfirm } from '../hooks/useConfirm';
 import { listBolges, createBolge, deleteBolge, type Bolge } from '../services/bolgeService';
 import GenericTable, { type Column } from '../components/GenericTable';
 
 const BolgeEklePage = () => {
   const navigate = useNavigate();
+  const { confirm, ConfirmDialog } = useConfirm();
   const [bolgeAdi, setBolgeAdi] = useState('');
   const [loading, setLoading] = useState(false);
   const [bolges, setBolges] = useState<Bolge[]>([]);
@@ -52,7 +54,7 @@ const BolgeEklePage = () => {
   };
 
   const handleDelete = async (bolgeId: number) => {
-    if (!window.confirm('Bu bölgeyi silmek istediğinize emin misiniz?')) return;
+    if (!(await confirm({ message: 'Bu bölgeyi silmek istediğinize emin misiniz?', variant: 'danger' }))) return;
 
     try {
       await deleteBolge(bolgeId);
@@ -165,6 +167,7 @@ const BolgeEklePage = () => {
         pageSize={10}
         title="Mevcut Bölgeler"
       />
+      <ConfirmDialog />
     </div>
   );
 };

@@ -44,8 +44,8 @@ const AracGecmisiPage = () => {
         id: carData.id,
         car_name: carData.car_name,
         car_model: carData.car_model,
-        axle_count: carData.axle_count,
-        status: carData.status,
+        axle_count: carData.axle_count ?? 0,
+        status: carData.status ?? 'aktif',
       });
 
       // Geçmiş logları çek
@@ -208,7 +208,7 @@ const AracGecmisiPage = () => {
               <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
 
               <div className="space-y-4">
-                {paginatedLogs.map((log, index) => (
+                {paginatedLogs.map((log) => (
                   <div key={log.id} className="relative flex gap-4 pl-10">
                     {/* Timeline dot */}
                     <div className="absolute left-2 top-1 w-4 h-4 bg-white border-2 border-[#0B5394] rounded-full"></div>

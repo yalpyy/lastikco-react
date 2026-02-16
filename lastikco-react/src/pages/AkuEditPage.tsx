@@ -2,6 +2,7 @@ import { useState, useEffect, type FormEvent } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FiBattery, FiArrowLeft, FiPlus, FiTrash2, FiSend, FiEdit2, FiX, FiSave } from 'react-icons/fi';
+import { useConfirm } from '../hooks/useConfirm';
 import { getCarWithAxles } from '../services/vehicleService';
 import { listCarAkus, createAku, updateAku, deleteAku, sendAkuToDepot, type Aku } from '../services/akuService';
 import { useAuthStore } from '../store/auth';
@@ -15,6 +16,7 @@ interface CarInfo {
 const AkuEditPage = () => {
   const { carId } = useParams<{ carId: string }>();
   const navigate = useNavigate();
+  const { confirm, ConfirmDialog } = useConfirm();
   const { session } = useAuthStore();
   const [car, setCar] = useState<CarInfo | null>(null);
   const [batteries, setBatteries] = useState<Aku[]>([]);
@@ -134,7 +136,7 @@ const AkuEditPage = () => {
   };
 
   const handleDelete = async (akuId: number) => {
-    if (!window.confirm('Bu aküyü kalıcı olarak silmek istediğinize emin misiniz?')) return;
+    if (!(await confirm({ message: 'Bu aküyü kalıcı olarak silmek istediğinize emin misiniz?', variant: 'danger' }))) return;
 
     try {
       await deleteAku(akuId);
@@ -147,7 +149,7 @@ const AkuEditPage = () => {
   };
 
   const handleSendToDepot = async (akuId: number) => {
-    if (!window.confirm('Bu aküyü depoya göndermek istediğinize emin misiniz?')) return;
+    if (!(await confirm({ message: 'Bu aküyü depoya göndermek istediğinize emin misiniz?', variant: 'warning' }))) return;
 
     try {
       await sendAkuToDepot(akuId);
@@ -442,6 +444,7 @@ const AkuEditPage = () => {
           </table>
         </div>
       </div>
+      <ConfirmDialog />
     </div>
   );
 };

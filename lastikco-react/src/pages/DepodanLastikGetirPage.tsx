@@ -39,7 +39,7 @@ const DepodanLastikGetirPage = () => {
         id: carData.id,
         car_name: carData.car_name,
         car_model: carData.car_model,
-        axle_count: carData.axle_count,
+        axle_count: carData.axle_count ?? 0,
       });
 
       // Depodaki lastikleri çek

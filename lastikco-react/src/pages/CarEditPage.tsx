@@ -5,6 +5,7 @@ import {
   FiTruck, FiEdit2, FiTrash2, FiPlus, FiArrowLeft, FiBattery,
   FiClock, FiMapPin, FiPackage, FiTool, FiSave, FiX, FiAlertCircle
 } from 'react-icons/fi';
+import { useConfirm } from '../hooks/useConfirm';
 import AxleVisual, { type TirePosition } from '../components/AxleVisual';
 import { getCarWithAxles, deleteCar } from '../services/vehicleService';
 import {
@@ -34,6 +35,7 @@ interface TireRow {
 const CarEditPage = () => {
   const { carId } = useParams<{ carId: string }>();
   const navigate = useNavigate();
+  const { confirm, ConfirmDialog } = useConfirm();
   const [car, setCar] = useState<CarWithAxle | null>(null);
   const [tires, setTires] = useState<TireRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -195,7 +197,7 @@ const CarEditPage = () => {
   };
 
   const handleDelete = async (tireId: number) => {
-    if (!window.confirm('Bu lastiği silmek istediğinize emin misiniz?')) return;
+    if (!(await confirm({ message: 'Bu lastiği silmek istediğinize emin misiniz?', variant: 'danger' }))) return;
 
     try {
       await deleteTire(tireId);
@@ -208,7 +210,7 @@ const CarEditPage = () => {
   };
 
   const handleRemoveTire = async (tireId: number) => {
-    if (!window.confirm('Bu lastiği araçtan çıkarmak ve depoya göndermek istediğinize emin misiniz?')) return;
+    if (!(await confirm({ message: 'Bu lastiği araçtan çıkarmak ve depoya göndermek istediğinize emin misiniz?', variant: 'warning' }))) return;
 
     try {
       await removeTireFromCar(tireId);
@@ -222,7 +224,7 @@ const CarEditPage = () => {
 
   const handleDeleteCar = async () => {
     if (!car) return;
-    if (!window.confirm('Bu aracı silmek istediğinize emin misiniz? Tüm lastik ve akü verileri de silinecektir.')) return;
+    if (!(await confirm({ message: 'Bu aracı silmek istediğinize emin misiniz? Tüm lastik ve akü verileri de silinecektir.', variant: 'danger' }))) return;
 
     try {
       await deleteCar(car.id);
@@ -524,7 +526,7 @@ const CarEditPage = () => {
                       value={formData.axle_number}
                       onChange={e => setFormData({ ...formData, axle_number: e.target.value, tire_position: '' })}
                     >
-                      {Array.from({ length: car.axle_count }, (_, i) => (
+                      {Array.from({ length: car.axle_count ?? 0 }, (_, i) => (
                         <option key={i + 1} value={i + 1}>Aks {i + 1}</option>
                       ))}
                     </select>
@@ -538,7 +540,7 @@ const CarEditPage = () => {
                       required
                     >
                       <option value="">Seçiniz</option>
-                      {getPositionsForAxle(Number(formData.axle_number), car.axle_count).map(pos => (
+                      {getPositionsForAxle(Number(formData.axle_number), car.axle_count ?? 0).map(pos => (
                         <option key={pos} value={pos}>{pos}</option>
                       ))}
                     </select>
@@ -579,7 +581,7 @@ const CarEditPage = () => {
           )}
 
           {/* Tires by Axle */}
-          {Array.from({ length: car.axle_count }, (_, axleIdx) => {
+          {Array.from({ length: car.axle_count ?? 0 }, (_, axleIdx) => {
             const axleNum = axleIdx + 1;
             const axleTires = tires.filter(t => t.axle_number === axleNum);
             return (
@@ -673,6 +675,7 @@ const CarEditPage = () => {
           })}
         </div>
       </div>
+      <ConfirmDialog />
     </div>
   );
 };

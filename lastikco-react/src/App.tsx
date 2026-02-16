@@ -32,6 +32,7 @@ import YeniAkuPage from './pages/YeniAkuPage';
 import LastikGecmisiPage from './pages/LastikGecmisiPage';
 import LastikHavuzPage from './pages/LastikHavuzPage';
 import BasincBilgiPage from './pages/BasincBilgiPage';
+import SabitlerPage from './pages/SabitlerPage';
 import { supabase, isSupabaseConfigured } from './lib/supabaseClient';
 import { useAuthStore } from './store/auth';
 
@@ -303,6 +304,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <BasincBilgiPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sabitler"
+          element={
+            <ProtectedRoute>
+              <SabitlerPage />
             </ProtectedRoute>
           }
         />

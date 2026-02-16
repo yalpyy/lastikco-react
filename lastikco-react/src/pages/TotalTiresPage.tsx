@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { FiDisc, FiPackage, FiTruck, FiAlertTriangle, FiTrash2, FiRefreshCw, FiEye, FiClock } from 'react-icons/fi';
+import { FiDisc, FiPackage, FiTruck, FiAlertTriangle, FiRefreshCw, FiEye, FiClock } from 'react-icons/fi';
 import { listAllTires, type TireWithDetails } from '../services/tireService';
 import GenericTable, { type Column } from '../components/GenericTable';
 

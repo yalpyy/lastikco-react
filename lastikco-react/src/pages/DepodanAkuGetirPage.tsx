@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FiBattery, FiArrowLeft, FiSearch, FiCheck } from 'react-icons/fi';
+import { useConfirm } from '../hooks/useConfirm';
 import { getCarWithAxles } from '../services/vehicleService';
 import { listDepotAkus, assignAkuToCar, type Aku } from '../services/akuService';
 
@@ -14,6 +15,7 @@ interface CarInfo {
 const DepodanAkuGetirPage = () => {
   const { carId } = useParams<{ carId: string }>();
   const navigate = useNavigate();
+  const { confirm, ConfirmDialog } = useConfirm();
   const [car, setCar] = useState<CarInfo | null>(null);
   const [batteries, setBatteries] = useState<Aku[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +52,7 @@ const DepodanAkuGetirPage = () => {
 
   const handleAssign = async (akuId: number) => {
     if (!car) return;
-    if (!window.confirm('Bu aküyü araca atamak istediğinize emin misiniz?')) return;
+    if (!(await confirm({ message: 'Bu aküyü araca atamak istediğinize emin misiniz?', variant: 'info' }))) return;
 
     setAssigning(akuId);
     try {
@@ -213,6 +215,7 @@ const DepodanAkuGetirPage = () => {
           </table>
         </div>
       </div>
+      <ConfirmDialog />
     </div>
   );
 };
