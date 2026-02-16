@@ -149,7 +149,7 @@ const AxleVisual = ({ axleCount, tires, onTireClick, onEmptyClick }: AxleVisualP
       >
         {/* Background Image - fills container exactly */}
         <img
-          src={`/images/aks/aks${axleCount}.png`}
+          src={`${import.meta.env.BASE_URL}images/aks/aks${axleCount}.png`}
           alt={`${axleCount} akslı araç şeması`}
           className="absolute inset-0 w-full h-full object-fill"
           draggable={false}

@@ -52,7 +52,7 @@ const TopNavbar = ({ onToggleSidebar, sidebarOpen: _sidebarOpen }: TopNavbarProp
 
           <Link to="/" className="hidden sm:block">
             <img
-              src="/images/logo/logo.png"
+              src={`${import.meta.env.BASE_URL}images/logo/logo.png`}
               alt="Lastik.co"
               className="h-8"
             />
@@ -66,7 +66,7 @@ const TopNavbar = ({ onToggleSidebar, sidebarOpen: _sidebarOpen }: TopNavbarProp
             className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors"
           >
             <img
-              src="/images/layout_img/user_img.jpg"
+              src={`${import.meta.env.BASE_URL}images/layout_img/user_img.jpg`}
               alt="User"
               className="w-8 h-8 rounded-full"
             />
