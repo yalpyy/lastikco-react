@@ -53,12 +53,20 @@ export const createTireWithDetails = async (carId: number | null, payload: TireI
     throw new UserFacingError(mapSupabaseError(detailError));
   }
 
-  // Log kaydı oluştur
+  // Lastik log kaydı oluştur
   const location = carId ? 'araca takılı olarak' : 'depoya';
   await supabase.from('logs').insert({
     tire_id: tireData.id,
     message: `Yeni lastik oluşturuldu (${payload.tire_serino || 'Seri no yok'}) ve ${location} eklendi.`,
   });
+
+  // Araç log kaydı oluştur (eğer araca takılıysa)
+  if (carId) {
+    await supabase.from('logs').insert({
+      car_id: carId,
+      message: `Yeni lastik eklendi: ${payload.tire_serino || `#${tireData.id}`}${payload.tire_marka ? ` (${payload.tire_marka})` : ''}`,
+    });
+  }
 
   return tireData as Tire;
 };
@@ -350,6 +358,29 @@ export const repairTire = async (tireId: number) => {
 
 // Lastik sil
 export const deleteTire = async (tireId: number) => {
+  // Silmeden önce lastik bilgisini al (log için)
+  const { data: tireData } = await supabase
+    .from('tires')
+    .select('car_id, cars(car_name), tire_details(tire_serino, tire_marka)')
+    .eq('id', tireId)
+    .single();
+
+  const carId = tireData?.car_id;
+  const carName = (tireData?.cars as any)?.car_name || (carId ? `Araç #${carId}` : null);
+  const serino = (tireData?.tire_details as any)?.[0]?.tire_serino || `#${tireId}`;
+  const marka = (tireData?.tire_details as any)?.[0]?.tire_marka || '';
+
+  // Araç log kaydı (silmeden önce)
+  if (carId) {
+    await supabase.from('logs').insert({
+      car_id: carId,
+      message: `Lastik silindi: ${serino}${marka ? ` (${marka})` : ''}`,
+    });
+  }
+
+  // Lastik log kaydı (silmeden önce, tire_id ON DELETE SET NULL olacak)
+  await addTireLog(tireId, `Lastik silindi.${carName ? ` Son araç: ${carName}` : ' Depodaydı.'}`);
+
   const { error } = await supabase.from('tires').delete().eq('id', tireId);
 
   if (error) {

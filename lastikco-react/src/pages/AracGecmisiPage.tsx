@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { FiArrowLeft, FiClock, FiActivity, FiTruck, FiAlertCircle, FiCheckCircle, FiRefreshCw, FiTrash2, FiEdit2, FiPlus } from 'react-icons/fi';
+import { FiArrowLeft, FiClock, FiActivity, FiTruck, FiAlertCircle, FiCheckCircle, FiRefreshCw, FiTrash2, FiEdit2, FiPlus, FiBattery } from 'react-icons/fi';
 import { getCarWithAxles, getCarHistory } from '../services/vehicleService';
 
 interface LogEntry {
@@ -69,6 +69,9 @@ const AracGecmisiPage = () => {
     }
     if (lowerMsg.includes('uyarı') || lowerMsg.includes('alert')) {
       return <FiAlertCircle className="w-4 h-4 text-amber-500" />;
+    }
+    if (lowerMsg.includes('akü')) {
+      return <FiBattery className="w-4 h-4 text-orange-500" />;
     }
     if (lowerMsg.includes('lastik') || lowerMsg.includes('ata')) {
       return <FiTruck className="w-4 h-4 text-emerald-500" />;
