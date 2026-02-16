@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FiDisc, FiPackage, FiPlus, FiTrash2, FiEdit, FiTruck, FiRefreshCw } from 'react-icons/fi';
+import { useConfirm } from '../hooks/useConfirm';
 import { listDepotTires, deleteTire, type TireWithDetails } from '../services/tireService';
 import GenericTable, { type Column } from '../components/GenericTable';
 
 const LastikDepoPage = () => {
   const navigate = useNavigate();
+  const { confirm, ConfirmDialog } = useConfirm();
   const [tires, setTires] = useState<TireWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -24,7 +26,7 @@ const LastikDepoPage = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm('Bu lastiği silmek istediğinizden emin misiniz?')) return;
+    if (!(await confirm({ message: 'Bu lastiği silmek istediğinizden emin misiniz?', variant: 'danger' }))) return;
     try {
       await deleteTire(id);
       setTires(tires.filter(t => t.id !== id));
@@ -171,6 +173,7 @@ const LastikDepoPage = () => {
         title="Depo Lastik Listesi"
         headerActions={headerActions}
       />
+      <ConfirmDialog />
     </div>
   );
 };

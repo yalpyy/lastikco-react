@@ -48,7 +48,7 @@ const AracBolgePage = () => {
         id: carData.id,
         car_name: carData.car_name,
         car_model: carData.car_model,
-        bolge_id: carData.bolge_id,
+        bolge_id: carData.bolge_id ?? null,
         bolge_adi: currentBolge?.bolge_adi,
       });
 

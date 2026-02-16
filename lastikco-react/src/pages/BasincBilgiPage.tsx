@@ -2,6 +2,7 @@ import { useState, useEffect, type FormEvent } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FiArrowLeft, FiPlus, FiTrash2, FiActivity, FiAlertTriangle } from 'react-icons/fi';
+import { useConfirm } from '../hooks/useConfirm';
 import { supabase } from '../lib/supabaseClient';
 
 interface BasincRecord {
@@ -25,6 +26,7 @@ interface TireInfo {
 const BasincBilgiPage = () => {
   const { tireId } = useParams<{ tireId: string }>();
   const navigate = useNavigate();
+  const { confirm, ConfirmDialog } = useConfirm();
   const [tireInfo, setTireInfo] = useState<TireInfo | null>(null);
   const [records, setRecords] = useState<BasincRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,7 +66,7 @@ const BasincBilgiPage = () => {
         tire_serino: details.tire_serino || 'Bilinmiyor',
         tire_marka: details.tire_marka || '',
         tire_desen: details.tire_desen || '',
-        car_name: tireData?.cars?.car_name,
+        car_name: (tireData?.cars as any)?.car_name,
       });
 
       // Basınç kayıtlarını çek
@@ -139,7 +141,7 @@ const BasincBilgiPage = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm('Bu basınç kaydını silmek istediğinize emin misiniz?')) return;
+    if (!(await confirm({ message: 'Bu basınç kaydını silmek istediğinize emin misiniz?', variant: 'danger' }))) return;
 
     try {
       const { error } = await supabase
@@ -435,6 +437,7 @@ const BasincBilgiPage = () => {
           </table>
         </div>
       </div>
+      <ConfirmDialog />
     </div>
   );
 };

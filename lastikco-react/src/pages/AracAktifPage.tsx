@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FiTrash2, FiPause, FiTool, FiBattery, FiMapPin, FiPlus } from 'react-icons/fi';
+import { useConfirm } from '../hooks/useConfirm';
 import { listActiveCars, deactivateCar, deleteCar } from '../services/vehicleService';
 import GenericTable, { type Column } from '../components/GenericTable';
 import type { CarWithAxle } from '../types';
 
 const AracAktifPage = () => {
+  const { confirm, ConfirmDialog } = useConfirm();
   const [cars, setCars] = useState<CarWithAxle[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -29,7 +31,7 @@ const AracAktifPage = () => {
   }, []);
 
   const handleDelete = async (carId: number) => {
-    if (!window.confirm('Bu aracı silmek istediğinize emin misiniz? Tüm lastik ve akü verileri de silinecektir.')) return;
+    if (!(await confirm({ message: 'Bu aracı silmek istediğinize emin misiniz? Tüm lastik ve akü verileri de silinecektir.', variant: 'danger' }))) return;
     try {
       await deleteCar(carId);
       setCars(prev => prev.filter(c => c.id !== carId));
@@ -41,7 +43,7 @@ const AracAktifPage = () => {
   };
 
   const handlePassive = async (carId: number) => {
-    if (!window.confirm('Bu aracı pasif yapmak istediğinize emin misiniz?')) return;
+    if (!(await confirm({ message: 'Bu aracı pasif yapmak istediğinize emin misiniz?', variant: 'warning' }))) return;
     try {
       await deactivateCar(carId);
       setCars(prev => prev.filter(c => c.id !== carId));
@@ -146,6 +148,7 @@ const AracAktifPage = () => {
         title="Aktif Araç Listesi"
         headerActions={headerActions}
       />
+      <ConfirmDialog />
     </div>
   );
 };

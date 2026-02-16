@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FiBattery, FiPlus, FiTrash2, FiTruck, FiSearch, FiRefreshCw, FiExternalLink } from 'react-icons/fi';
+import { useConfirm } from '../hooks/useConfirm';
 import { listAkus, deleteAku, sendAkuToDepot, type AkuWithCar } from '../services/akuService';
 
 const AkuDepoPage = () => {
+  const { confirm, ConfirmDialog } = useConfirm();
   const [batteries, setBatteries] = useState<AkuWithCar[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -30,7 +32,7 @@ const AkuDepoPage = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm('Bu aküyü silmek istediğinize emin misiniz?')) return;
+    if (!(await confirm({ message: 'Bu aküyü silmek istediğinize emin misiniz?', variant: 'danger' }))) return;
 
     try {
       await deleteAku(id);
@@ -320,6 +322,7 @@ const AkuDepoPage = () => {
           </div>
         )}
       </div>
+      <ConfirmDialog />
     </div>
   );
 };
