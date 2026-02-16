@@ -125,7 +125,7 @@ const SidebarMenu = ({ isOpen, onToggle }: SidebarMenuProps) => {
         <div className="flex items-center justify-between p-4 border-b border-white/10">
           <NavLink to="/" className="flex items-center gap-2">
             <img
-              src="/images/logo/logo_icon.png"
+              src={`${import.meta.env.BASE_URL}images/logo/logo_icon.png`}
               alt="Lastik.co"
               className="w-10 h-10"
             />
@@ -143,7 +143,7 @@ const SidebarMenu = ({ isOpen, onToggle }: SidebarMenuProps) => {
         <div className="p-4 border-b border-white/10">
           <div className="flex items-center gap-3">
             <img
-              src="/images/layout_img/user_img.jpg"
+              src={`${import.meta.env.BASE_URL}images/layout_img/user_img.jpg`}
               alt="User"
               className="w-10 h-10 rounded-full"
             />
