@@ -40,38 +40,83 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="card">
-      <h1>Giriş Yap</h1>
-      <p className="muted">Supabase Auth kullanarak giriş yapın.</p>
-      {error && <div className="alert">{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="email">E-posta</label>
-        <input
-          id="email"
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="ornek@lastik.co"
-        />
+    <div className="relative min-h-screen w-full flex items-center justify-end">
+      {/* Background Image */}
+      <img
+        src={`${import.meta.env.BASE_URL}images/landing_page/login_background.jpg`}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover"
+      />
 
-        <label htmlFor="password">Şifre</label>
-        <input
-          id="password"
-          type="password"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••"
-        />
+      {/* Dark overlay for readability */}
+      <div className="absolute inset-0 bg-black/40" />
 
-        <button className="btn primary" type="submit" disabled={submitting}>
-          {submitting ? 'Giriş yapılıyor...' : 'Giriş Yap'}
-        </button>
-      </form>
-      <p className="muted" style={{ marginTop: 12 }}>
-        Supabase Auth üzerinde kullanıcı oluşturup email/şifre ile oturum açın.
-      </p>
+      {/* Login Form - right side */}
+      <div className="relative z-10 w-full max-w-sm mr-8 md:mr-16 lg:mr-24">
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8">
+          {/* Logo */}
+          <div className="flex justify-center mb-6">
+            <img
+              src={`${import.meta.env.BASE_URL}images/logo/logo.png`}
+              alt="Lastik.co"
+              className="h-10"
+            />
+          </div>
+
+          <h2 className="text-xl font-bold text-gray-800 text-center mb-1">
+            Giriş Yap
+          </h2>
+          <p className="text-sm text-gray-500 text-center mb-6">
+            Hesabınıza giriş yapın
+          </p>
+
+          {error && (
+            <div className="mb-4 px-3 py-2 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-1">
+                E-posta
+              </label>
+              <input
+                id="email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="ornek@lastik.co"
+                className="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#0B5394] focus:border-transparent transition"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-1">
+                Şifre
+              </label>
+              <input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full px-3 py-2.5 text-sm rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#0B5394] focus:border-transparent transition"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full py-2.5 bg-[#0B5394] text-white text-sm font-bold rounded-lg hover:bg-[#094A84] disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+            >
+              {submitting ? 'Giriş yapılıyor...' : 'Giriş Yap'}
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };
