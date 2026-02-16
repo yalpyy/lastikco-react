@@ -112,10 +112,10 @@ const DetaySayfaPage = () => {
   const chartData = [...depthRecords].reverse().slice(-10);
   const maxDepth = Math.max(...chartData.map(r => r.depth_value), 16);
 
-  // KM özet
-  const firstKm = kmRecords.length > 0 ? kmRecords[kmRecords.length - 1]?.km_value : null;
-  const lastKm = kmRecords.length > 0 ? kmRecords[0]?.km_value : null;
-  const totalDistance = firstKm && lastKm ? lastKm - firstKm : 0;
+  // KM özet (her zaman pozitif değer)
+  const totalDistance = kmRecords.length >= 2
+    ? Math.abs(kmRecords[0]?.km_value - kmRecords[kmRecords.length - 1]?.km_value)
+    : 0;
 
   if (loading) {
     return (
@@ -294,32 +294,79 @@ const DetaySayfaPage = () => {
               <p className="text-gray-500 font-medium">Henüz ölçüm kaydı bulunmuyor</p>
             </div>
           ) : (
-            <div className="h-64">
-              <div className="flex items-end justify-between h-full gap-2">
-                {chartData.map((record, index) => {
-                  const heightPercent = (record.depth_value / maxDepth) * 100;
-                  const status = getDepthStatus(record.depth_value);
-                  return (
-                    <div key={record.id} className="flex flex-col items-center flex-1 h-full">
-                      <span className={`text-xs font-semibold mb-1 ${status.textColor}`}>
-                        {record.depth_value}mm
-                      </span>
-                      <div className="flex-1 w-full flex items-end">
-                        <div
-                          className={`w-full ${status.color} rounded-t-lg transition-all duration-300 hover:opacity-80`}
-                          style={{ height: `${heightPercent}%`, minHeight: '20px' }}
-                          title={`${record.depth_value}mm - ${record.measurement_date}`}
+            <div className="relative">
+              {/* Y axis labels */}
+              <div className="absolute left-0 top-0 h-48 w-10 flex flex-col justify-between text-xs text-gray-500 pr-2 text-right">
+                <span>{maxDepth}mm</span>
+                <span>{Math.round(maxDepth / 2)}mm</span>
+                <span>0</span>
+              </div>
+
+              {/* Line Chart */}
+              <div className="ml-12">
+                <svg className="w-full h-48" viewBox={`0 0 ${Math.max(chartData.length * 60, 300)} 192`} preserveAspectRatio="none">
+                  {/* Grid lines */}
+                  <line x1="0" y1="0" x2="100%" y2="0" stroke="#e5e7eb" strokeWidth="1" />
+                  <line x1="0" y1="96" x2="100%" y2="96" stroke="#e5e7eb" strokeWidth="1" strokeDasharray="4" />
+                  <line x1="0" y1="192" x2="100%" y2="192" stroke="#e5e7eb" strokeWidth="1" />
+
+                  {/* Warning zone (< 5mm) */}
+                  <rect x="0" y={192 - (5 / maxDepth) * 180} width="100%" height={(5 / maxDepth) * 180} fill="#fef3c7" opacity="0.5" />
+
+                  {/* Critical zone (< 3mm) */}
+                  <rect x="0" y={192 - (3 / maxDepth) * 180} width="100%" height={(3 / maxDepth) * 180} fill="#fee2e2" opacity="0.5" />
+
+                  {/* Line path */}
+                  <polyline
+                    fill="none"
+                    stroke="#0B5394"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    points={chartData.map((r, i) => {
+                      const x = (i / Math.max(chartData.length - 1, 1)) * (Math.max(chartData.length * 60, 300) - 20) + 10;
+                      const y = 192 - (r.depth_value / maxDepth) * 180;
+                      return `${x},${y}`;
+                    }).join(' ')}
+                  />
+
+                  {/* Gradient definition */}
+                  <defs>
+                    <linearGradient id="depthGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#0B5394" stopOpacity="0.3" />
+                      <stop offset="100%" stopColor="#0B5394" stopOpacity="0.05" />
+                    </linearGradient>
+                  </defs>
+
+                  {/* Data points */}
+                  {chartData.map((r, i) => {
+                    const x = (i / Math.max(chartData.length - 1, 1)) * (Math.max(chartData.length * 60, 300) - 20) + 10;
+                    const y = 192 - (r.depth_value / maxDepth) * 180;
+                    return (
+                      <g key={r.id}>
+                        <circle
+                          cx={x}
+                          cy={y}
+                          r="6"
+                          fill="white"
+                          stroke={r.depth_value < 3 ? '#ef4444' : r.depth_value < 5 ? '#f59e0b' : '#10b981'}
+                          strokeWidth="3"
+                          className="cursor-pointer"
                         />
-                      </div>
-                      <span className="text-[10px] text-gray-500 mt-2 text-center">
-                        {new Date(record.measurement_date).toLocaleDateString('tr-TR', {
-                          day: '2-digit',
-                          month: 'short',
-                        })}
-                      </span>
-                    </div>
-                  );
-                })}
+                        <title>{r.depth_value}mm - {new Date(r.measurement_date).toLocaleDateString('tr-TR')}</title>
+                      </g>
+                    );
+                  })}
+                </svg>
+
+                {/* X axis labels */}
+                <div className="flex justify-between mt-2 text-[10px] text-gray-500">
+                  {chartData.map((r) => (
+                    <span key={r.id} className="text-center" style={{ flex: 1 }}>
+                      {new Date(r.measurement_date).toLocaleDateString('tr-TR', { day: '2-digit', month: 'short' })}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           )}

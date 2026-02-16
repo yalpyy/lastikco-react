@@ -2,6 +2,7 @@ import { useState, useEffect, type FormEvent } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FiArrowLeft, FiPlus, FiEdit2, FiTrash2, FiSave, FiX, FiAlertTriangle, FiTrendingDown } from 'react-icons/fi';
+import { useConfirm } from '../hooks/useConfirm';
 import { getTireDepthHistory, addTireDepth } from '../services/tireService';
 import { supabase } from '../lib/supabaseClient';
 
@@ -24,6 +25,7 @@ interface TireInfo {
 const DisDerinligiPage = () => {
   const { tireId } = useParams<{ tireId: string }>();
   const navigate = useNavigate();
+  const { confirm, ConfirmDialog } = useConfirm();
   const [tireInfo, setTireInfo] = useState<TireInfo | null>(null);
   const [records, setRecords] = useState<DepthRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,7 +63,7 @@ const DisDerinligiPage = () => {
         tire_serino: details.tire_serino || 'Bilinmiyor',
         tire_marka: details.tire_marka || '',
         tire_desen: details.tire_desen || '',
-        car_name: tireData?.cars?.car_name,
+        car_name: (tireData?.cars as any)?.car_name,
       });
 
       // Diş derinliği kayıtlarını çek
@@ -113,7 +115,7 @@ const DisDerinligiPage = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm('Bu ölçümü silmek istediğinize emin misiniz?')) return;
+    if (!(await confirm({ message: 'Bu ölçümü silmek istediğinize emin misiniz?', variant: 'danger' }))) return;
 
     try {
       const { error } = await supabase
@@ -291,44 +293,87 @@ const DisDerinligiPage = () => {
           ) : (
             <div className="relative">
               {/* Y axis labels */}
-              <div className="absolute left-0 top-0 bottom-8 w-10 flex flex-col justify-between text-xs text-gray-500">
+              <div className="absolute left-0 top-0 h-48 w-10 flex flex-col justify-between text-xs text-gray-500 pr-2 text-right">
                 <span>{maxDepth}mm</span>
                 <span>{Math.round(maxDepth / 2)}mm</span>
                 <span>0</span>
               </div>
 
-              {/* Chart area */}
-              <div className="ml-12 flex items-end gap-2 h-48">
-                {records.map((r, index) => {
-                  const height = (r.depth_value / maxDepth) * 100;
-                  const status = getDepthStatus(r.depth_value);
-                  return (
-                    <div
-                      key={r.id}
-                      className="flex-1 flex flex-col items-center group"
-                    >
-                      <div className="relative flex flex-col items-center">
-                        {/* Tooltip */}
-                        <div className="opacity-0 group-hover:opacity-100 absolute -top-8 bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap transition-opacity z-10">
-                          {r.depth_value} mm
-                        </div>
-                        {/* Value label */}
-                        <span className={`text-xs font-medium mb-1 ${status.color}`}>
-                          {r.depth_value}
-                        </span>
-                        {/* Bar */}
-                        <div
-                          className={`w-full max-w-12 rounded-t-md transition-all hover:opacity-80 ${status.bgColor}`}
-                          style={{ height: `${Math.max(height, 5)}%`, minHeight: '8px' }}
+              {/* Line Chart */}
+              <div className="ml-12">
+                <svg className="w-full h-48" viewBox={`0 0 ${Math.max(records.length * 60, 300)} 192`} preserveAspectRatio="none">
+                  {/* Grid lines */}
+                  <line x1="0" y1="0" x2="100%" y2="0" stroke="#e5e7eb" strokeWidth="1" />
+                  <line x1="0" y1="96" x2="100%" y2="96" stroke="#e5e7eb" strokeWidth="1" strokeDasharray="4" />
+                  <line x1="0" y1="192" x2="100%" y2="192" stroke="#e5e7eb" strokeWidth="1" />
+
+                  {/* Warning zone (< 8mm) */}
+                  <rect x="0" y={192 - (8 / maxDepth) * 180} width="100%" height={(3 / maxDepth) * 180} fill="#fef3c7" opacity="0.3" />
+
+                  {/* Danger zone (< 5mm) */}
+                  <rect x="0" y={192 - (5 / maxDepth) * 180} width="100%" height={(5 / maxDepth) * 180} fill="#fee2e2" opacity="0.4" />
+
+                  {/* Area fill */}
+                  <polygon
+                    fill="url(#depthGradient2)"
+                    points={`10,192 ${records.map((r, i) => {
+                      const x = (i / Math.max(records.length - 1, 1)) * (Math.max(records.length * 60, 300) - 20) + 10;
+                      const y = 192 - (r.depth_value / maxDepth) * 180;
+                      return `${x},${y}`;
+                    }).join(' ')} ${(Math.max(records.length * 60, 300) - 10)},192`}
+                  />
+
+                  {/* Line path */}
+                  <polyline
+                    fill="none"
+                    stroke="#0B5394"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    points={records.map((r, i) => {
+                      const x = (i / Math.max(records.length - 1, 1)) * (Math.max(records.length * 60, 300) - 20) + 10;
+                      const y = 192 - (r.depth_value / maxDepth) * 180;
+                      return `${x},${y}`;
+                    }).join(' ')}
+                  />
+
+                  {/* Gradient definition */}
+                  <defs>
+                    <linearGradient id="depthGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#0B5394" stopOpacity="0.2" />
+                      <stop offset="100%" stopColor="#0B5394" stopOpacity="0.02" />
+                    </linearGradient>
+                  </defs>
+
+                  {/* Data points */}
+                  {records.map((r, i) => {
+                    const x = (i / Math.max(records.length - 1, 1)) * (Math.max(records.length * 60, 300) - 20) + 10;
+                    const y = 192 - (r.depth_value / maxDepth) * 180;
+                    return (
+                      <g key={r.id}>
+                        <circle
+                          cx={x}
+                          cy={y}
+                          r="6"
+                          fill="white"
+                          stroke={r.depth_value < 3 ? '#ef4444' : r.depth_value < 5 ? '#f97316' : r.depth_value < 8 ? '#f59e0b' : '#10b981'}
+                          strokeWidth="3"
+                          className="cursor-pointer"
                         />
-                      </div>
-                      {/* Date label */}
-                      <span className="text-[10px] text-gray-500 mt-1 transform -rotate-45 origin-top-left whitespace-nowrap">
-                        {new Date(r.measurement_date).toLocaleDateString('tr-TR', { day: '2-digit', month: 'short' })}
-                      </span>
-                    </div>
-                  );
-                })}
+                        <title>{r.depth_value}mm - {new Date(r.measurement_date).toLocaleDateString('tr-TR')}</title>
+                      </g>
+                    );
+                  })}
+                </svg>
+
+                {/* X axis labels */}
+                <div className="flex justify-between mt-2 text-[10px] text-gray-500">
+                  {records.map((r) => (
+                    <span key={r.id} className="text-center" style={{ flex: 1 }}>
+                      {new Date(r.measurement_date).toLocaleDateString('tr-TR', { day: '2-digit', month: 'short' })}
+                    </span>
+                  ))}
+                </div>
               </div>
 
               {/* Reference lines */}
@@ -463,6 +508,7 @@ const DisDerinligiPage = () => {
           </table>
         </div>
       </div>
+      <ConfirmDialog />
     </div>
   );
 };

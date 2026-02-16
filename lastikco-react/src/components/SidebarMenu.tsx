@@ -82,6 +82,7 @@ const menuItems: MenuItem[] = [
     children: [
       { label: 'Bölge Ekleme', path: '/bolge-ekle' },
       { label: 'Lastik Bilgi', path: '/lastik-bilgi' },
+      { label: 'Sabitler', path: '/sabitler' },
     ],
   },
   {

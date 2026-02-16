@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { FiCircle, FiSave, FiArrowLeft, FiAlertCircle, FiPackage } from 'react-icons/fi';
 import { createTireWithDetails } from '../services/tireService';
 import { listCarsWithAxles } from '../services/vehicleService';
+import { getConstantsByType, type TireConstant } from '../services/constantsService';
 import type { CarWithAxle } from '../types';
 
 interface FormErrors {
@@ -30,20 +31,31 @@ const LastikSifirPage = () => {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
+  const [markalar, setMarkalar] = useState<TireConstant[]>([]);
+  const [desenler, setDesenler] = useState<TireConstant[]>([]);
+  const [olculer, setOlculer] = useState<TireConstant[]>([]);
 
-  // Load cars from database
+  // Load cars and constants from database
   useEffect(() => {
-    const loadCars = async () => {
+    const loadData = async () => {
       try {
-        const result = await listCarsWithAxles({ status: 'aktif' });
-        setCars(result.data);
+        const [carsResult, markaData, desenData, olcuData] = await Promise.all([
+          listCarsWithAxles({ status: 'aktif' }),
+          getConstantsByType('marka'),
+          getConstantsByType('desen'),
+          getConstantsByType('olcu'),
+        ]);
+        setCars(carsResult.data);
+        setMarkalar(markaData);
+        setDesenler(desenData);
+        setOlculer(olcuData);
       } catch (error) {
-        console.error('Araçlar yüklenemedi:', error);
+        console.error('Veriler yüklenemedi:', error);
       } finally {
         setCarsLoading(false);
       }
     };
-    loadCars();
+    loadData();
   }, []);
 
   const validateForm = (): boolean => {
@@ -167,7 +179,8 @@ const LastikSifirPage = () => {
                 type="text"
                 id="tire_marka"
                 name="tire_marka"
-                placeholder="örn: Michelin"
+                list="marka-list"
+                placeholder="Seçin veya yazın..."
                 className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors ${
                   errors.tire_marka ? 'border-red-500 bg-red-50' : 'border-gray-300'
                 }`}
@@ -177,6 +190,11 @@ const LastikSifirPage = () => {
                   if (errors.tire_marka) setErrors({ ...errors, tire_marka: undefined });
                 }}
               />
+              <datalist id="marka-list">
+                {markalar.map(m => (
+                  <option key={m.id} value={m.value} />
+                ))}
+              </datalist>
               <InputError message={errors.tire_marka} />
             </div>
 
@@ -189,7 +207,8 @@ const LastikSifirPage = () => {
                 type="text"
                 id="tire_desen"
                 name="tire_desen"
-                placeholder="örn: X Multi D"
+                list="desen-list"
+                placeholder="Seçin veya yazın..."
                 className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors ${
                   errors.tire_desen ? 'border-red-500 bg-red-50' : 'border-gray-300'
                 }`}
@@ -199,6 +218,11 @@ const LastikSifirPage = () => {
                   if (errors.tire_desen) setErrors({ ...errors, tire_desen: undefined });
                 }}
               />
+              <datalist id="desen-list">
+                {desenler.map(d => (
+                  <option key={d.id} value={d.value} />
+                ))}
+              </datalist>
               <InputError message={errors.tire_desen} />
             </div>
 
@@ -211,7 +235,8 @@ const LastikSifirPage = () => {
                 type="text"
                 id="tire_olcu"
                 name="tire_olcu"
-                placeholder="örn: 315/80R22.5"
+                list="olcu-list"
+                placeholder="Seçin veya yazın..."
                 className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#0B5394]/20 focus:border-[#0B5394] transition-colors ${
                   errors.tire_olcu ? 'border-red-500 bg-red-50' : 'border-gray-300'
                 }`}
@@ -221,6 +246,11 @@ const LastikSifirPage = () => {
                   if (errors.tire_olcu) setErrors({ ...errors, tire_olcu: undefined });
                 }}
               />
+              <datalist id="olcu-list">
+                {olculer.map(o => (
+                  <option key={o.id} value={o.value} />
+                ))}
+              </datalist>
               <InputError message={errors.tire_olcu} />
             </div>
 

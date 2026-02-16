@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useConfirm } from '../hooks/useConfirm';
 import { listPassiveCars, activateCar, deleteCar } from '../services/vehicleService';
 import DataTable, { type Column } from '../components/DataTable';
 import type { CarWithAxle } from '../types';
 
 const AracPasifPage = () => {
+  const { confirm, ConfirmDialog } = useConfirm();
   const [cars, setCars] = useState<CarWithAxle[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -28,7 +30,7 @@ const AracPasifPage = () => {
   }, []);
 
   const handleActivate = async (carId: number) => {
-    if (!window.confirm('Bu aracı aktif yapmak istediğinize emin misiniz?')) return;
+    if (!(await confirm({ message: 'Bu aracı aktif yapmak istediğinize emin misiniz?', variant: 'warning' }))) return;
     try {
       await activateCar(carId);
       setCars(prev => prev.filter(c => c.id !== carId));
@@ -40,7 +42,7 @@ const AracPasifPage = () => {
   };
 
   const handleDelete = async (carId: number) => {
-    if (!window.confirm('Bu aracı kalıcı olarak silmek istediğinize emin misiniz?')) return;
+    if (!(await confirm({ message: 'Bu aracı kalıcı olarak silmek istediğinize emin misiniz?', variant: 'danger' }))) return;
     try {
       await deleteCar(carId);
       setCars(prev => prev.filter(c => c.id !== carId));
@@ -112,6 +114,7 @@ const AracPasifPage = () => {
           </div>
         </div>
       </div>
+      <ConfirmDialog />
     </>
   );
 };

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { FiTool, FiCheckCircle, FiTrash2, FiRefreshCw } from 'react-icons/fi';
+import { useConfirm } from '../hooks/useConfirm';
 import { listServiceTires, repairTire, sendTireToScrap } from '../services/tireService';
 import GenericTable, { type Column } from '../components/GenericTable';
 
@@ -18,6 +19,7 @@ interface ServiceTire {
 }
 
 const LastikServisPage = () => {
+  const { confirm, ConfirmDialog } = useConfirm();
   const [tires, setTires] = useState<ServiceTire[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -46,7 +48,7 @@ const LastikServisPage = () => {
   };
 
   const handleScrap = async (tireId: number) => {
-    if (!window.confirm('Bu lastiği hurdaya çıkarmak istediğinizden emin misiniz?')) return;
+    if (!(await confirm({ message: 'Bu lastiği hurdaya çıkarmak istediğinizden emin misiniz?', variant: 'danger' }))) return;
     try {
       await sendTireToScrap(tireId);
       setTires(tires.filter(t => t.tire_id !== tireId));
@@ -143,6 +145,7 @@ const LastikServisPage = () => {
         title="Servis Lastik Listesi"
         headerActions={headerActions}
       />
+      <ConfirmDialog />
     </div>
   );
 };

@@ -247,7 +247,8 @@ export const assignTireToCar = async (
   carId: number,
   axleNumber: number,
   position: string,
-  carName?: string
+  carName?: string,
+  tireSerino?: string
 ) => {
   const { error } = await supabase
     .from('tires')
@@ -262,26 +263,34 @@ export const assignTireToCar = async (
     throw new UserFacingError(mapSupabaseError(error));
   }
 
-  // Log kaydı oluştur
+  // Lastik log kaydı oluştur
   const positionLabel = position.replace(/_/g, ' ');
   await addTireLog(
     tireId,
     `Lastik ${carName || `Araç #${carId}`} aracına takıldı. Aks: ${axleNumber}, Pozisyon: ${positionLabel}`
   );
 
+  // Araç log kaydı oluştur
+  await supabase.from('logs').insert({
+    car_id: carId,
+    message: `Lastik ${tireSerino || `#${tireId}`} araca takıldı. Aks: ${axleNumber}, Pozisyon: ${positionLabel}`,
+  });
+
   return true;
 };
 
 // Lastiği araçtan çıkar (depoya gönder)
-export const removeTireFromCar = async (tireId: number, carName?: string) => {
+export const removeTireFromCar = async (tireId: number, carName?: string, tireSerino?: string) => {
   // Önce mevcut araç bilgisini al (log için)
   const { data: tireData } = await supabase
     .from('tires')
-    .select('car_id, cars(car_name)')
+    .select('car_id, cars(car_name), tire_details(tire_serino)')
     .eq('id', tireId)
     .single();
 
-  const previousCarName = carName || (tireData?.cars as any)?.car_name || `Araç #${tireData?.car_id}`;
+  const previousCarId = tireData?.car_id;
+  const previousCarName = carName || (tireData?.cars as any)?.car_name || `Araç #${previousCarId}`;
+  const serino = tireSerino || (tireData?.tire_details as any)?.[0]?.tire_serino || `#${tireId}`;
 
   const { error } = await supabase
     .from('tires')
@@ -292,8 +301,16 @@ export const removeTireFromCar = async (tireId: number, carName?: string) => {
     throw new UserFacingError(mapSupabaseError(error));
   }
 
-  // Log kaydı oluştur
+  // Lastik log kaydı oluştur
   await addTireLog(tireId, `Lastik ${previousCarName} aracından çıkarıldı ve depoya gönderildi.`);
+
+  // Araç log kaydı oluştur
+  if (previousCarId) {
+    await supabase.from('logs').insert({
+      car_id: previousCarId,
+      message: `Lastik ${serino} araçtan çıkarıldı ve depoya gönderildi.`,
+    });
+  }
 
   return true;
 };

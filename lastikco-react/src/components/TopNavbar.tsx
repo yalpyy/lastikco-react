@@ -9,7 +9,7 @@ interface TopNavbarProps {
   sidebarOpen: boolean;
 }
 
-const TopNavbar = ({ onToggleSidebar, sidebarOpen }: TopNavbarProps) => {
+const TopNavbar = ({ onToggleSidebar, sidebarOpen: _sidebarOpen }: TopNavbarProps) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { session, setSession } = useAuthStore();
