@@ -17,7 +17,66 @@ interface AxleVisualProps {
   onEmptyClick?: (axleNumber: number, position: string) => void;
 }
 
+// Pixel-calibrated positions for each axle config (vertical images)
+// top/left are percentages relative to image dimensions
+const POSITION_MAPS: Record<number, { key: string; axle: number; position: string; top: number; left: number }[]> = {
+  2: [
+    // Aks 1 - Ön (tekli lastik)
+    { key: '1-Sol Ön',  axle: 1, position: 'Sol Ön',  top: 18, left: 8 },
+    { key: '1-Sağ Ön',  axle: 1, position: 'Sağ Ön',  top: 18, left: 92 },
+    // Aks 2 - Arka (çiftli lastik)
+    { key: '2-Sol Dış',  axle: 2, position: 'Sol Dış',  top: 80, left: 3 },
+    { key: '2-Sol İç',   axle: 2, position: 'Sol İç',   top: 80, left: 18 },
+    { key: '2-Sağ İç',   axle: 2, position: 'Sağ İç',   top: 80, left: 82 },
+    { key: '2-Sağ Dış',  axle: 2, position: 'Sağ Dış',  top: 80, left: 97 },
+  ],
+  3: [
+    // Aks 1 - Ön (tekli lastik)
+    { key: '1-Sol Ön',  axle: 1, position: 'Sol Ön',  top: 15, left: 8 },
+    { key: '1-Sağ Ön',  axle: 1, position: 'Sağ Ön',  top: 15, left: 92 },
+    // Aks 2 - Orta (çiftli lastik)
+    { key: '2-Sol Dış',  axle: 2, position: 'Sol Dış',  top: 54, left: 2 },
+    { key: '2-Sol İç',   axle: 2, position: 'Sol İç',   top: 54, left: 17 },
+    { key: '2-Sağ İç',   axle: 2, position: 'Sağ İç',   top: 54, left: 83 },
+    { key: '2-Sağ Dış',  axle: 2, position: 'Sağ Dış',  top: 54, left: 98 },
+    // Aks 3 - Arka (çiftli lastik)
+    { key: '3-Sol Dış',  axle: 3, position: 'Sol Dış',  top: 82, left: 2 },
+    { key: '3-Sol İç',   axle: 3, position: 'Sol İç',   top: 82, left: 17 },
+    { key: '3-Sağ İç',   axle: 3, position: 'Sağ İç',   top: 82, left: 83 },
+    { key: '3-Sağ Dış',  axle: 3, position: 'Sağ Dış',  top: 82, left: 98 },
+  ],
+  4: [
+    // Aks 1 - Ön (tekli lastik)
+    { key: '1-Sol Ön',  axle: 1, position: 'Sol Ön',  top: 12, left: 10 },
+    { key: '1-Sağ Ön',  axle: 1, position: 'Sağ Ön',  top: 12, left: 90 },
+    // Aks 2 (çiftli lastik)
+    { key: '2-Sol Dış',  axle: 2, position: 'Sol Dış',  top: 38, left: 3 },
+    { key: '2-Sol İç',   axle: 2, position: 'Sol İç',   top: 38, left: 18 },
+    { key: '2-Sağ İç',   axle: 2, position: 'Sağ İç',   top: 38, left: 82 },
+    { key: '2-Sağ Dış',  axle: 2, position: 'Sağ Dış',  top: 38, left: 97 },
+    // Aks 3 (çiftli lastik)
+    { key: '3-Sol Dış',  axle: 3, position: 'Sol Dış',  top: 60, left: 3 },
+    { key: '3-Sol İç',   axle: 3, position: 'Sol İç',   top: 60, left: 18 },
+    { key: '3-Sağ İç',   axle: 3, position: 'Sağ İç',   top: 60, left: 82 },
+    { key: '3-Sağ Dış',  axle: 3, position: 'Sağ Dış',  top: 60, left: 97 },
+    // Aks 4 - Arka (çiftli lastik)
+    { key: '4-Sol Dış',  axle: 4, position: 'Sol Dış',  top: 82, left: 3 },
+    { key: '4-Sol İç',   axle: 4, position: 'Sol İç',   top: 82, left: 18 },
+    { key: '4-Sağ İç',   axle: 4, position: 'Sağ İç',   top: 82, left: 82 },
+    { key: '4-Sağ Dış',  axle: 4, position: 'Sağ Dış',  top: 82, left: 97 },
+  ],
+};
+
+// Image aspect ratios (width/height)
+const ASPECT_RATIOS: Record<number, string> = {
+  2: '313 / 449',   // ~0.70
+  3: '354 / 473',   // ~0.75
+  4: '354 / 650',   // ~0.54
+};
+
 const AxleVisual = ({ axleCount, tires, onTireClick, onEmptyClick }: AxleVisualProps) => {
+  const positions = POSITION_MAPS[axleCount];
+
   const getTireAtPosition = (axle: number, position: string): TirePosition | undefined => {
     return tires.find(t => t.axle_number === axle && t.tire_position === position);
   };
@@ -30,169 +89,77 @@ const AxleVisual = ({ axleCount, tires, onTireClick, onEmptyClick }: AxleVisualP
     return { color: 'text-white', bgColor: 'bg-emerald-500', borderColor: 'border-emerald-600', status: 'İyi' };
   };
 
-  const renderTireButton = (axle: number, position: string): ReactNode => {
-    const tire = getTireAtPosition(axle, position);
-    const key = `${axle}-${position}`;
+  const renderMarker = (pos: typeof positions[0]): ReactNode => {
+    const tire = getTireAtPosition(pos.axle, pos.position);
 
     if (tire) {
       const status = getDepthStatus(tire.tire_disderinligi);
       return (
         <button
-          key={key}
+          key={pos.key}
           onClick={() => onTireClick?.(tire)}
           title={`${tire.tire_marka} - ${tire.tire_serino}\nDiş Derinliği: ${tire.tire_disderinligi}mm\nDurum: ${status.status}`}
           className={`
-            w-12 h-6 rounded-full
+            absolute -translate-x-1/2 -translate-y-1/2 z-10
+            w-11 h-5 rounded-full
             ${status.bgColor} ${status.color} ${status.borderColor}
             border-2 shadow-md
             flex items-center justify-center
-            text-[10px] font-bold
-            hover:scale-110 hover:z-20
+            text-[9px] font-bold leading-none
+            hover:scale-125 hover:z-20
             transition-all duration-200
             cursor-pointer
           `}
+          style={{ top: `${pos.top}%`, left: `${pos.left}%` }}
         >
           {tire.tire_disderinligi || '?'}
         </button>
       );
-    } else {
-      return (
-        <button
-          key={key}
-          onClick={() => onEmptyClick?.(axle, position)}
-          title={`Boş Pozisyon: ${position} (Aks ${axle})\nLastik eklemek için tıklayın`}
-          className={`
-            w-12 h-6 rounded-full
-            bg-slate-200 border-2 border-dashed border-slate-400
-            flex items-center justify-center
-            text-slate-500 text-sm font-bold
-            hover:bg-[#0B5394] hover:border-[#0B5394] hover:text-white hover:border-solid
-            hover:scale-110 hover:z-20
-            transition-all duration-200
-            cursor-pointer
-          `}
-        >
-          +
-        </button>
-      );
     }
-  };
 
-  // Render axle row based on axle type
-  const renderAxleRow = (axleNum: number, isFront: boolean) => {
-    if (isFront) {
-      // Front axle: 2 tires (single on each side)
-      return (
-        <div className="flex justify-between items-center px-2">
-          <div className="flex justify-center" style={{ width: '20%' }}>
-            {renderTireButton(axleNum, 'Sol Ön')}
-          </div>
-          <div className="flex-1" />
-          <div className="flex justify-center" style={{ width: '20%' }}>
-            {renderTireButton(axleNum, 'Sağ Ön')}
-          </div>
-        </div>
-      );
-    } else {
-      // Rear axle: 4 tires (dual on each side)
-      return (
-        <div className="flex justify-between items-center px-1">
-          <div className="flex gap-1">
-            {renderTireButton(axleNum, 'Sol Dış')}
-            {renderTireButton(axleNum, 'Sol İç')}
-          </div>
-          <div className="flex-1" />
-          <div className="flex gap-1">
-            {renderTireButton(axleNum, 'Sağ İç')}
-            {renderTireButton(axleNum, 'Sağ Dış')}
-          </div>
-        </div>
-      );
-    }
+    return (
+      <button
+        key={pos.key}
+        onClick={() => onEmptyClick?.(pos.axle, pos.position)}
+        title={`Boş Pozisyon: ${pos.position} (Aks ${pos.axle})\nLastik eklemek için tıklayın`}
+        className={`
+          absolute -translate-x-1/2 -translate-y-1/2 z-10
+          w-11 h-5 rounded-full
+          bg-slate-200 border-2 border-dashed border-slate-400
+          flex items-center justify-center
+          text-slate-500 text-sm font-bold leading-none
+          hover:bg-[#0B5394] hover:border-[#0B5394] hover:text-white hover:border-solid
+          hover:scale-125 hover:z-20
+          transition-all duration-200
+          cursor-pointer
+        `}
+        style={{ top: `${pos.top}%`, left: `${pos.left}%` }}
+      >
+        +
+      </button>
+    );
   };
 
   return (
-    <div className="axle-visual-container max-w-md mx-auto">
-      {/* Container with fixed aspect ratio */}
+    <div className="axle-visual-container max-w-sm mx-auto">
+      {/* Container - aspect ratio matches rotated image */}
       <div
         className="relative bg-white rounded-xl shadow-inner border border-gray-200 overflow-hidden"
-        style={{ aspectRatio: '4/3' }}
+        style={{ aspectRatio: ASPECT_RATIOS[axleCount] }}
       >
-        {/* Background Image */}
+        {/* Background Image - fills container exactly */}
         <img
           src={`/images/aks/aks${axleCount}.png`}
           alt={`${axleCount} akslı araç şeması`}
-          className="absolute inset-0 w-full h-full object-contain"
+          className="absolute inset-0 w-full h-full object-fill"
+          draggable={false}
           onError={(e) => {
-            (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"%3E%3Crect fill="%23f1f5f9" width="400" height="300"/%3E%3Ctext fill="%2364748b" font-family="system-ui" font-size="14" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle"%3EAks görseli yüklenemedi%3C/text%3E%3C/svg%3E';
+            (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400"%3E%3Crect fill="%23f1f5f9" width="300" height="400"/%3E%3Ctext fill="%2364748b" font-family="system-ui" font-size="14" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle"%3EAks görseli yüklenemedi%3C/text%3E%3C/svg%3E';
           }}
         />
 
-        {/* Overlay Grid for Tire Positions */}
-        <div className="absolute inset-0 flex flex-col">
-          {axleCount === 2 && (
-            <>
-              {/* Front Axle Area - Top */}
-              <div className="flex items-end justify-center" style={{ height: '30%', paddingBottom: '2%' }}>
-                {renderAxleRow(1, true)}
-              </div>
-              {/* Middle spacer */}
-              <div className="flex-1" />
-              {/* Rear Axle Area - Bottom */}
-              <div className="flex items-start justify-center" style={{ height: '30%', paddingTop: '2%' }}>
-                {renderAxleRow(2, false)}
-              </div>
-            </>
-          )}
-
-          {axleCount === 3 && (
-            <>
-              {/* Front Axle */}
-              <div className="flex items-end justify-center" style={{ height: '22%', paddingBottom: '1%' }}>
-                {renderAxleRow(1, true)}
-              </div>
-              {/* Middle spacer */}
-              <div style={{ height: '18%' }} />
-              {/* Middle Axle */}
-              <div className="flex items-center justify-center" style={{ height: '20%' }}>
-                {renderAxleRow(2, false)}
-              </div>
-              {/* Spacer */}
-              <div style={{ height: '12%' }} />
-              {/* Rear Axle */}
-              <div className="flex items-start justify-center" style={{ height: '28%', paddingTop: '1%' }}>
-                {renderAxleRow(3, false)}
-              </div>
-            </>
-          )}
-
-          {axleCount === 4 && (
-            <>
-              {/* Front Axle */}
-              <div className="flex items-end justify-center" style={{ height: '18%', paddingBottom: '1%' }}>
-                {renderAxleRow(1, true)}
-              </div>
-              {/* Spacer */}
-              <div style={{ height: '14%' }} />
-              {/* Axle 2 */}
-              <div className="flex items-center justify-center" style={{ height: '16%' }}>
-                {renderAxleRow(2, false)}
-              </div>
-              {/* Spacer */}
-              <div style={{ height: '10%' }} />
-              {/* Axle 3 */}
-              <div className="flex items-center justify-center" style={{ height: '16%' }}>
-                {renderAxleRow(3, false)}
-              </div>
-              {/* Spacer */}
-              <div style={{ height: '6%' }} />
-              {/* Rear Axle */}
-              <div className="flex items-start justify-center" style={{ height: '20%', paddingTop: '1%' }}>
-                {renderAxleRow(4, false)}
-              </div>
-            </>
-          )}
-        </div>
+        {/* Tire position markers */}
+        {positions.map(renderMarker)}
       </div>
 
       {/* Legend */}
@@ -215,7 +182,6 @@ const AxleVisual = ({ axleCount, tires, onTireClick, onEmptyClick }: AxleVisualP
         </div>
       </div>
 
-      {/* Info Text */}
       <p className="mt-3 text-center text-xs text-gray-500">
         Lastik eklemek veya düzenlemek için pozisyona tıklayın
       </p>
